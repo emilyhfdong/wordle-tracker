@@ -5,12 +5,15 @@ import { App } from "./App"
 import reportWebVitals from "./reportWebVitals"
 import { ThemeProvider } from "@emotion/react"
 import theme from "@rebass/preset"
+import { WordContextProvider } from "./context/word-context"
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <WordContextProvider>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </WordContextProvider>
   </React.StrictMode>,
   document.getElementById("root")
 )
