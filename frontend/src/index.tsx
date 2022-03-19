@@ -4,8 +4,8 @@ import "./index.css"
 import { App } from "./App"
 import reportWebVitals from "./reportWebVitals"
 import { ThemeProvider } from "@emotion/react"
-import theme from "@rebass/preset"
 import { WordContextProvider } from "./context/word-context"
+import { theme } from "./theme"
 
 ReactDOM.render(
   <React.StrictMode>

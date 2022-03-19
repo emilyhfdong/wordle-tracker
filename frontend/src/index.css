@@ -10,8 +10,3 @@ body {
 code {
   font-family: "ClearSans", Menlo, Monaco, Consolas, "Courier New", monospace;
 }
-
-@font-face {
-  font-family: "ClearSans";
-  src: local("ClearSans"), url(./fonts/ClearSans-Medium.ttf) format("truetype");
-}

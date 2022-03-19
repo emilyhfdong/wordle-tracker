@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Flex } from "rebass"
-
 import { TOTAL_WORD_FLIP_DURATION_IN_S } from "./components/tile"
 import { Row, SHAKE_DURATION_IN_S } from "./components/row"
 import { Toast } from "./components/toast"
 import { WordContext } from "./context/word-context"
+import { BACKSPACE, ENTER_KEY, Keyboard } from "./components/keyboard"
 
 export const App: React.FC = () => {
   const [currentGuess, setCurrentGuess] = useState("")
@@ -16,7 +16,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const keyPressHandler = (e: KeyboardEvent) => {
-      const key = e.key.toUpperCase()
+      const key = e.key
       if (key === ENTER_KEY && currentGuess.length === 5) {
         if (currentGuess === "RRRRR") {
           setIsNotWord(true)
@@ -31,7 +31,6 @@ export const App: React.FC = () => {
         }
         setCurrentGuess("")
         setPrevGuesses([...prevGuesses, currentGuess])
-
         return
       }
 
@@ -57,7 +56,9 @@ export const App: React.FC = () => {
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
-        height: "100vh",
+        height: ["-webkit-fill-available", "100vh"],
+        maxWidth: 500,
+        margin: "auto",
       }}
     >
       <Flex
@@ -91,16 +92,7 @@ export const App: React.FC = () => {
           ))}
         </Flex>
       </Flex>
-      <Flex sx={{ height: 200 }}>keyboard</Flex>
+      <Keyboard prevGuesses={prevGuesses} />
     </Flex>
   )
 }
-
-const ENTER_KEY = "ENTER"
-const BACKSPACE = "BACKSPACE"
-
-const KEYBOARD_KEYS = [
-  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-  [ENTER_KEY, "Z", "X", "C", "V", "B", "N", "M", BACKSPACE],
-]

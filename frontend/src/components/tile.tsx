@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react"
-import { Text } from "rebass"
+import { Text, Box } from "rebass"
 import { theme } from "../theme"
 import { motion, useAnimation } from "framer-motion"
 import { WordContext } from "../context/word-context"
@@ -98,30 +98,36 @@ export const Tile: React.FC<ITileProps> = ({
     }
   }, [letter, controls, locked])
   return (
-    <motion.div
-      animate={controls}
-      style={{
-        display: "flex",
-        border: `2px solid ${theme.colors[letter ? "grey" : "lightGrey"]}`,
-        height: 62,
-        width: 62,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: theme.colors.white,
-        color: theme.colors.black,
-        transform: "scale(1)",
+    <Box
+      sx={{
+        height: [55, 62],
+        width: [55, 62],
       }}
     >
-      <Text
-        sx={{
-          // is this even the right font?
-          // fontFamily: theme.fonts.clearSans,
-          fontWeight: 700,
-          fontSize: "32px",
+      <motion.div
+        animate={controls}
+        style={{
+          border: `2px solid ${theme.colors[letter ? "grey" : "lightGrey"]}`,
+          boxSizing: "border-box",
+          display: "flex",
+          height: "100%",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: theme.colors.white,
+          color: theme.colors.black,
+          transform: "scale(1)",
         }}
       >
-        {letter}
-      </Text>
-    </motion.div>
+        <Text
+          sx={{
+            fontWeight: 700,
+            fontSize: "32px",
+          }}
+        >
+          {letter}
+        </Text>
+      </motion.div>
+    </Box>
   )
 }
