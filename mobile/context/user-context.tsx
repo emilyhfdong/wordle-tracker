@@ -1,20 +1,21 @@
-import axios from "axios"
-import { API_BASE } from "@env"
-
+import { v4 as uuid } from "uuid"
 import { createContext, useEffect, useState } from "react"
+import { AsyncStorage } from "../services/async-storage"
 
 export const UserContext = createContext<string>("")
 
 export const UserContextProvider: React.FC = ({ children }) => {
-  const [word, setWord] = useState("")
+  const [userId, setUserId] = useState("")
   useEffect(() => {
-    const setAndSetWord = async () => {
-      const response = await axios.get("today", {
-        baseURL: API_BASE,
-      })
-      setWord(response.data.word)
+    const getAndSetUserId = async () => {
+      let userId = await AsyncStorage.get("USER_ID")
+      if (!userId) {
+        userId = uuid()
+        await AsyncStorage.set("USER_ID", userId)
+      }
+      setUserId(userId)
     }
-    setAndSetWord()
+    getAndSetUserId()
   }, [])
-  return <UserContext.Provider value={word}>{children}</UserContext.Provider>
+  return <UserContext.Provider value={userId}>{children}</UserContext.Provider>
 }

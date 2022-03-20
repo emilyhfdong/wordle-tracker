@@ -5,6 +5,7 @@ import { Row, SHAKE_DURATION_IN_S } from "../components/row"
 import { TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
 import { Toast } from "../components/toast"
 import { theme } from "../constants/theme"
+import { UserContext } from "../context/user-context"
 
 import { WordContext } from "../context/word-context"
 import { RootTabScreenProps } from "../types"
@@ -57,7 +58,6 @@ export const TodaysWordScreen: React.FC<
     >
       <Toast isVisible={isNotWord}>Not in word list</Toast>
       <Toast isVisible={winToastIsVisible}>Impressive</Toast>
-
       <View style={{ flex: 1, justifyContent: "center" }}>
         {new Array(6).fill(0).map((_, idx) => (
           <Row

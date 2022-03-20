@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar"
 import { SafeAreaProvider } from "react-native-safe-area-context"
+import { UserContextProvider } from "./context/user-context"
 import { WordContextProvider } from "./context/word-context"
 
 import useCachedResources from "./hooks/useCachedResources"
@@ -15,10 +16,12 @@ export default function App() {
   } else {
     return (
       <WordContextProvider>
-        <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </SafeAreaProvider>
+        <UserContextProvider>
+          <SafeAreaProvider>
+            <Navigation colorScheme={colorScheme} />
+            <StatusBar />
+          </SafeAreaProvider>
+        </UserContextProvider>
       </WordContextProvider>
     )
   }
