@@ -1,4 +1,5 @@
 import axios from "axios"
+import { API_BASE } from "@env"
 
 import { createContext, useEffect, useState } from "react"
 
@@ -9,9 +10,10 @@ export const WordContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const setAndSetWord = async () => {
       const response = await axios.get("today", {
-        baseURL: process.env.REACT_APP_SERVICE_URL,
+        baseURL: API_BASE,
       })
       setWord(response.data.word)
+      console.log("hii", response.data)
     }
     setAndSetWord()
   }, [])

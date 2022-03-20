@@ -1,7 +1,8 @@
-import { StyleSheet } from "react-native"
+import React, { useContext, useState } from "react"
+import { View, Text } from "react-native"
+import { Row } from "../components/row"
 
-import EditScreenInfo from "../components/EditScreenInfo"
-import { Text, View } from "../components/Themed"
+import { WordContext } from "../context/word-context"
 import { RootTabScreenProps } from "../types"
 
 export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
@@ -11,12 +12,13 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
   const [prevGuesses, setPrevGuesses] = useState<string[]>([])
   const [isNotWord, setIsNotWord] = useState(false)
   const [winToastIsVisible, setWinToastIsVisible] = useState(false)
+  const word = useContext(WordContext)
 
-  return (
+  return word ? (
     <View
       style={{ flex: 1, alignItems: "center", justifyContent: "space-between" }}
     >
-      <View>
+      <View style={{ flex: 1, justifyContent: "center" }}>
         {new Array(6).fill(0).map((_, idx) => (
           <Row
             key={idx}
@@ -28,42 +30,9 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
           />
         ))}
       </View>
-      <View style={{ height: "35%", backgroundColor: "red" }}>
+      <View style={{ height: "35%" }}>
         <Text>keyboard</Text>
       </View>
     </View>
-  )
-}
-
-import React, { useContext, useState } from "react"
-import { WordContext } from "../context/word-context"
-
-interface IRowProps {
-  letters?: string
-  locked: boolean
-  isNotWord: boolean
-}
-
-export const Row: React.FC<IRowProps> = ({
-  letters = "",
-  locked,
-  isNotWord,
-}) => {
-  const tileLetters = new Array(5)
-    .fill(null)
-    .map((_, idx) => letters[idx] || null)
-  const word = useContext(WordContext)
-  return (
-    <View>
-      {tileLetters.map((letter, idx) => (
-        <Tile
-          locked={locked}
-          letter={letter}
-          key={idx}
-          index={idx}
-          hasWon={letters === word}
-        />
-      ))}
-    </View>
-  )
+  ) : null
 }

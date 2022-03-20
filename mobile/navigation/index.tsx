@@ -1,8 +1,3 @@
-/**
- * If you are not familiar with React Navigation, refer to the "Fundamentals" guide:
- * https://reactnavigation.org/docs/getting-started
- *
- */
 import { FontAwesome } from "@expo/vector-icons"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import {
@@ -12,14 +7,11 @@ import {
 } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import * as React from "react"
-import { ColorSchemeName, Pressable } from "react-native"
+import { ColorSchemeName, View } from "react-native"
+import { theme } from "../constants/theme"
 
-import Colors from "../constants/Colors"
 import useColorScheme from "../hooks/useColorScheme"
-import ModalScreen from "../screens/ModalScreen"
-import NotFoundScreen from "../screens/NotFoundScreen"
 import { TodaysWordScreen } from "../screens/todays-word"
-import TabTwoScreen from "../screens/TabTwoScreen"
 import {
   RootStackParamList,
   RootTabParamList,
@@ -42,10 +34,6 @@ export default function Navigation({
   )
 }
 
-/**
- * A root stack navigator is often used for displaying modals on top of all other content.
- * https://reactnavigation.org/docs/modal
- */
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
@@ -56,13 +44,8 @@ function RootNavigator() {
         component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: "Oops!" }}
-      />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
+        <Stack.Screen name="Modal" component={View} />
       </Stack.Group>
     </Stack.Navigator>
   )
@@ -81,7 +64,7 @@ function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName="TabOne"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: theme.light.green,
       }}
     >
       <BottomTab.Screen
@@ -90,26 +73,11 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<"TabOne">) => ({
           title: "Tab One",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate("Modal")}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}
-            >
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
         })}
       />
       <BottomTab.Screen
         name="TabTwo"
-        component={TabTwoScreen}
+        component={View}
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
@@ -119,9 +87,6 @@ function BottomTabNavigator() {
   )
 }
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"]
   color: string
