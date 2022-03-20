@@ -9,8 +9,9 @@ const serverlessConfiguration: AWS = {
       webpackConfig: "./webpack.config.js",
       includeModules: true,
     },
+    secrets: "${file(secrets.local.json)}",
   },
-  plugins: ["serverless-webpack"],
+  plugins: ["serverless-webpack", "serverless-offline"],
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
@@ -23,6 +24,12 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       WORD_HISTORY_TABLE_NAME: "${self:service.name}-history",
       TIMEZONE: "America/Toronto",
+      // db config
+      UB_NAME: "${self:custom.secrets.DB_NAME}",
+      UB_USER: "${self:custom.secrets.DB_USER}",
+      DB_PASSWORD: "${self:custom.secrets.DB_PASSWORD}",
+      DB_HOST: "${self:custom.secrets.DB_HOST}",
+      DB_PORT: "${self:custom.secrets.DB_PORT}",
     },
     lambdaHashingVersion: "20201221",
     iamRoleStatements: [
@@ -32,6 +39,15 @@ const serverlessConfiguration: AWS = {
         Resource: [{ "Fn::GetAtt": ["WordHistoryTable", "Arn"] }],
       },
     ],
+    vpc: {
+      securityGroupIds: ["${self:custom.secrets.SECURITY_GROUP_ID}"],
+      subnetIds: [
+        "${self:custom.secrets.SUBNET1_ID}",
+        "${self:custom.secrets.SUBNET2_ID}",
+        "${self:custom.secrets.SUBNET3_ID}",
+        "${self:custom.secrets.SUBNET4_ID}",
+      ],
+    },
   },
 
   functions,

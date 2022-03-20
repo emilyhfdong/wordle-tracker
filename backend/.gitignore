@@ -1,2 +1,6 @@
 .serverless
 /node_modules
+.env
+secrets.json
+secrets.local.json
+.webpack

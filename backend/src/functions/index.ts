@@ -23,4 +23,22 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
+  healthCheck: {
+    handler: `src/functions/healthCheck/handler.handler`,
+    timeout: 30,
+    events: [
+      {
+        http: { method: "GET", path: "/", cors: true },
+      },
+    ],
+  },
+  createUser: {
+    handler: `src/functions/createUser/handler.handler`,
+    timeout: 30,
+    events: [
+      {
+        http: { method: "POST", path: "/user", cors: true },
+      },
+    ],
+  },
 }
