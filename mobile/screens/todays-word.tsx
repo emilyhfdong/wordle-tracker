@@ -9,6 +9,7 @@ import { UserContext } from "../context/user-context"
 
 import { WordContext } from "../context/word-context"
 import { RootTabScreenProps } from "../types"
+import { isValidWord } from "../utils/valid-words"
 
 export const TodaysWordScreen: React.FC<
   RootTabScreenProps<"TabOne">
@@ -21,7 +22,7 @@ export const TodaysWordScreen: React.FC<
 
   const handleKeyboardPress = (key: string) => {
     if (key === ENTER_KEY && currentGuess.length === 5) {
-      if (currentGuess === "RRRRR") {
+      if (!isValidWord(currentGuess)) {
         setIsNotWord(true)
         setTimeout(() => setIsNotWord(false), SHAKE_DURATION_IN_S * 1000)
         return

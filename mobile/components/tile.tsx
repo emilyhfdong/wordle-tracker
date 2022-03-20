@@ -91,8 +91,8 @@ export const Tile: React.FC<ITileProps> = ({
   return (
     <Animated.View
       style={{
-        height: 65,
-        width: 65,
+        height: 58,
+        width: 58,
         borderWidth,
         borderColor: currentLetter ? theme.light.grey : theme.light.lightGrey,
         marginBottom: 6,

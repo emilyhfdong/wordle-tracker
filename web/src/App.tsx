@@ -5,7 +5,6 @@ import { Row, SHAKE_DURATION_IN_S } from "./components/row"
 import { Toast } from "./components/toast"
 import { WordContext } from "./context/word-context"
 import { BACKSPACE, ENTER_KEY, Keyboard } from "./components/keyboard"
-import { Modal } from "./components/modal"
 
 export const App: React.FC = () => {
   const [currentGuess, setCurrentGuess] = useState("")
@@ -63,7 +62,6 @@ export const App: React.FC = () => {
         position: "relative",
       }}
     >
-      <Modal isOpen />
       <Flex
         sx={{
           flexDirection: "column",
