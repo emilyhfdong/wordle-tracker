@@ -5,6 +5,7 @@ import { Row, SHAKE_DURATION_IN_S } from "./components/row"
 import { Toast } from "./components/toast"
 import { WordContext } from "./context/word-context"
 import { BACKSPACE, ENTER_KEY, Keyboard } from "./components/keyboard"
+import { Modal } from "./components/modal"
 
 export const App: React.FC = () => {
   const [currentGuess, setCurrentGuess] = useState("")
@@ -50,7 +51,7 @@ export const App: React.FC = () => {
     return () => window.removeEventListener("keydown", keyPressHandler)
   }, [currentGuess, prevGuesses, word])
 
-  return (
+  return word ? (
     <Flex
       sx={{
         flexDirection: "column",
@@ -59,8 +60,10 @@ export const App: React.FC = () => {
         height: ["-webkit-fill-available", "100vh"],
         maxWidth: 500,
         margin: "auto",
+        position: "relative",
       }}
     >
+      <Modal isOpen />
       <Flex
         sx={{
           flexDirection: "column",
@@ -94,5 +97,5 @@ export const App: React.FC = () => {
       </Flex>
       <Keyboard prevGuesses={prevGuesses} />
     </Flex>
-  )
+  ) : null
 }
