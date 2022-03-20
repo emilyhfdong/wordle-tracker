@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { View, Text, Image, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity } from "react-native"
 import { theme } from "../constants/theme"
 import { WordContext } from "../context/word-context"
 import { TOTAL_WORD_FLIP_DURATION_IN_S } from "./tile"
@@ -73,7 +73,7 @@ export const Keyboard: React.FC<IKeyboardProps> = ({
           {rowIdx === 1 && <View style={{ height: 58, flex: 0.5 }} />}
           {row.map((key, keyIdx) => (
             <TouchableOpacity
-              activeOpacity={0.5}
+              activeOpacity={0.2}
               key={keyIdx}
               style={{
                 height: 58,

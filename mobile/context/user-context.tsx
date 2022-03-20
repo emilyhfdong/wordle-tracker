@@ -3,9 +3,9 @@ import { API_BASE } from "@env"
 
 import { createContext, useEffect, useState } from "react"
 
-export const WordContext = createContext<string>("")
+export const UserContext = createContext<string>("")
 
-export const WordContextProvider: React.FC = ({ children }) => {
+export const UserContextProvider: React.FC = ({ children }) => {
   const [word, setWord] = useState("")
   useEffect(() => {
     const setAndSetWord = async () => {
@@ -16,5 +16,5 @@ export const WordContextProvider: React.FC = ({ children }) => {
     }
     setAndSetWord()
   }, [])
-  return <WordContext.Provider value={word}>{children}</WordContext.Provider>
+  return <UserContext.Provider value={word}>{children}</UserContext.Provider>
 }

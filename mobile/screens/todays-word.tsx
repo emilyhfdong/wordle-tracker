@@ -3,14 +3,15 @@ import { View, Text } from "react-native"
 import { BACKSPACE, ENTER_KEY, Keyboard } from "../components/keyboard"
 import { Row, SHAKE_DURATION_IN_S } from "../components/row"
 import { TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
+import { Toast } from "../components/toast"
 import { theme } from "../constants/theme"
 
 import { WordContext } from "../context/word-context"
 import { RootTabScreenProps } from "../types"
 
-export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
-  navigation,
-}) => {
+export const TodaysWordScreen: React.FC<
+  RootTabScreenProps<"TabOne">
+> = ({}) => {
   const [currentGuess, setCurrentGuess] = useState("")
   const [prevGuesses, setPrevGuesses] = useState<string[]>([])
   const [isNotWord, setIsNotWord] = useState(false)
@@ -51,8 +52,12 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
         alignItems: "center",
         justifyContent: "space-between",
         backgroundColor: theme.light.background,
+        position: "relative",
       }}
     >
+      <Toast isVisible={isNotWord}>Not in word list</Toast>
+      <Toast isVisible={winToastIsVisible}>Impressive</Toast>
+
       <View style={{ flex: 1, justifyContent: "center" }}>
         {new Array(6).fill(0).map((_, idx) => (
           <Row
