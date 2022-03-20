@@ -3,6 +3,8 @@ import { View } from "react-native"
 import { WordContext } from "../context/word-context"
 import { Tile } from "./tile"
 
+export const SHAKE_DURATION_IN_S = 0.6
+
 interface IRowProps {
   letters?: string
   locked: boolean
