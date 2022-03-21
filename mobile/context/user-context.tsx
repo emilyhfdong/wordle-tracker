@@ -1,6 +1,7 @@
-import { v4 as uuid } from "uuid"
 import { createContext, useEffect, useState } from "react"
 import { AsyncStorage } from "../services/async-storage"
+import { BackendService } from "../services/backend"
+import * as Device from "expo-device"
 
 export const UserContext = createContext<string>("")
 
@@ -10,7 +11,10 @@ export const UserContextProvider: React.FC = ({ children }) => {
     const getAndSetUserId = async () => {
       let userId = await AsyncStorage.get("USER_ID")
       if (!userId) {
-        userId = uuid()
+        const user = await BackendService.createUser(
+          Device.deviceName || "Anonymous"
+        )
+        userId = user.id
         await AsyncStorage.set("USER_ID", userId)
       }
       setUserId(userId)

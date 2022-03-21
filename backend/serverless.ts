@@ -39,15 +39,6 @@ const serverlessConfiguration: AWS = {
         Resource: [{ "Fn::GetAtt": ["WordHistoryTable", "Arn"] }],
       },
     ],
-    vpc: {
-      securityGroupIds: ["${self:custom.secrets.SECURITY_GROUP_ID}"],
-      subnetIds: [
-        "${self:custom.secrets.SUBNET1_ID}",
-        "${self:custom.secrets.SUBNET2_ID}",
-        "${self:custom.secrets.SUBNET3_ID}",
-        "${self:custom.secrets.SUBNET4_ID}",
-      ],
-    },
   },
 
   functions,

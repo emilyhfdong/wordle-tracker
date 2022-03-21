@@ -1,5 +1,15 @@
 import type { AWS } from "@serverless/typescript"
 
+const vpc = {
+  securityGroupIds: ["${self:custom.secrets.SECURITY_GROUP_ID}"],
+  subnetIds: [
+    "${self:custom.secrets.SUBNET1_ID}",
+    "${self:custom.secrets.SUBNET2_ID}",
+    "${self:custom.secrets.SUBNET3_ID}",
+    "${self:custom.secrets.SUBNET4_ID}",
+  ],
+}
+
 export const functions: AWS["functions"] = {
   scrapeWord: {
     handler: `src/functions/scrapeWord/handler.handler`,
@@ -14,7 +24,7 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-  getBooks: {
+  getTodaysWord: {
     handler: `src/functions/getTodaysWord/handler.handler`,
     timeout: 30,
     events: [
@@ -31,6 +41,7 @@ export const functions: AWS["functions"] = {
         http: { method: "GET", path: "/", cors: true },
       },
     ],
+    vpc,
   },
   createUser: {
     handler: `src/functions/createUser/handler.handler`,
@@ -40,5 +51,6 @@ export const functions: AWS["functions"] = {
         http: { method: "POST", path: "/user", cors: true },
       },
     ],
+    vpc,
   },
 }
