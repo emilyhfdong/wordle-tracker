@@ -6,11 +6,11 @@ export const WordContext = createContext<string>("")
 export const WordContextProvider: React.FC = ({ children }) => {
   const [word, setWord] = useState("")
   useEffect(() => {
-    const setAndSetWord = async () => {
-      const response = await BackendService.getTodaysWord()
-      setWord(response.data.word)
+    const getAndSetWord = async () => {
+      const todaysWord = await BackendService.getTodaysWord()
+      setWord(todaysWord)
     }
-    setAndSetWord()
+    getAndSetWord()
   }, [])
   return <WordContext.Provider value={word}>{children}</WordContext.Provider>
 }
