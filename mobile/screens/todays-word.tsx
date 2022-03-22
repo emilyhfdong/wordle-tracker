@@ -12,6 +12,7 @@ import { isValidWord } from "../utils/valid-words"
 import { todaysWordActions } from "../redux/slices/todays-word"
 import { SummaryModal } from "../components/summary-modal"
 import { dayEntriesActions } from "../redux/slices/day-entries.slice"
+import { BackendService } from "../services/backend"
 
 const tileColorToCode = {
   [theme.light.yellow]: "1",
@@ -41,7 +42,7 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
     (state) => state.todaysWord
   )
   const lastDayEntry = useAppSelector((state) => state.dayEntries[0])
-
+  const userId = useAppSelector((state) => state.user.id)
   const [summaryModalIsOpen, setSummaryModalIsOpen] = useState(
     lastDayEntry?.date === date
   )
@@ -62,15 +63,15 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
           setWinToastIsVisible(true)
           setTimeout(() => {
             setSummaryModalIsOpen(true)
-            dispatch(
-              dayEntriesActions.addDayEntry({
-                attemptsCount: allAttempts.length,
-                attemptsDetails: getAttemptsDetails(allAttempts, currentGuess),
-                date,
-                word,
-                number,
-              })
-            )
+            const dayEntry = {
+              attemptsCount: allAttempts.length,
+              attemptsDetails: getAttemptsDetails(allAttempts, currentGuess),
+              date,
+              word,
+              number,
+            }
+            dispatch(dayEntriesActions.addDayEntry(dayEntry))
+            BackendService.createDayEntry(userId, dayEntry)
           }, 1000)
         }, TOTAL_WORD_FLIP_DURATION_IN_S * 1000)
       }

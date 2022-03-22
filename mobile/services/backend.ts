@@ -1,5 +1,6 @@
 import axios from "axios"
 import { API_BASE } from "@env"
+import { IDayEntry } from "../redux/slices/day-entries.slice"
 
 const getTodaysWord = async () => {
   const response = await axios.get("today", {
@@ -25,7 +26,29 @@ const createUser = async (name: string) => {
   return response.data?.user
 }
 
+const createDayEntry = async (
+  userId: string,
+  { attemptsCount, attemptsDetails, date, number, word }: IDayEntry
+) => {
+  const response = await axios.post(
+    `user/${userId}/day-entry`,
+    {
+      attemptsCount,
+      attemptsDetails,
+      date,
+      word,
+      number,
+    },
+    {
+      baseURL: API_BASE,
+    }
+  )
+  console.log("creating day entry", response.data)
+  return response.data?.dayEntry
+}
+
 export const BackendService = {
   getTodaysWord,
   createUser,
+  createDayEntry,
 }
