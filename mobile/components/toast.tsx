@@ -10,7 +10,6 @@ export const Toast: React.FC<IToastProps> = ({ children, isVisible }) => {
   const opacity = useRef(new Animated.Value(0)).current
   useEffect(() => {
     if (isVisible) {
-      console.log("hi")
       Animated.timing(opacity, {
         toValue: 1,
         duration: 500,

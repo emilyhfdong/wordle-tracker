@@ -42,8 +42,9 @@ const DayEntry = sequalize.define<DayEntryInstance>("DayEntry", {
     allowNull: false,
     unique: "compositeIndex",
   },
-  attempts: { type: DataTypes.INTEGER },
-  details: { type: DataTypes.TEXT },
+  attemptsCount: { type: DataTypes.INTEGER },
+  attemptsDetails: { type: DataTypes.TEXT },
+  word: { type: DataTypes.STRING },
 })
 
 interface FriendshipInstance extends Model {
