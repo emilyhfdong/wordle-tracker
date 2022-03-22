@@ -14,28 +14,7 @@ import { SummaryModal } from "../components/summary-modal"
 import { dayEntriesActions } from "../redux/slices/day-entries.slice"
 import { BackendService } from "../services/backend"
 
-const tileColorToCode = {
-  [theme.light.yellow]: "1",
-  [theme.light.green]: "2",
-  [theme.light.grey]: "0",
-}
-
-const getAttemptsDetails = (guesses: string[], word: string) => {
-  return guesses
-    .map(
-      (guess) =>
-        `${guess
-          .split("")
-          .map(
-            (letter, index) =>
-              tileColorToCode[getTileColor({ index, letter, word })]
-          )
-          .join("")}`
-    )
-    .join(" ")
-}
-
-export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
+export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
   navigation,
 }) => {
   const { currentGuess, prevGuesses, word, date, number } = useAppSelector(
@@ -65,7 +44,7 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"TabOne">> = ({
             setSummaryModalIsOpen(true)
             const dayEntry = {
               attemptsCount: allAttempts.length,
-              attemptsDetails: getAttemptsDetails(allAttempts, currentGuess),
+              attemptsDetails: allAttempts.join(" "),
               date,
               word,
               number,

@@ -23,6 +23,7 @@
     "axios": "^0.26.1",
     "expo": "~44.0.0",
     "expo-asset": "~8.4.4",
+    "expo-clipboard": "~2.1.0",
     "expo-constants": "~13.0.0",
     "expo-device": "~4.1.0",
     "expo-font": "~10.0.4",
@@ -35,6 +36,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
+    "react-native-calendars": "^1.1279.0",
     "react-native-dotenv": "^3.3.1",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
@@ -42,8 +44,7 @@
     "react-native-web": "0.17.1",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
-    "redux-persist": "^6.0.0",
-    "expo-clipboard": "~2.1.0"
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

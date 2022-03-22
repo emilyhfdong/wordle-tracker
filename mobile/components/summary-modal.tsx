@@ -12,6 +12,7 @@ import { IDayEntry } from "../redux/slices/day-entries.slice"
 import Share from "../assets/images/share.svg"
 import { DateTime, Settings } from "luxon"
 import * as Clipboard from "expo-clipboard"
+import { getTileColor } from "./tile"
 
 interface ISummaryModalProps {
   isOpen: boolean
@@ -41,10 +42,25 @@ const getMaxStreak = (dayEntries: IDayEntry[], todaysDate: string) => {
   return streak
 }
 
-const mapCodeToEmoji: { [key: string]: string } = {
-  "1": "🟨",
-  "2": "🟩",
-  "0": "⬜",
+const tileColorToEmoji = {
+  [theme.light.yellow]: "🟨",
+  [theme.light.green]: "🟩",
+  [theme.light.grey]: "⬜",
+}
+
+const getSquares = (guesses: string[], word: string) => {
+  return guesses
+    .map(
+      (guess) =>
+        `${guess
+          .split("")
+          .map(
+            (letter, index) =>
+              tileColorToEmoji[getTileColor({ index, letter, word })]
+          )
+          .join("")}`
+    )
+    .join("\r\n")
 }
 
 export const SummaryModal: React.FC<ISummaryModalProps> = ({
@@ -76,16 +92,7 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
 
   const copyString = `Wordle ${lastEntry.number} ${
     lastEntry.attemptsCount
-  }/6\n\n${lastEntry.attemptsDetails
-    .split(" ")
-    .map(
-      (line) =>
-        line
-          .split("")
-          .map((code) => mapCodeToEmoji[code])
-          .join("") + "\n"
-    )
-    .join("")}`
+  }/6\n\n${getSquares(lastEntry.attemptsDetails.split(" "), lastEntry.word)}`
 
   return (
     <Modal visible={isOpen} transparent>

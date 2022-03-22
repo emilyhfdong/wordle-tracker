@@ -12,6 +12,7 @@ import { SummaryModal } from "../components/summary-modal"
 import { theme } from "../constants/theme"
 
 import useColorScheme from "../hooks/useColorScheme"
+import { CalendarScreen } from "../screens/calendar"
 import { TodaysWordScreen } from "../screens/todays-word"
 import {
   RootStackParamList,
@@ -63,25 +64,29 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Calendar"
       screenOptions={{
         tabBarActiveTintColor: theme.light.green,
       }}
     >
       <BottomTab.Screen
-        name="TabOne"
+        name="Today"
         component={TodaysWordScreen}
-        options={({ navigation }: RootTabScreenProps<"TabOne">) => ({
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        options={({ navigation }: RootTabScreenProps<"Today">) => ({
+          title: "Home",
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          headerShown: false,
         })}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={View}
+        name="Calendar"
+        component={CalendarScreen}
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Calendar",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="calendar" color={color} />
+          ),
+          headerShown: false,
         }}
       />
     </BottomTab.Navigator>
