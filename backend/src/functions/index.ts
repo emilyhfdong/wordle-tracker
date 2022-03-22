@@ -53,4 +53,14 @@ export const functions: AWS["functions"] = {
     ],
     vpc,
   },
+  createDayEntry: {
+    handler: `src/functions/createDayEntry/handler.handler`,
+    timeout: 30,
+    events: [
+      {
+        http: { method: "POST", path: "/user/{userId}/day-entry", cors: true },
+      },
+    ],
+    vpc,
+  },
 }

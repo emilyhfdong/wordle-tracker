@@ -19,33 +19,44 @@ interface UserInstance extends Model {
   name: string
 }
 
-const User = sequalize.define<UserInstance>("User", {
-  id: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
-  name: { type: DataTypes.STRING },
-})
+const User = sequalize.define<UserInstance>(
+  "user",
+  {
+    id: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
+    name: { type: DataTypes.STRING },
+  },
+  { underscored: true }
+)
 
-interface DayEntryInstance extends Model {
+export interface DayEntryInstance extends Model {
   userId: string
   date: string
-  attempts: number
-  details: string
+  attemptsCount: number
+  attemptsDetails: string
+  word: string
+  number: number
 }
 
-const DayEntry = sequalize.define<DayEntryInstance>("DayEntry", {
-  userId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: "compositeIndex",
+const DayEntry = sequalize.define<DayEntryInstance>(
+  "day_entry",
+  {
+    userId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: "compositeIndex",
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+      unique: "compositeIndex",
+    },
+    attemptsCount: { type: DataTypes.INTEGER },
+    attemptsDetails: { type: DataTypes.STRING },
+    word: { type: DataTypes.STRING },
+    number: { type: DataTypes.INTEGER },
   },
-  date: {
-    type: DataTypes.DATEONLY,
-    allowNull: false,
-    unique: "compositeIndex",
-  },
-  attemptsCount: { type: DataTypes.INTEGER },
-  attemptsDetails: { type: DataTypes.TEXT },
-  word: { type: DataTypes.STRING },
-})
+  { underscored: true }
+)
 
 interface FriendshipInstance extends Model {
   userId: string
@@ -54,18 +65,22 @@ interface FriendshipInstance extends Model {
   details: string
 }
 
-const Friendship = sequalize.define<FriendshipInstance>("Friendship", {
-  userId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: "compositeIndex",
+const Friendship = sequalize.define<FriendshipInstance>(
+  "friendship",
+  {
+    userId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: "compositeIndex",
+    },
+    friendId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: "compositeIndex",
+    },
   },
-  friendId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: "compositeIndex",
-  },
-})
+  { underscored: true }
+)
 
 User.hasMany(DayEntry, { foreignKey: "userId" })
 DayEntry.belongsTo(User, { foreignKey: "userId" })
