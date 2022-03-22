@@ -22,6 +22,21 @@ export const handler = async () => {
     console.log(`today's word "${todaysWord.Item.word}" already exists"`)
     return
   }
+  const yesterdaysDate = DateTime.now().minus({ day: 1 }).toISODate()
+  console.log(`getting yesterdays (${yesterdaysDate}) number`)
+  const yesterdaysWord = await dynamodb
+    .get({
+      TableName: config.wordHistoryTableName,
+      Key: { date: yesterdaysDate },
+    })
+    .promise()
+
+  if (!yesterdaysWord.Item) {
+    throw new Error("Missing yesterday's word")
+  }
+  const todaysNumber = yesterdaysWord.Item.number + 1
+  console.log("todays wordle number is", todaysNumber)
+
   console.log("launching browser")
   const browser = await getBrowser()
   const page = await browser.newPage()
@@ -47,7 +62,7 @@ export const handler = async () => {
   await dynamodb
     .put({
       TableName: config.wordHistoryTableName,
-      Item: { date: todaysDate, word: answer },
+      Item: { date: todaysDate, word: answer, number: todaysNumber },
     })
     .promise()
 }

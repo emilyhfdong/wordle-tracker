@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-interface IDayEntry {
+export interface IDayEntry {
   date: string
   word: string
-  attemptCount: number
-  attemptDetails: number
+  attemptsCount: number
+  attemptsDetails: string
+  number: number
 }
 
 const initialState: IDayEntry[] = []
@@ -14,8 +15,8 @@ export const dayEntriesSlice = createSlice({
   initialState,
   reducers: {
     addDayEntry: (state, action: PayloadAction<IDayEntry>) => [
-      ...state,
       action.payload,
+      ...state,
     ],
   },
 })

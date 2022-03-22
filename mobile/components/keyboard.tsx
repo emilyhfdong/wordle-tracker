@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { View, Text, TouchableOpacity } from "react-native"
 import { theme } from "../constants/theme"
-import { WordContext } from "../context/word-context"
 import { TOTAL_WORD_FLIP_DURATION_IN_S } from "./tile"
 import Backspace from "../assets/images/backspace.svg"
+import { useAppSelector } from "../redux/hooks"
 
 interface IKeyboardProps {
   prevGuesses: string[]
@@ -45,7 +45,7 @@ export const Keyboard: React.FC<IKeyboardProps> = ({
   const [keyboardColorMap, setKeyboardColorMap] = useState<TKeyboardColorMap>(
     {}
   )
-  const word = useContext(WordContext)
+  const word = useAppSelector((state) => state.todaysWord.word)
 
   useEffect(() => {
     setTimeout(() => {

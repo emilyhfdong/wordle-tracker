@@ -1,7 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import { Animated, Text, View } from "react-native"
+import { useEffect, useRef, useState } from "react"
+import { Animated, Text } from "react-native"
 import { theme } from "../constants/theme"
-import { WordContext } from "../context/word-context"
+import { useAppSelector } from "../redux/hooks"
 
 interface ITileProps {
   letter: string | null
@@ -16,7 +16,7 @@ interface IGetLockedColorArgs {
   index: number
 }
 
-const getLockedColor = ({ letter, word, index }: IGetLockedColorArgs) => {
+export const getTileColor = ({ letter, word, index }: IGetLockedColorArgs) => {
   if (word[index] === letter) return theme.light.green
   if (letter && word.includes(letter)) return theme.light.yellow
   return theme.light.grey
@@ -32,8 +32,8 @@ export const Tile: React.FC<ITileProps> = ({
   hasWon,
 }) => {
   const [currentLetter, setCurrentLetter] = useState(letter)
-  const word = useContext(WordContext)
-  const lockedColor = getLockedColor({ letter, word, index })
+  const word = useAppSelector((state) => state.todaysWord.word)
+  const lockedColor = getTileColor({ letter, word, index })
   const [backgroundColor, setBackgroundColor] = useState(
     locked ? lockedColor : theme.light.background
   )

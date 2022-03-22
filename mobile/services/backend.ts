@@ -6,7 +6,11 @@ const getTodaysWord = async () => {
     baseURL: API_BASE,
   })
   console.log("get today's word response", response.data)
-  return response.data?.word
+  return {
+    word: response.data?.word,
+    number: response.data?.number,
+    date: response.data?.date,
+  }
 }
 
 const createUser = async (name: string) => {

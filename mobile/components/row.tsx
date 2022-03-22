@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useRef } from "react"
-import { Animated, View } from "react-native"
-import { WordContext } from "../context/word-context"
+import React, { useEffect, useRef } from "react"
+import { Animated } from "react-native"
+import { useAppSelector } from "../redux/hooks"
 import { Tile } from "./tile"
 
 export const SHAKE_DURATION_IN_S = 0.6
@@ -19,7 +19,7 @@ export const Row: React.FC<IRowProps> = ({
   const tileLetters = new Array(5)
     .fill(null)
     .map((_, idx) => letters[idx] || null)
-  const word = useContext(WordContext)
+  const word = useAppSelector((state) => state.todaysWord.word)
 
   const shakeAnim = useRef(new Animated.Value(0)).current
   useEffect(() => {

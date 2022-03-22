@@ -3,11 +3,17 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 interface ITodaysWord {
   currentGuess: string
   prevGuesses: string[]
+  word: string
+  number: number
+  date: string
 }
 
 const initialState: ITodaysWord = {
   currentGuess: "",
   prevGuesses: [],
+  word: "",
+  number: 0,
+  date: "",
 }
 
 export const todaysWordSlice = createSlice({
@@ -22,6 +28,10 @@ export const todaysWordSlice = createSlice({
       ...state,
       prevGuesses: action.payload,
     }),
+    setNewWord: (
+      _,
+      action: PayloadAction<{ word: string; number: number; date: string }>
+    ) => ({ ...action.payload, currentGuess: "", prevGuesses: [] }),
   },
 })
 

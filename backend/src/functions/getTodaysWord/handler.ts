@@ -17,6 +17,10 @@ export const handler: APIGatewayProxyHandler = async () => {
     .promise()
 
   return createResponse({
-    body: { word: todaysWord?.Item?.word || null, date: todaysDate },
+    body: {
+      word: todaysWord?.Item?.word || null,
+      date: todaysDate,
+      number: todaysWord?.Item?.number || null,
+    },
   })
 }

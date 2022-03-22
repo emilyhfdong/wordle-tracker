@@ -8,6 +8,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import * as React from "react"
 import { ColorSchemeName, View } from "react-native"
+import { SummaryModal } from "../components/summary-modal"
 import { theme } from "../constants/theme"
 
 import useColorScheme from "../hooks/useColorScheme"
@@ -45,7 +46,7 @@ function RootNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Modal" component={View} />
+        <Stack.Screen name="Modal" component={SummaryModal} />
       </Stack.Group>
     </Stack.Navigator>
   )
