@@ -16,7 +16,7 @@ const getTodaysWord = async () => {
 
 const createUser = async (name: string) => {
   const response = await axios.post<{ user: { id: string; name: string } }>(
-    "user",
+    "users",
     { name },
     {
       baseURL: API_BASE,
@@ -31,7 +31,7 @@ const createDayEntry = async (
   { attemptsCount, attemptsDetails, date, number, word }: IDayEntry
 ) => {
   const response = await axios.post(
-    `user/${userId}/day-entry`,
+    `users/${userId}/day-entry`,
     {
       attemptsCount,
       attemptsDetails,

@@ -60,9 +60,7 @@ const DayEntry = sequalize.define<DayEntryInstance>(
 
 interface FriendshipInstance extends Model {
   userId: string
-  date: string
-  attempts: number
-  details: string
+  friendId: string
 }
 
 const Friendship = sequalize.define<FriendshipInstance>(

@@ -3,30 +3,26 @@ import { APIGatewayProxyHandler } from "aws-lambda"
 import { connectToDb } from "src/db"
 
 interface IEventBody {
-  date: string
-  attemptsDetails: string
-  word: string
-  number: number
+  friendId: string
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   const userId = event.pathParameters.userId
 
   const body = JSON.parse(event.body)
-
-  if (!body.date || !body.attemptsDetails || !body.word || !body.number) {
+  if (!body.friendId) {
     return createResponse({
       statusCode: 400,
       body: {
-        message: `Missing required fields: date, attemptsDetails, word, number`,
+        message: `Missing required field: friendId`,
       },
     })
   }
 
-  const { attemptsDetails, date, number, word }: IEventBody = body
+  const { friendId }: IEventBody = body
 
   console.log("finding user with id", userId)
-  const { User, DayEntry } = await connectToDb()
+  const { User, Friendship } = await connectToDb()
 
   const user = await User.findByPk(userId)
   if (!user) {
@@ -36,17 +32,23 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     })
   }
 
-  console.log("creating day entry for user", user.id)
-  const dayEntry = await DayEntry.create({
-    userId,
-    attemptsCount: attemptsDetails.split(" ").length,
-    attemptsDetails,
-    date,
-    number,
-    word,
+  console.log("finding user with id", userId)
+  const friend = await User.findByPk(friendId)
+  if (!friend) {
+    return createResponse({
+      statusCode: 404,
+      body: { message: `User ${friendId} not found` },
+    })
+  }
+
+  console.log("storing friendship to db")
+  const friendship1 = await Friendship.create({ userId, friendId })
+  await Friendship.create({
+    userId: friendId,
+    friendId: userId,
   })
 
   return createResponse({
-    body: { dayEntry },
+    body: { friendship1 },
   })
 }

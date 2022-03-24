@@ -26,39 +26,62 @@ export const functions: AWS["functions"] = {
   },
   getTodaysWord: {
     handler: `src/functions/getTodaysWord/handler.handler`,
-    timeout: 30,
     events: [
       {
-        http: { method: "GET", path: "today", cors: true },
+        http: { method: "GET", path: "today" },
       },
     ],
   },
   healthCheck: {
     handler: `src/functions/healthCheck/handler.handler`,
-    timeout: 30,
     events: [
       {
-        http: { method: "GET", path: "/", cors: true },
+        http: { method: "GET", path: "/" },
       },
     ],
     vpc,
   },
   createUser: {
     handler: `src/functions/createUser/handler.handler`,
-    timeout: 30,
     events: [
       {
-        http: { method: "POST", path: "/user", cors: true },
+        http: { method: "POST", path: "/users" },
       },
     ],
     vpc,
   },
   createDayEntry: {
     handler: `src/functions/createDayEntry/handler.handler`,
-    timeout: 30,
     events: [
       {
-        http: { method: "POST", path: "/user/{userId}/day-entry", cors: true },
+        http: { method: "POST", path: "/users/{userId}/day-entry" },
+      },
+    ],
+    vpc,
+  },
+  addFriend: {
+    handler: `src/functions/addFriend/handler.handler`,
+    events: [
+      {
+        http: { method: "POST", path: "/users/{userId}/friends" },
+      },
+    ],
+    vpc,
+  },
+  getFeed: {
+    handler: `src/functions/getFeed/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/feed" },
+      },
+    ],
+    vpc,
+  },
+  getFriends: {
+    handler: `src/functions/getFriends/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/friends" },
       },
     ],
     vpc,
