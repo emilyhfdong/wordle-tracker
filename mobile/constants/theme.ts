@@ -6,5 +6,9 @@ export const theme = {
     yellow: "rgb(201, 180, 88)",
     default: "#000000",
     lightGrey: "rgb(211, 214, 218)",
+    pink: "rgb(217,146,146)",
+    blue: "rbg(146,169,217)",
+    orange: "rgb(226,164,106)",
+    red: "226,106,106",
   },
 }

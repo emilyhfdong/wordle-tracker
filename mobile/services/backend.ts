@@ -47,8 +47,29 @@ const createDayEntry = async (
   return response.data?.dayEntry
 }
 
+const getGroupedEntries = async (userId: string) => {
+  const response = await axios.get(`users/${userId}/feed`, {
+    baseURL: API_BASE,
+  })
+  console.log("feed response", response.data)
+  return response.data
+}
+
+const getFriends = async (userId: string) => {
+  const response = await axios.get<{ friends: { id: string; name: string }[] }>(
+    `users/${userId}/friends`,
+    {
+      baseURL: API_BASE,
+    }
+  )
+  console.log("feed response", response.data)
+  return response.data.friends
+}
+
 export const BackendService = {
   getTodaysWord,
   createUser,
   createDayEntry,
+  getGroupedEntries,
+  getFriends,
 }

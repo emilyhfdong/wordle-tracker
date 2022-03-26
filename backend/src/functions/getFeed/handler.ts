@@ -26,7 +26,45 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     order: [["createdAt", "DESC"]],
   })
 
+  interface IDateGroup {
+    date: string
+    entries: {
+      userId: string
+      attemptsCount: number
+      attemptsDetails: string
+      word: string
+      number: number
+      createdAt: string
+    }[]
+  }
+  const dayEntriesByDate = dayEntries.reduce(
+    (
+      acc,
+      { userId, attemptsCount, attemptsDetails, word, number, date, createdAt }
+    ) => {
+      const newEntry: IDateGroup["entries"][0] = {
+        userId,
+        attemptsCount,
+        attemptsDetails,
+        word,
+        number,
+        createdAt,
+      }
+
+      const existingGroup = acc.find((group) => group.date === date)
+      if (existingGroup) {
+        return acc.map((group) =>
+          group.date !== date
+            ? group
+            : { date, entries: [...group.entries, newEntry] }
+        )
+      }
+      return [...acc, { date, entries: [newEntry] }]
+    },
+    [] as IDateGroup[]
+  )
+
   return createResponse({
-    body: dayEntries,
+    body: dayEntriesByDate,
   })
 }

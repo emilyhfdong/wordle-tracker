@@ -13,6 +13,8 @@ import { theme } from "../constants/theme"
 
 import useColorScheme from "../hooks/useColorScheme"
 import { CalendarScreen } from "../screens/calendar"
+import { Feed } from "../screens/feed"
+import { Friends } from "../screens/friends"
 import { TodaysWordScreen } from "../screens/todays-word"
 import {
   RootStackParamList,
@@ -64,7 +66,7 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Calendar"
+      initialRouteName="Friends"
       screenOptions={{
         tabBarActiveTintColor: theme.light.green,
       }}
@@ -75,18 +77,24 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<"Today">) => ({
           title: "Home",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerShown: false,
         })}
       />
       <BottomTab.Screen
-        name="Calendar"
-        component={CalendarScreen}
+        name="Feed"
+        component={Feed}
         options={{
-          title: "Calendar",
+          title: "Feed",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />
           ),
-          headerShown: false,
+        }}
+      />
+      <BottomTab.Screen
+        name="Friends"
+        component={Friends}
+        options={{
+          title: "Friends",
+          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
         }}
       />
     </BottomTab.Navigator>

@@ -9,7 +9,7 @@ const serverlessConfiguration: AWS = {
       webpackConfig: "./webpack.config.js",
       includeModules: true,
     },
-    secrets: "${file(secrets.local.json)}",
+    secrets: "${file(secrets.json)}",
   },
   plugins: ["serverless-webpack", "serverless-offline"],
   provider: {

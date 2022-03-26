@@ -35,6 +35,7 @@ export interface DayEntryInstance extends Model {
   attemptsDetails: string
   word: string
   number: number
+  createdAt: string
 }
 
 const DayEntry = sequalize.define<DayEntryInstance>(

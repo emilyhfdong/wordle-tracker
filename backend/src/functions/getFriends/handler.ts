@@ -26,6 +26,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   })
 
   return createResponse({
-    body: friends,
+    body: { friends },
   })
 }

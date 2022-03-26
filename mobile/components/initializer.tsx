@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { BackendService } from "../services/backend"
 import * as Device from "expo-device"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
 import { userActions } from "../redux/slices/user.slice"
 import { todaysWordActions } from "../redux/slices/todays-word"
+import { feedActions, IFriends } from "../redux/slices/feed.slice"
+import { theme } from "../constants/theme"
+import { ActivityIndicator, View } from "react-native"
+import { useFeedRequest } from "./initializer.hooks"
 
 export const Initializer: React.FC = ({ children }) => {
   const userId = useAppSelector((state) => state.user.id)
+
   const currentWordNumber = useAppSelector((state) => state.todaysWord.number)
   const dispatch = useAppDispatch()
-  const [isLoading, setIsLoading] = useState(true)
+  const [wordIsSet, setWordIsSet] = useState(false)
+
   useEffect(() => {
-    const createAndSetUser = async () => {
-      const user = await BackendService.createUser(
-        Device.deviceName || "Anonymous"
-      )
-      dispatch(userActions.setUser({ id: user.id, name: user.name }))
-    }
     const getAndSetTodaysWord = async () => {
       const today = await BackendService.getTodaysWord()
       if (today.number !== currentWordNumber) {
@@ -28,12 +28,29 @@ export const Initializer: React.FC = ({ children }) => {
           })
         )
       }
-      setIsLoading(false)
+      setWordIsSet(true)
     }
     getAndSetTodaysWord()
+  }, [])
+
+  useEffect(() => {
+    const createAndSetUser = async () => {
+      const user = await BackendService.createUser(
+        Device.deviceName || "Anonymous"
+      )
+      dispatch(userActions.setUser({ id: user.id, name: user.name }))
+    }
     if (!userId) {
       createAndSetUser()
     }
   }, [])
-  return isLoading ? null : <>{children}</>
+  const { friends, groupedEntries } = useFeedRequest()
+
+  return userId && wordIsSet && friends && groupedEntries ? (
+    <>{children}</>
+  ) : (
+    <View style={{ flex: 1, justifyContent: "center" }}>
+      <ActivityIndicator size={"large"} />
+    </View>
+  )
 }

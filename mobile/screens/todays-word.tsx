@@ -13,6 +13,7 @@ import { todaysWordActions } from "../redux/slices/todays-word"
 import { SummaryModal } from "../components/summary-modal"
 import { dayEntriesActions } from "../redux/slices/day-entries.slice"
 import { BackendService } from "../services/backend"
+import { useFeedRequest } from "../components/initializer.hooks"
 
 export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
   navigation,
