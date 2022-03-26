@@ -24,7 +24,14 @@ export const getCurrentStreak = (
   todaysDate: string
 ) => {
   let streak = 0
-  let date = todaysDate
+  if (!dayEntries.length) {
+    return streak
+  }
+  let date =
+    dayEntries[0].date === todaysDate
+      ? todaysDate
+      : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
+
   for (let i = 0; i < dayEntries.length; i++) {
     if (dayEntries[i].date !== date) {
       return streak
@@ -97,116 +104,117 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
     lastEntry.attemptsCount
   }/6\n\n${getSquares(lastEntry.attemptsDetails.split(" "), lastEntry.word)}`
 
-  return (
-    <Modal visible={isOpen} transparent>
+  return isOpen ? (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
+        position: "absolute",
+        top: 0,
+        zIndex: 3,
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <TouchableWithoutFeedback onPress={closeModal}>
+        <View style={{ flex: 1, width: "100%" }} />
+      </TouchableWithoutFeedback>
+
       <View
         style={{
-          flex: 1,
-          justifyContent: "center",
+          width: "90%",
+          backgroundColor: theme.light.background,
+          shadowColor: theme.light.default,
+          shadowOpacity: 0.2,
+          shadowOffset: { width: 0, height: 4 },
+          shadowRadius: 23,
+          borderRadius: 8,
           alignItems: "center",
-          backgroundColor: "rgba(255, 255, 255, 0.5)",
+          paddingVertical: 40,
+          paddingHorizontal: 30,
         }}
       >
-        <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={{ flex: 1, width: "100%" }} />
-        </TouchableWithoutFeedback>
-
+        <Text style={{ fontWeight: "bold", fontSize: 16 }}>STATISTICS</Text>
+        <View style={{ flexDirection: "row", marginBottom: 25, marginTop: 10 }}>
+          <Statistic label="Played" value={dayEntries.length} />
+          <Statistic label="Win %" value={winPercent} />
+          <Statistic label={"Current\nStreak"} value={currentStreak} />
+          <Statistic label={"Max\nStreak"} value={maxStreak} />
+        </View>
+        <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+          GUESS DISTRIBUTION
+        </Text>
+        <GuessDistribution />
         <View
           style={{
-            width: "90%",
-            backgroundColor: theme.light.background,
-            shadowColor: theme.light.default,
-            shadowOpacity: 0.2,
-            shadowOffset: { width: 0, height: 4 },
-            shadowRadius: 23,
-            borderRadius: 8,
-            alignItems: "center",
-            paddingVertical: 40,
-            paddingHorizontal: 30,
+            flexDirection: "row",
+            width: "100%",
+            marginTop: 20,
           }}
         >
-          <Text style={{ fontWeight: "bold", fontSize: 16 }}>STATISTICS</Text>
-          <View
-            style={{ flexDirection: "row", marginBottom: 25, marginTop: 10 }}
-          >
-            <Statistic label="Played" value={dayEntries.length} />
-            <Statistic label="Win %" value={winPercent} />
-            <Statistic label={"Current\nStreak"} value={currentStreak} />
-            <Statistic label={"Max\nStreak"} value={maxStreak} />
-          </View>
-          <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-            GUESS DISTRIBUTION
-          </Text>
-          <GuessDistribution />
           <View
             style={{
-              flexDirection: "row",
-              width: "100%",
-              marginTop: 20,
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <View
+            <Text
+              style={{ fontWeight: "bold", fontSize: 16, marginBottom: 10 }}
+            >
+              NEXT WORDLE
+            </Text>
+            <Text style={{ fontSize: 33 }}>
+              {nextWordle.diff(currentTime).toFormat("hh:mm:ss")}
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+              justifyContent: "center",
+            }}
+          >
+            <TouchableOpacity
               style={{
-                flex: 1,
-                alignItems: "center",
+                backgroundColor: theme.light.green,
+                flexDirection: "row",
+                padding: 14,
                 justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 4,
               }}
+              onPress={() => Share.share({ message: copyString })}
             >
               <Text
-                style={{ fontWeight: "bold", fontSize: 16, marginBottom: 10 }}
-              >
-                NEXT WORDLE
-              </Text>
-              <Text style={{ fontSize: 35 }}>
-                {nextWordle.diff(currentTime).toFormat("hh:mm:ss")}
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                alignItems: "flex-end",
-                justifyContent: "center",
-              }}
-            >
-              <TouchableOpacity
                 style={{
-                  backgroundColor: theme.light.green,
-                  flexDirection: "row",
-                  padding: 14,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 4,
+                  color: theme.light.background,
+                  fontWeight: "bold",
+                  fontSize: 20,
+                  paddingRight: 5,
                 }}
-                onPress={() => Share.share({ message: copyString })}
               >
-                <Text
-                  style={{
-                    color: theme.light.background,
-                    fontWeight: "bold",
-                    fontSize: 20,
-                    paddingRight: 5,
-                  }}
-                >
-                  SHARE
-                </Text>
-                <ShareIcon />
-              </TouchableOpacity>
-            </View>
+                SHARE
+              </Text>
+              <ShareIcon />
+            </TouchableOpacity>
           </View>
         </View>
-        <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={{ flex: 1, width: "100%" }} />
-        </TouchableWithoutFeedback>
       </View>
-    </Modal>
-  )
+      <TouchableWithoutFeedback onPress={closeModal}>
+        <View style={{ flex: 1, width: "100%" }} />
+      </TouchableWithoutFeedback>
+    </View>
+  ) : null
 }
 
 export const GuessDistribution: React.FC = () => {
   const dayEntries = useAppSelector((state) => state.dayEntries)
   const countOccurances = new Array(6).fill(0).map((_, idx) => ({
     count: idx + 1,
-    occurance: dayEntries.filter((entry) => entry.attemptsCount - 2 === idx)
+    occurance: dayEntries.filter((entry) => entry.attemptsCount - 1 === idx)
       .length,
   }))
   const maxOccurance = countOccurances.reduce(

@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { View } from "react-native"
 import { BACKSPACE, ENTER_KEY, Keyboard } from "../components/keyboard"
 import { Row, SHAKE_DURATION_IN_S } from "../components/row"
-import { getTileColor, TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
+import { TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
 import { Toast } from "../components/toast"
 import { theme } from "../constants/theme"
 
@@ -13,7 +13,7 @@ import { todaysWordActions } from "../redux/slices/todays-word"
 import { SummaryModal } from "../components/summary-modal"
 import { dayEntriesActions } from "../redux/slices/day-entries.slice"
 import { BackendService } from "../services/backend"
-import { useFeedRequest } from "../components/initializer.hooks"
+import { useNavigation } from "@react-navigation/native"
 
 export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
   navigation,
@@ -31,37 +31,43 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
   const [winToastIsVisible, setWinToastIsVisible] = useState(false)
 
   const handleKeyboardPress = (key: string) => {
-    if (key === ENTER_KEY && currentGuess.length === 5) {
-      if (!isValidWord(currentGuess)) {
-        setIsNotWord(true)
-        setTimeout(() => setIsNotWord(false), SHAKE_DURATION_IN_S * 1000)
-        return
-      }
-      if (word === currentGuess) {
-        setTimeout(() => {
-          const allAttempts = [...prevGuesses, currentGuess]
-          setWinToastIsVisible(true)
+    if (key === ENTER_KEY) {
+      if (currentGuess.length === 5) {
+        if (!isValidWord(currentGuess)) {
+          setIsNotWord(true)
+          setTimeout(() => setIsNotWord(false), SHAKE_DURATION_IN_S * 1000)
+          return
+        }
+        if (word === currentGuess) {
           setTimeout(() => {
-            setSummaryModalIsOpen(true)
-            const dayEntry = {
-              attemptsCount: allAttempts.length,
-              attemptsDetails: allAttempts.join(" "),
-              date,
-              word,
-              number,
-            }
-            dispatch(dayEntriesActions.addDayEntry(dayEntry))
-            BackendService.createDayEntry(userId, dayEntry)
-          }, 1000)
-        }, TOTAL_WORD_FLIP_DURATION_IN_S * 1000)
+            const allAttempts = [...prevGuesses, currentGuess]
+            setWinToastIsVisible(true)
+            setTimeout(() => {
+              setSummaryModalIsOpen(true)
+              const dayEntry = {
+                attemptsCount: allAttempts.length,
+                attemptsDetails: allAttempts.join(" "),
+                date,
+                word,
+                number,
+              }
+              dispatch(dayEntriesActions.addDayEntry(dayEntry))
+              BackendService.createDayEntry(userId, dayEntry)
+            }, 1000)
+          }, TOTAL_WORD_FLIP_DURATION_IN_S * 1000)
+        }
+        dispatch(todaysWordActions.setCurrentGuess(""))
+        dispatch(
+          todaysWordActions.setPrevGuesses([...prevGuesses, currentGuess])
+        )
       }
-      dispatch(todaysWordActions.setCurrentGuess(""))
-      dispatch(todaysWordActions.setPrevGuesses([...prevGuesses, currentGuess]))
       return
     }
 
-    if (key === BACKSPACE && currentGuess.length <= 5) {
-      dispatch(todaysWordActions.setCurrentGuess(currentGuess.slice(0, -1)))
+    if (key === BACKSPACE) {
+      if (currentGuess) {
+        dispatch(todaysWordActions.setCurrentGuess(currentGuess.slice(0, -1)))
+      }
       return
     }
     if (currentGuess.length < 5) {

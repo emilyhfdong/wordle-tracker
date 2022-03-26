@@ -4,12 +4,19 @@ import { APIGatewayProxyHandler } from "aws-lambda"
 import { DateTime, Settings } from "luxon"
 import { connectToDb, UserInstance, DayEntryInstance } from "src/db"
 
-const getCurrentStreak = (
+export const getCurrentStreak = (
   dayEntries: DayEntryInstance[],
   todaysDate: string
 ) => {
   let streak = 0
-  let date = todaysDate
+  if (!dayEntries.length) {
+    return streak
+  }
+  let date =
+    dayEntries[0].date === todaysDate
+      ? todaysDate
+      : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
+
   for (let i = 0; i < dayEntries.length; i++) {
     if (dayEntries[i].date !== date) {
       return streak
@@ -19,7 +26,6 @@ const getCurrentStreak = (
   }
   return streak
 }
-
 export const handler: APIGatewayProxyHandler = async (event) => {
   Settings.defaultZone = config.timezone
   const userId = event.pathParameters.userId

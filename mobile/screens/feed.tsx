@@ -6,7 +6,7 @@ import { DateTime } from "luxon"
 import { getTileColor } from "../components/tile"
 import { useFeedRequest } from "../components/initializer.hooks"
 import { IFeedDayEntry } from "../redux/slices/feed.slice"
-import { Title } from "../components/title"
+import { RH } from "../utils/responsive"
 
 interface IFeedProps {}
 
@@ -34,7 +34,7 @@ export const Feed: React.FC<IFeedProps> = () => {
           key={groupIdx}
           style={{
             alignItems: "center",
-            paddingBottom: 30,
+            paddingBottom: 20,
           }}
         >
           <View
@@ -44,7 +44,6 @@ export const Feed: React.FC<IFeedProps> = () => {
               borderRadius: 8,
               paddingHorizontal: 10,
               justifyContent: "center",
-              marginBottom: 10,
             }}
           >
             <Text>{DateTime.fromISO(group.date).toFormat("EEE, MMM d")}</Text>
@@ -85,6 +84,7 @@ export const DayEntry: React.FC<IFeedDayEntry & { date: string }> = ({
   attemptsDetails,
   createdAt,
   date,
+  attemptsCount,
 }) => {
   const self = useAppSelector((state) => state.user)
   const isSelf = userId === self.id
@@ -103,25 +103,35 @@ export const DayEntry: React.FC<IFeedDayEntry & { date: string }> = ({
     >
       <View
         style={{
-          marginVertical: 5,
+          marginTop: 10,
           borderColor: "#E6E6E6",
           borderWidth: 1,
           borderRadius: 5,
-          paddingVertical: 10,
-          paddingHorizontal: 15,
+          paddingVertical: 6,
+          paddingHorizontal: 10,
           backgroundColor: theme.light.background,
         }}
       >
-        <Text
+        <View
           style={{
-            fontWeight: "bold",
-            color: isSelf ? theme.light.grey : friend.color,
+            flexDirection: isSelf ? "row-reverse" : "row",
+            justifyContent: "space-between",
             marginBottom: 5,
-            textAlign: isSelf ? "right" : "left",
           }}
         >
-          {isSelf ? self.name : friend.name}
-        </Text>
+          <Text
+            style={{
+              fontWeight: "bold",
+              color: isSelf ? theme.light.grey : friend.color,
+              textAlign: isSelf ? "right" : "left",
+            }}
+          >
+            {isSelf ? self.name : friend.name}
+          </Text>
+          <Text style={{ color: theme.light.grey, fontSize: 12 }}>
+            {attemptsCount} / 6
+          </Text>
+        </View>
         <Board word={word} attemptsDetail={attemptsDetails} date={date} />
         <Text
           style={{

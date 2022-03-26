@@ -30,8 +30,8 @@ export const useFeedRequest = () => {
         }),
         {} as IFriends
       )
-      dispatch(feedActions.setGroupedEntries(groupedEntries))
       dispatch(feedActions.setFriends(friends))
+      dispatch(feedActions.setGroupedEntries(groupedEntries))
       setIsLoading(false)
     }
 

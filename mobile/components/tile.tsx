@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { Animated, Text } from "react-native"
 import { theme } from "../constants/theme"
+import { Dimensions } from "react-native"
+import { RH } from "../utils/responsive"
 
 interface ITileProps {
   letter: string | null
@@ -91,8 +93,8 @@ export const Tile: React.FC<ITileProps> = ({
   return (
     <Animated.View
       style={{
-        height: 58,
-        width: 58,
+        height: RH(7),
+        width: RH(7),
         borderWidth,
         borderColor: currentLetter ? theme.light.grey : theme.light.lightGrey,
         marginBottom: 6,
@@ -125,7 +127,7 @@ export const Tile: React.FC<ITileProps> = ({
     >
       <Text
         style={{
-          fontSize: 32,
+          fontSize: RH(3),
           fontWeight: "bold",
           color: textColor,
         }}

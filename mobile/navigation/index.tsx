@@ -82,6 +82,7 @@ function BottomTabNavigator() {
           title: "Home",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => <HeaderStreak />,
+          headerStyle: { backgroundColor: theme.light.background },
         })}
       />
       <BottomTab.Screen
@@ -93,6 +94,7 @@ function BottomTabNavigator() {
             <TabBarIcon name="calendar" color={color} />
           ),
           headerRight: () => <HeaderStreak />,
+          headerStyle: { backgroundColor: theme.light.background },
         }}
       />
       <BottomTab.Screen
@@ -102,6 +104,7 @@ function BottomTabNavigator() {
           title: "Friends",
           tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
           headerRight: () => <HeaderStreak />,
+          headerStyle: { backgroundColor: theme.light.background },
         }}
       />
     </BottomTab.Navigator>
