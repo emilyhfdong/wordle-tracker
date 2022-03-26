@@ -1,11 +1,30 @@
+import { config } from "@libs/environment"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { connectToDb } from "src/db"
+import { DateTime, Settings } from "luxon"
+import { connectToDb, UserInstance, DayEntryInstance } from "src/db"
+
+const getCurrentStreak = (
+  dayEntries: DayEntryInstance[],
+  todaysDate: string
+) => {
+  let streak = 0
+  let date = todaysDate
+  for (let i = 0; i < dayEntries.length; i++) {
+    if (dayEntries[i].date !== date) {
+      return streak
+    }
+    streak += 1
+    date = DateTime.fromISO(date).minus({ days: 1 }).toISODate()
+  }
+  return streak
+}
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+  Settings.defaultZone = config.timezone
   const userId = event.pathParameters.userId
   console.log("finding user with id", userId)
-  const { User, Friendship } = await connectToDb()
+  const { User, Friendship, DayEntry } = await connectToDb()
 
   const user = await User.findByPk(userId)
   if (!user) {
@@ -25,7 +44,24 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     where: { id: [...friendIds] },
   })
 
+  const getFriendDetails = async (friend: UserInstance) => {
+    const dayEntries = await DayEntry.findAll({
+      where: { userId: friend.id },
+      order: [["createdAt", "DESC"]],
+    })
+
+    const lastEntryDate = dayEntries[0].createdAt
+
+    const currentStreak = getCurrentStreak(
+      dayEntries,
+      DateTime.now().toISODate()
+    )
+    return { id: friend.id, name: friend.name, lastEntryDate, currentStreak }
+  }
+
+  const friendDetails = await Promise.all(friends.map(getFriendDetails))
+
   return createResponse({
-    body: { friends },
+    body: friendDetails,
   })
 }

@@ -14,7 +14,7 @@ const sequalize = new Sequelize(
   }
 )
 
-interface UserInstance extends Model {
+export interface UserInstance extends Model {
   id: string
   name: string
 }

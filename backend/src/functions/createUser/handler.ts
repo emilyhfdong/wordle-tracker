@@ -4,7 +4,7 @@ import { connectToDb } from "src/db"
 
 const generateRandomId = () => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  return new Array(6)
+  return new Array(5)
     .fill(0)
     .map(() => letters[Math.floor(Math.random() * letters.length)])
     .join("")
