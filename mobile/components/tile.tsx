@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Animated, Text } from "react-native"
 import { theme } from "../constants/theme"
-import { useAppSelector } from "../redux/hooks"
 
 interface ITileProps {
   letter: string | null

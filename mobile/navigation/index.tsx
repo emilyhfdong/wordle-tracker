@@ -8,6 +8,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import * as React from "react"
 import { ColorSchemeName, View } from "react-native"
+import { HeaderStreak } from "../components/header-streak"
 import { SummaryModal } from "../components/summary-modal"
 import { theme } from "../constants/theme"
 
@@ -80,6 +81,7 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<"Today">) => ({
           title: "Home",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          headerRight: () => <HeaderStreak />,
         })}
       />
       <BottomTab.Screen
@@ -90,6 +92,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />
           ),
+          headerRight: () => <HeaderStreak />,
         }}
       />
       <BottomTab.Screen
@@ -98,6 +101,7 @@ function BottomTabNavigator() {
         options={{
           title: "Friends",
           tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
+          headerRight: () => <HeaderStreak />,
         }}
       />
     </BottomTab.Navigator>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { BackendService } from "../services/backend"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
 import { feedActions, IFriends } from "../redux/slices/feed.slice"
-import { theme } from "../constants/theme"
 
 const COLORS = ["#78CFA0", "#7DBCE8", "#C6449F", "#457AF9"]
 

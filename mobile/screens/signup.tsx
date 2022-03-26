@@ -16,6 +16,7 @@ import { theme } from "../constants/theme"
 import { BackendService } from "../services/backend"
 import { useDispatch } from "react-redux"
 import { userActions } from "../redux/slices/user.slice"
+import { FullScreenLoading } from "../components/full-screen-loading"
 
 export const Signup: React.FC = ({ children }) => {
   const [name, setName] = useState("")
@@ -44,11 +45,7 @@ export const Signup: React.FC = ({ children }) => {
   }, [])
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size={"large"} />
-      </View>
-    )
+    return <FullScreenLoading />
   }
 
   return (

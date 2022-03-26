@@ -1,4 +1,3 @@
-import { FontAwesome } from "@expo/vector-icons"
 import { DateTime } from "luxon"
 import React from "react"
 import {
@@ -11,9 +10,8 @@ import {
 import { useFeedRequest } from "../components/initializer.hooks"
 import { theme } from "../constants/theme"
 import { useAppSelector } from "../redux/hooks"
-import FireIcon from "../assets/images/fire.svg"
-import { NavigationProp } from "@react-navigation/native"
-import { RootStackScreenProps, RootTabScreenProps } from "../types"
+import { RootTabScreenProps } from "../types"
+import { Streak } from "../components/streak"
 
 interface IFriendsProps {}
 
@@ -67,30 +65,14 @@ export const Friends: React.FC<
               }}
             >
               Last played:{" "}
-              {DateTime.fromISO(friend.lastEntryDate).toFormat("EEE, MMM d t")}
+              {friend.lastEntryDate
+                ? DateTime.fromISO(friend.lastEntryDate).toFormat(
+                    "EEE, MMM d t"
+                  )
+                : "Never"}
             </Text>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                marginRight: 4,
-                fontWeight: "bold",
-                color: friend.currentStreak ? "#e85a5a" : theme.light.grey,
-                textAlignVertical: "center",
-                paddingTop: 3,
-              }}
-            >
-              {friend.currentStreak}
-            </Text>
-            <FireIcon
-              fill={friend.currentStreak ? "#e85a5a" : theme.light.grey}
-            />
-          </View>
+          <Streak currentStreak={friend.currentStreak} />
         </View>
       ))}
       <TouchableOpacity

@@ -6,7 +6,7 @@ const getTodaysWord = async () => {
   const response = await axios.get("today", {
     baseURL: API_BASE,
   })
-  console.log("DONE - get today's word response")
+  console.log("DONE - geting today's word")
   return {
     word: response.data?.word,
     number: response.data?.number,
@@ -22,7 +22,7 @@ const createUser = async (name: string) => {
       baseURL: API_BASE,
     }
   )
-  console.log("DONE - create user response")
+  console.log("DONE - creating user")
   return response.data?.user
 }
 
@@ -51,7 +51,7 @@ const getGroupedEntries = async (userId: string) => {
   const response = await axios.get(`users/${userId}/feed`, {
     baseURL: API_BASE,
   })
-  console.log("DONE - feed response")
+  console.log("DONE - getting feed")
   return response.data
 }
 
@@ -66,7 +66,19 @@ const getFriends = async (userId: string) => {
   >(`users/${userId}/friends`, {
     baseURL: API_BASE,
   })
-  console.log("DONE - feed response")
+  console.log("DONE - getting friends")
+  return response.data
+}
+
+const addFriend = async (userId: string, friendId: string) => {
+  const response = await axios.post(
+    `users/${userId}/friends`,
+    { friendId },
+    {
+      baseURL: API_BASE,
+    }
+  )
+  console.log("DONE - adding friend")
   return response.data
 }
 
@@ -76,4 +88,5 @@ export const BackendService = {
   createDayEntry,
   getGroupedEntries,
   getFriends,
+  addFriend,
 }

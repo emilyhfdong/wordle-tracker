@@ -5,13 +5,13 @@ import {
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Share,
 } from "react-native"
 import { theme } from "../constants/theme"
 import { useAppSelector } from "../redux/hooks"
 import { IDayEntry } from "../redux/slices/day-entries.slice"
-import Share from "../assets/images/share.svg"
+import ShareIcon from "../assets/images/share.svg"
 import { DateTime, Settings } from "luxon"
-import * as Clipboard from "expo-clipboard"
 import { getTileColor } from "./tile"
 
 interface ISummaryModalProps {
@@ -19,7 +19,10 @@ interface ISummaryModalProps {
   closeModal: () => void
 }
 
-const getCurrentStreak = (dayEntries: IDayEntry[], todaysDate: string) => {
+export const getCurrentStreak = (
+  dayEntries: IDayEntry[],
+  todaysDate: string
+) => {
   let streak = 0
   let date = todaysDate
   for (let i = 0; i < dayEntries.length; i++) {
@@ -174,7 +177,7 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
                   alignItems: "center",
                   borderRadius: 4,
                 }}
-                onPress={() => Clipboard.setString(copyString)}
+                onPress={() => Share.share({ message: copyString })}
               >
                 <Text
                   style={{
@@ -186,7 +189,7 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
                 >
                   SHARE
                 </Text>
-                <Share />
+                <ShareIcon />
               </TouchableOpacity>
             </View>
           </View>
