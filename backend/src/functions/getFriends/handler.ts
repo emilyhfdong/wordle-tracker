@@ -50,7 +50,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       order: [["createdAt", "DESC"]],
     })
 
-    const lastEntryDate = dayEntries[0].createdAt
+    const lastEntryDate = dayEntries[0]?.createdAt
 
     const currentStreak = getCurrentStreak(
       dayEntries,
