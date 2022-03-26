@@ -22,7 +22,12 @@ export const useFeedRequest = () => {
       const friends = friendsResponse.reduce(
         (acc, curr, index) => ({
           ...acc,
-          [curr.id]: { name: curr.name, color: COLORS[index % COLORS.length] },
+          [curr.id]: {
+            name: curr.name,
+            color: COLORS[index % COLORS.length],
+            currentStreak: curr.currentStreak,
+            lastEntryDate: curr.lastEntryDate,
+          },
         }),
         {} as IFriends
       )

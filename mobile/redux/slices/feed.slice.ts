@@ -7,7 +7,12 @@ export interface IFeedDayEntry extends IDayEntry {
 }
 
 export interface IFriends {
-  [key: string]: { name: string; color: string }
+  [key: string]: {
+    name: string
+    color: string
+    lastEntryDate: string
+    currentStreak: number
+  }
 }
 
 export interface IFeed {

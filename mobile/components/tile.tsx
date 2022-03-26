@@ -5,9 +5,10 @@ import { useAppSelector } from "../redux/hooks"
 
 interface ITileProps {
   letter: string | null
-  locked: boolean
+  locked?: boolean
   index: number
-  hasWon: boolean
+  hasWon?: boolean
+  word: string
 }
 
 interface IGetLockedColorArgs {
@@ -28,11 +29,11 @@ export const TOTAL_WORD_FLIP_DURATION_IN_S = FLIP_DURATION_IN_S * 6
 export const Tile: React.FC<ITileProps> = ({
   letter,
   index,
-  locked,
-  hasWon,
+  locked = false,
+  hasWon = false,
+  word,
 }) => {
   const [currentLetter, setCurrentLetter] = useState(letter)
-  const word = useAppSelector((state) => state.todaysWord.word)
   const lockedColor = getTileColor({ letter, word, index })
   const [backgroundColor, setBackgroundColor] = useState(
     locked ? lockedColor : theme.light.background

@@ -6,6 +6,7 @@ import { DateTime } from "luxon"
 import { getTileColor } from "../components/tile"
 import { useFeedRequest } from "../components/initializer.hooks"
 import { IFeedDayEntry } from "../redux/slices/feed.slice"
+import { Title } from "../components/title"
 
 interface IFeedProps {}
 
@@ -15,6 +16,7 @@ export const Feed: React.FC<IFeedProps> = () => {
   if (!friends) {
     return null
   }
+
   return (
     <ScrollView
       style={{
@@ -52,6 +54,27 @@ export const Feed: React.FC<IFeedProps> = () => {
           ))}
         </View>
       ))}
+      {!groupedEntries?.length && (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            height: 600,
+          }}
+        >
+          <Text style={{ fontSize: 50, marginBottom: 10 }}>✨</Text>
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: "center",
+              marginBottom: 30,
+            }}
+          >
+            Your results and your friend's results will show up here!
+          </Text>
+        </View>
+      )}
     </ScrollView>
   )
 }

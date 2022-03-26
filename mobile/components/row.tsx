@@ -52,6 +52,7 @@ export const Row: React.FC<IRowProps> = ({
           key={idx}
           index={idx}
           hasWon={letters === word}
+          word={word}
         />
       ))}
     </Animated.View>

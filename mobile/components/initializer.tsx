@@ -8,6 +8,10 @@ import { feedActions, IFriends } from "../redux/slices/feed.slice"
 import { theme } from "../constants/theme"
 import { ActivityIndicator, View } from "react-native"
 import { useFeedRequest } from "./initializer.hooks"
+import { Tile } from "./tile"
+import { Title } from "./title"
+import { Keyboard } from "./keyboard"
+import { Signup } from "../screens/signup"
 
 export const Initializer: React.FC = ({ children }) => {
   const userId = useAppSelector((state) => state.user.id)
@@ -15,6 +19,7 @@ export const Initializer: React.FC = ({ children }) => {
   const currentWordNumber = useAppSelector((state) => state.todaysWord.number)
   const dispatch = useAppDispatch()
   const [wordIsSet, setWordIsSet] = useState(false)
+  const { friends, groupedEntries } = useFeedRequest()
 
   useEffect(() => {
     const getAndSetTodaysWord = async () => {
@@ -34,19 +39,22 @@ export const Initializer: React.FC = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    const createAndSetUser = async () => {
-      const user = await BackendService.createUser(
-        Device.deviceName || "Anonymous"
-      )
-      dispatch(userActions.setUser({ id: user.id, name: user.name }))
-    }
+    // const createAndSetUser = async () => {
+    //   const user = await BackendService.createUser(
+    //     Device.deviceName || "Anonymous"
+    //   )
+    //   dispatch(userActions.setUser({ id: user.id, name: user.name }))
+    // }
     if (!userId) {
-      createAndSetUser()
+      // createAndSetUser()
     }
   }, [])
-  const { friends, groupedEntries } = useFeedRequest()
 
-  return userId && wordIsSet && friends && groupedEntries ? (
+  if (!userId) {
+    return <Signup />
+  }
+
+  return wordIsSet && friends && groupedEntries ? (
     <>{children}</>
   ) : (
     <View style={{ flex: 1, justifyContent: "center" }}>

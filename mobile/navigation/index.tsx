@@ -12,6 +12,7 @@ import { SummaryModal } from "../components/summary-modal"
 import { theme } from "../constants/theme"
 
 import useColorScheme from "../hooks/useColorScheme"
+import { AddFriend } from "../screens/add-friend"
 import { CalendarScreen } from "../screens/calendar"
 import { Feed } from "../screens/feed"
 import { Friends } from "../screens/friends"
@@ -48,8 +49,10 @@ function RootNavigator() {
         component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
-      <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Modal" component={SummaryModal} />
+      <Stack.Group
+        screenOptions={{ presentation: "modal", headerShown: false }}
+      >
+        <Stack.Screen name="AddFriend" component={AddFriend} />
       </Stack.Group>
     </Stack.Navigator>
   )
@@ -66,7 +69,7 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Friends"
+      initialRouteName="Today"
       screenOptions={{
         tabBarActiveTintColor: theme.light.green,
       }}
