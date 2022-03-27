@@ -15,6 +15,14 @@ import { Streak } from "../components/streak"
 
 interface IFriendsProps {}
 
+const getLastPlayedText = (lastPlayedDate: string) => {
+  if (!lastPlayedDate) {
+    return "Never"
+  }
+  const lastPlayed = DateTime.fromISO(lastPlayedDate)
+  return `${lastPlayed.toFormat("EEE, MMM d t")} (${lastPlayed.toRelative()})`
+}
+
 export const Friends: React.FC<
   IFriendsProps & RootTabScreenProps<"Friends">
 > = ({ navigation }) => {
@@ -64,12 +72,7 @@ export const Friends: React.FC<
                 fontStyle: "italic",
               }}
             >
-              Last played:{" "}
-              {friend.lastEntryDate
-                ? DateTime.fromISO(friend.lastEntryDate).toFormat(
-                    "EEE, MMM d t"
-                  )
-                : "Never"}
+              Last played: {getLastPlayedText(friend.lastEntryDate)}
             </Text>
           </View>
           <Streak
