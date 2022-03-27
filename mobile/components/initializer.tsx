@@ -5,6 +5,8 @@ import { todaysWordActions } from "../redux/slices/todays-word"
 import { useFeedRequest } from "./initializer.hooks"
 import { Signup } from "../screens/signup"
 import { FullScreenLoading } from "./full-screen-loading"
+import * as Device from "expo-device"
+import * as Notifications from "expo-notifications"
 
 export const Initializer: React.FC = ({ children }) => {
   const userId = useAppSelector((state) => state.user.id)
@@ -13,6 +15,7 @@ export const Initializer: React.FC = ({ children }) => {
   const dispatch = useAppDispatch()
   const [wordIsSet, setWordIsSet] = useState(false)
   const { friends, groupedEntries } = useFeedRequest()
+  const [expoPushToken, setExpoPushToken] = useState("")
 
   useEffect(() => {
     const getAndSetTodaysWord = async () => {
@@ -29,6 +32,27 @@ export const Initializer: React.FC = ({ children }) => {
       setWordIsSet(true)
     }
     getAndSetTodaysWord()
+  }, [])
+
+  useEffect(() => {
+    const registerForNotifications = async () => {
+      if (Device.isDevice) {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync()
+        if (existingStatus !== "granted") {
+          await Notifications.requestPermissionsAsync()
+        }
+        const { data } = await Notifications.getExpoPushTokenAsync()
+        if (data) {
+          setExpoPushToken(data)
+        }
+        console.log("hiii TOKEN", data)
+        setExpoPushToken(data)
+      } else {
+        console.log("Must use physical device for Push Notifications")
+      }
+    }
+    registerForNotifications()
   }, [])
 
   if (!userId) {

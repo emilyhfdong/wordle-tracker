@@ -50,6 +50,15 @@ export const functions: AWS["functions"] = {
     ],
     vpc,
   },
+  updateUser: {
+    handler: `src/functions/updateUser/handler.handler`,
+    events: [
+      {
+        http: { method: "PATCH", path: "/users/{userId}" },
+      },
+    ],
+    vpc,
+  },
   createDayEntry: {
     handler: `src/functions/createDayEntry/handler.handler`,
     events: [

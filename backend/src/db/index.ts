@@ -17,6 +17,7 @@ const sequalize = new Sequelize(
 export interface UserInstance extends Model {
   id: string
   name: string
+  pushToken?: string
 }
 
 const User = sequalize.define<UserInstance>(
@@ -24,6 +25,7 @@ const User = sequalize.define<UserInstance>(
   {
     id: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
     name: { type: DataTypes.STRING },
+    pushToken: { type: DataTypes.STRING },
   },
   { underscored: true }
 )
@@ -104,7 +106,7 @@ export const connectToDb = async () => {
     return models
   }
   console.log("creating connection to db")
-  await sequalize.sync()
+  await sequalize.sync({ alter: true })
   await sequalize.authenticate()
   isConnected = true
   console.log("connected to db")
