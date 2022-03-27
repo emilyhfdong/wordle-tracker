@@ -72,7 +72,10 @@ export const Friends: React.FC<
                 : "Never"}
             </Text>
           </View>
-          <Streak currentStreak={friend.currentStreak} />
+          <Streak
+            currentStreak={friend.currentStreak}
+            lastPlayedDate={DateTime.fromISO(friend.lastEntryDate).toISODate()}
+          />
         </View>
       ))}
       <TouchableOpacity
