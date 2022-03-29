@@ -9,7 +9,6 @@ const serverlessConfiguration: AWS = {
       webpackConfig: "./webpack.config.js",
       includeModules: true,
     },
-    secrets: "${file(secrets.json)}",
   },
   plugins: ["serverless-webpack", "serverless-offline"],
   provider: {
@@ -23,13 +22,8 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       WORD_HISTORY_TABLE_NAME: "${self:service.name}-history",
+      WORDZLE_TABLE_NAME: "${self:service.name}",
       TIMEZONE: "America/Toronto",
-      // db config
-      UB_NAME: "${self:custom.secrets.DB_NAME}",
-      UB_USER: "${self:custom.secrets.DB_USER}",
-      DB_PASSWORD: "${self:custom.secrets.DB_PASSWORD}",
-      DB_HOST: "${self:custom.secrets.DB_HOST}",
-      DB_PORT: "${self:custom.secrets.DB_PORT}",
     },
     lambdaHashingVersion: "20201221",
     iamRoleStatements: [
@@ -37,6 +31,11 @@ const serverlessConfiguration: AWS = {
         Effect: "Allow",
         Action: ["dynamodb:GetItem", "dynamodb:PutItem"],
         Resource: [{ "Fn::GetAtt": ["WordHistoryTable", "Arn"] }],
+      },
+      {
+        Effect: "Allow",
+        Action: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Query"],
+        Resource: [{ "Fn::GetAtt": ["WordzleTable", "Arn"] }],
       },
     ],
   },
@@ -50,6 +49,25 @@ const serverlessConfiguration: AWS = {
           TableName: "${self:provider.environment.WORD_HISTORY_TABLE_NAME}",
           AttributeDefinitions: [{ AttributeName: "date", AttributeType: "S" }],
           KeySchema: [{ AttributeName: "date", KeyType: "HASH" }],
+          SSESpecification: { SSEEnabled: true },
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1,
+          },
+        },
+      },
+      WordzleTable: {
+        Type: "AWS::DynamoDB::Table",
+        Properties: {
+          TableName: "${self:provider.environment.WORDZLE_TABLE_NAME}",
+          AttributeDefinitions: [
+            { AttributeName: "pk", AttributeType: "S" },
+            { AttributeName: "sk", AttributeType: "S" },
+          ],
+          KeySchema: [
+            { AttributeName: "pk", KeyType: "HASH" },
+            { AttributeName: "sk", KeyType: "RANGE" },
+          ],
           SSESpecification: { SSEEnabled: true },
           ProvisionedThroughput: {
             ReadCapacityUnits: 1,

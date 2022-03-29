@@ -1,13 +1,13 @@
+import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { connectToDb } from "src/db"
+import { getFriendDetails, getGroupedDayEntries } from "./utils"
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   const userId = event.pathParameters.userId
   console.log("finding user with id", userId)
-  const { User, Friendship, DayEntry } = await connectToDb()
 
-  const user = await User.findByPk(userId)
+  const user = await database.getUserItems(userId)
   if (!user) {
     return createResponse({
       statusCode: 404,
@@ -15,56 +15,23 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     })
   }
 
-  const friendships = await Friendship.findAll({
-    where: { userId },
-  })
-
-  const friendIds = friendships.map((friendship) => friendship.friendId)
-
-  const dayEntries = await DayEntry.findAll({
-    where: { userId: [...friendIds, userId] },
-    order: [["createdAt", "DESC"]],
-  })
-
-  interface IDateGroup {
-    date: string
-    entries: {
-      userId: string
-      attemptsCount: number
-      attemptsDetails: string
-      word: string
-      number: number
-      createdAt: string
-    }[]
-  }
-  const dayEntriesByDate = dayEntries.reduce(
-    (
-      acc,
-      { userId, attemptsCount, attemptsDetails, word, number, date, createdAt }
-    ) => {
-      const newEntry: IDateGroup["entries"][0] = {
-        userId,
-        attemptsCount,
-        attemptsDetails,
-        word,
-        number,
-        createdAt,
-      }
-
-      const existingGroup = acc.find((group) => group.date === date)
-      if (existingGroup) {
-        return acc.map((group) =>
-          group.date !== date
-            ? group
-            : { date, entries: [...group.entries, newEntry] }
-        )
-      }
-      return [...acc, { date, entries: [newEntry] }]
-    },
-    [] as IDateGroup[]
+  console.log("getting friend entries for user", JSON.stringify(user))
+  const friendItems = await Promise.all(
+    user.metadata.friendIds.map((friendId) => database.getUserItems(friendId))
   )
 
+  const allEntries = friendItems.reduce(
+    (acc, curr) => [...acc, ...curr.dayEntries],
+    user.dayEntries
+  )
+
+  allEntries.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
+
+  const dayEntriesByDate = getGroupedDayEntries(allEntries)
+
   return createResponse({
-    body: dayEntriesByDate,
+    body: { friends: friendItems.map(getFriendDetails), dayEntriesByDate },
   })
 }

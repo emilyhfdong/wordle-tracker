@@ -1,6 +1,6 @@
+import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { connectToDb } from "src/db"
 
 interface IEventBody {
   friendId: string
@@ -22,9 +22,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const { friendId }: IEventBody = body
 
   console.log("finding user with id", userId)
-  const { User, Friendship } = await connectToDb()
 
-  const user = await User.findByPk(userId)
+  const user = await database.getUser(userId)
   if (!user) {
     return createResponse({
       statusCode: 404,
@@ -32,8 +31,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     })
   }
 
-  console.log("finding user with id", userId)
-  const friend = await User.findByPk(friendId)
+  console.log("finding friend with id", friendId)
+  const friend = await database.getUser(friendId)
   if (!friend) {
     return createResponse({
       statusCode: 404,
@@ -41,14 +40,17 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     })
   }
 
-  console.log("storing friendship to db")
-  const friendship1 = await Friendship.create({ userId, friendId })
-  await Friendship.create({
-    userId: friendId,
-    friendId: userId,
+  console.log("storing updating friendIds")
+  const updatedUser = await database.putUser(userId, {
+    ...user,
+    friendIds: [...user.friendIds, friendId],
+  })
+  const updateFriend = await database.putUser(friendId, {
+    ...friend,
+    friendIds: [...friend.friendIds, userId],
   })
 
   return createResponse({
-    body: { friendship1 },
+    body: { user: updatedUser, friend: updateFriend },
   })
 }

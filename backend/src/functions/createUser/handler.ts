@@ -1,6 +1,6 @@
+import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { connectToDb } from "src/db"
 
 const generateRandomId = () => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -19,18 +19,16 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     })
   }
 
-  const { User } = await connectToDb()
-
   let isUnique = false
   let id = ""
 
   while (!isUnique) {
     id = generateRandomId()
-    const existingUser = await User.findByPk(id)
+    const existingUser = await database.getUser(id)
     isUnique = !existingUser
   }
 
-  const user = await User.create({ id, name: body.name })
+  const user = await database.putUser(id, { name: body.name, friendIds: [] })
 
   return createResponse({
     body: { user },

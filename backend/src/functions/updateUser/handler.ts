@@ -1,15 +1,13 @@
+import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { connectToDb } from "src/db"
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   const body: { name?: string; pushToken?: string } = JSON.parse(event.body)
   const userId = event.pathParameters.userId
 
-  const { User } = await connectToDb()
-
   console.log("finding user with id", userId)
-  const user = await User.findByPk(userId)
+  const user = await database.getUser(userId)
 
   if (!user) {
     return createResponse({
@@ -20,13 +18,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   console.log("updating user", userId, "with", JSON.stringify(body))
 
-  const updatedUser = await User.update(
-    {
-      ...(body.name && { name: body.name }),
-      ...(body.pushToken && { pushToken: body.pushToken }),
-    },
-    { where: { id: userId }, returning: true }
-  )
+  const updatedUser = await database.putUser(userId, {
+    pushToken: body.pushToken || user.pushToken,
+    name: body.name || user.name,
+    friendIds: user.friendIds,
+  })
 
   return createResponse({
     body: { user: updatedUser },
