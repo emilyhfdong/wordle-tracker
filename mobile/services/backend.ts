@@ -1,6 +1,7 @@
 import axios from "axios"
 import { API_BASE } from "@env"
 import { IDayEntry } from "../redux/slices/day-entries.slice"
+import { TGetFeedResponse } from "./types"
 
 const getTodaysWord = async () => {
   const response = await axios.get("today", {
@@ -28,16 +29,13 @@ const createUser = async (name: string) => {
 
 const createDayEntry = async (
   userId: string,
-  { attemptsCount, attemptsDetails, date, number, word }: IDayEntry
+  { attemptsDetails, word }: IDayEntry
 ) => {
   const response = await axios.post(
     `users/${userId}/day-entry`,
     {
-      attemptsCount,
       attemptsDetails,
-      date,
       word,
-      number,
     },
     {
       baseURL: API_BASE,
@@ -47,26 +45,11 @@ const createDayEntry = async (
   return response.data?.dayEntry
 }
 
-const getGroupedEntries = async (userId: string) => {
-  const response = await axios.get(`users/${userId}/feed`, {
+const getFeed = async (userId: string) => {
+  const response = await axios.get<TGetFeedResponse>(`users/${userId}/feed`, {
     baseURL: API_BASE,
   })
   console.log("DONE - getting feed")
-  return response.data
-}
-
-const getFriends = async (userId: string) => {
-  const response = await axios.get<
-    {
-      id: string
-      name: string
-      lastEntryDate: string
-      currentStreak: number
-    }[]
-  >(`users/${userId}/friends`, {
-    baseURL: API_BASE,
-  })
-  console.log("DONE - getting friends")
   return response.data
 }
 
@@ -86,7 +69,6 @@ export const BackendService = {
   getTodaysWord,
   createUser,
   createDayEntry,
-  getGroupedEntries,
-  getFriends,
+  getFeed,
   addFriend,
 }

@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { IDayEntry } from "./day-entries.slice"
 
-export interface IFeedDayEntry extends IDayEntry {
-  userId: string
-  createdAt: string
-}
-
 export interface IFriends {
   [key: string]: {
     name: string
@@ -17,7 +12,7 @@ export interface IFriends {
 
 export interface IFeed {
   friends: IFriends | null
-  groupedEntries: { date: string; entries: IFeedDayEntry[] }[] | null
+  groupedEntries: { date: string; entries: IDayEntry[] }[] | null
 }
 
 const initialState: IFeed = { friends: null, groupedEntries: null }
@@ -28,7 +23,7 @@ export const feedSlice = createSlice({
   reducers: {
     setGroupedEntries: (
       state,
-      action: PayloadAction<{ date: string; entries: IFeedDayEntry[] }[]>
+      action: PayloadAction<{ date: string; entries: IDayEntry[] }[]>
     ) => ({
       ...state,
       groupedEntries: action.payload,

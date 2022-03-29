@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { BackendService } from "../services/backend"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
 import { feedActions, IFriends } from "../redux/slices/feed.slice"
+import { dayEntriesActions, IDayEntry } from "../redux/slices/day-entries.slice"
 
 const COLORS = ["#78CFA0", "#7DBCE8", "#C6449F", "#457AF9"]
 
@@ -16,22 +17,31 @@ export const useFeedRequest = () => {
   useEffect(() => {
     const getAndSetFeed = async () => {
       setIsLoading(true)
-      const groupedEntries = await BackendService.getGroupedEntries(userId)
-      const friendsResponse = await BackendService.getFriends(userId)
-      const friends = friendsResponse.reduce(
+      const feed = await BackendService.getFeed(userId)
+      const friends = feed.friends.reduce(
         (acc, curr, index) => ({
           ...acc,
-          [curr.id]: {
+          [curr.userId]: {
             name: curr.name,
             color: COLORS[index % COLORS.length],
             currentStreak: curr.currentStreak,
-            lastEntryDate: curr.lastEntryDate,
+            lastEntryDate: curr.lastPlayed,
           },
         }),
         {} as IFriends
       )
+
+      const userEntries = feed.dayEntriesByDate.reduce(
+        (acc, curr) => [
+          ...acc,
+          ...curr.entries.filter((entry) => entry.userId === userId),
+        ],
+        [] as IDayEntry[]
+      )
+
       dispatch(feedActions.setFriends(friends))
-      dispatch(feedActions.setGroupedEntries(groupedEntries))
+      dispatch(feedActions.setGroupedEntries(feed.dayEntriesByDate))
+      dispatch(dayEntriesActions.setEntries(userEntries))
       setIsLoading(false)
     }
 

@@ -9,7 +9,9 @@ export const HeaderStreak: React.FC<{}> = () => {
   const currentStreak = useAppSelector((state) =>
     getCurrentStreak(state.dayEntries, date)
   )
-  const lastPlayedDate = useAppSelector((state) => state.dayEntries[0].date)
+  const lastPlayedDate = useAppSelector(
+    (state) => state.dayEntries[0]?.word.date
+  )
   return (
     <View style={{ paddingRight: 20 }}>
       <Streak currentStreak={currentStreak} lastPlayedDate={lastPlayedDate} />

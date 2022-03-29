@@ -5,8 +5,8 @@ import { useAppSelector } from "../redux/hooks"
 import { DateTime } from "luxon"
 import { getTileColor } from "../components/tile"
 import { useFeedRequest } from "../components/initializer.hooks"
-import { IFeedDayEntry } from "../redux/slices/feed.slice"
 import { RH } from "../utils/responsive"
+import { IDayEntry } from "../redux/slices/day-entries.slice"
 
 interface IFeedProps {}
 
@@ -88,7 +88,7 @@ export const Feed: React.FC<IFeedProps> = () => {
   )
 }
 
-export const DayEntry: React.FC<IFeedDayEntry & { date: string }> = ({
+export const DayEntry: React.FC<IDayEntry & { date: string }> = ({
   userId,
   word,
   attemptsDetails,
@@ -142,7 +142,11 @@ export const DayEntry: React.FC<IFeedDayEntry & { date: string }> = ({
             {attemptsCount} / 6
           </Text>
         </View>
-        <Board word={word} attemptsDetail={attemptsDetails} date={date} />
+        <Board
+          word={word.answer}
+          attemptsDetail={attemptsDetails}
+          date={date}
+        />
         <Text
           style={{
             color: theme.light.grey,
@@ -170,7 +174,9 @@ export const Board: React.FC<IBoardProps> = ({
   date,
 }) => {
   const selfDayEntries = useAppSelector((state) => state.dayEntries)
-  const hasPlayedThisDay = selfDayEntries.some((entry) => entry.date === date)
+  const hasPlayedThisDay = selfDayEntries.some(
+    (entry) => entry.word.date === date
+  )
   return (
     <View>
       {attemptsDetail.split(" ").map((attemptWord, wordIdx) => (

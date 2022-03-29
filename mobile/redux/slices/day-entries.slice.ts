@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface IDayEntry {
-  date: string
-  word: string
   attemptsCount: number
   attemptsDetails: string
-  number: number
+  word: {
+    answer: string
+    date: string
+    number: number
+  }
+  createdAt: string
+  userId: string
 }
 
 const initialState: IDayEntry[] = []
@@ -18,6 +22,7 @@ export const dayEntriesSlice = createSlice({
       action.payload,
       ...state,
     ],
+    setEntries: (_, action: PayloadAction<IDayEntry[]>) => action.payload,
   },
 })
 

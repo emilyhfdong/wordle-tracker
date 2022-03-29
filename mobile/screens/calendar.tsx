@@ -10,7 +10,7 @@ interface ICalendarProps {}
 const getMarkedDates = (dayEntries: IDayEntry[]) => {
   const color = theme.light.yellow
   return dayEntries.reduce(
-    (acc, curr) => ({ ...acc, [curr.date]: { periods: [{ color }] } }),
+    (acc, curr) => ({ ...acc, [curr.word.date]: { periods: [{ color }] } }),
     {}
   )
 }

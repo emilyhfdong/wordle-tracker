@@ -28,12 +28,12 @@ export const getCurrentStreak = (
     return streak
   }
   let date =
-    dayEntries[0].date === todaysDate
+    dayEntries[0].word.date === todaysDate
       ? todaysDate
       : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
 
   for (let i = 0; i < dayEntries.length; i++) {
-    if (dayEntries[i].date !== date) {
+    if (dayEntries[i].word.date !== date) {
       return streak
     }
     streak += 1
@@ -46,7 +46,7 @@ const getMaxStreak = (dayEntries: IDayEntry[], todaysDate: string) => {
   let streak = 0
   let date = todaysDate
   for (let i = 0; i < dayEntries.length; i++) {
-    streak += dayEntries[i].date === date ? 1 : 0
+    streak += dayEntries[i].word.date === date ? 1 : 0
     date = DateTime.fromISO(date).minus({ days: 1 }).toISODate()
   }
   return streak
@@ -100,9 +100,12 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
     return null
   }
 
-  const copyString = `Wordle ${lastEntry.number} ${
+  const copyString = `Wordle ${lastEntry.word.number} ${
     lastEntry.attemptsCount
-  }/6\n\n${getSquares(lastEntry.attemptsDetails.split(" "), lastEntry.word)}`
+  }/6\n\n${getSquares(
+    lastEntry.attemptsDetails.split(" "),
+    lastEntry.word.answer
+  )}`
 
   return isOpen ? (
     <View

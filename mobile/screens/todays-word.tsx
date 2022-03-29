@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { View } from "react-native"
 import { BACKSPACE, ENTER_KEY, Keyboard } from "../components/keyboard"
 import { Row, SHAKE_DURATION_IN_S } from "../components/row"
@@ -11,9 +11,9 @@ import { RootTabScreenProps } from "../types"
 import { isValidWord } from "../utils/valid-words"
 import { todaysWordActions } from "../redux/slices/todays-word"
 import { SummaryModal } from "../components/summary-modal"
-import { dayEntriesActions } from "../redux/slices/day-entries.slice"
+import { dayEntriesActions, IDayEntry } from "../redux/slices/day-entries.slice"
 import { BackendService } from "../services/backend"
-import { useNavigation } from "@react-navigation/native"
+import { DateTime } from "luxon"
 
 export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
   navigation,
@@ -24,7 +24,7 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
   const lastDayEntry = useAppSelector((state) => state.dayEntries[0])
   const userId = useAppSelector((state) => state.user.id)
   const [summaryModalIsOpen, setSummaryModalIsOpen] = useState(
-    lastDayEntry?.date === date
+    lastDayEntry?.word.date === date
   )
   const dispatch = useAppDispatch()
   const [isNotWord, setIsNotWord] = useState(false)
@@ -44,12 +44,12 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
             setWinToastIsVisible(true)
             setTimeout(() => {
               setSummaryModalIsOpen(true)
-              const dayEntry = {
+              const dayEntry: IDayEntry = {
                 attemptsCount: allAttempts.length,
                 attemptsDetails: allAttempts.join(" "),
-                date,
-                word,
-                number,
+                word: { date, answer: word, number },
+                createdAt: DateTime.now().toUTC().toISO(),
+                userId,
               }
               dispatch(dayEntriesActions.addDayEntry(dayEntry))
               BackendService.createDayEntry(userId, dayEntry)

@@ -31,6 +31,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const user = await database.putUser(id, { name: body.name, friendIds: [] })
 
   return createResponse({
-    body: { user },
+    body: {
+      user: {
+        id: user.pk,
+        name: user.name,
+      },
+    },
   })
 }
