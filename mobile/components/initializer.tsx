@@ -15,7 +15,6 @@ export const Initializer: React.FC = ({ children }) => {
   const dispatch = useAppDispatch()
   const [wordIsSet, setWordIsSet] = useState(false)
   const { friends, groupedEntries } = useFeedRequest()
-  const [expoPushToken, setExpoPushToken] = useState("")
 
   useEffect(() => {
     const getAndSetTodaysWord = async () => {

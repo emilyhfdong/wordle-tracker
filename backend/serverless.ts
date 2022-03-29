@@ -34,7 +34,15 @@ const serverlessConfiguration: AWS = {
       },
       {
         Effect: "Allow",
-        Action: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Query"],
+        Action: [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:Query",
+          "dynamodb:DescribeStream",
+          "dynamodb:GetRecords",
+          "dynamodb:GetShardIterator",
+          "dynamodb:ListStreams",
+        ],
         Resource: [{ "Fn::GetAtt": ["WordzleTable", "Arn"] }],
       },
     ],
@@ -72,6 +80,9 @@ const serverlessConfiguration: AWS = {
           ProvisionedThroughput: {
             ReadCapacityUnits: 1,
             WriteCapacityUnits: 1,
+          },
+          StreamSpecification: {
+            StreamViewType: "NEW_IMAGE",
           },
         },
       },

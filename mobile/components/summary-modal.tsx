@@ -100,7 +100,7 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
     return null
   }
 
-  const copyString = `Wordle ${lastEntry.word.number} ${
+  const copyString = `Wordzle ${lastEntry.word.number} ${
     lastEntry.attemptsCount
   }/6\n\n${getSquares(
     lastEntry.attemptsDetails.split(" "),

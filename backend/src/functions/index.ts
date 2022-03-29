@@ -62,8 +62,15 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-  sendNotifications: {
-    handler: `src/functions/sendNotifications/handler.handler`,
-    // events: [],
+  sendFriendNotifications: {
+    handler: `src/functions/sendFriendNotifications/handler.handler`,
+    events: [
+      {
+        stream: {
+          type: "dynamodb",
+          arn: { "Fn::GetAtt": ["WordzleTable", "StreamArn"] },
+        },
+      },
+    ],
   },
 }
