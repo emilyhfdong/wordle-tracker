@@ -27,6 +27,18 @@ const createUser = async (name: string) => {
   return response.data?.user
 }
 
+const updateUserWithPushToken = async (userId: string, pushToken: string) => {
+  const response = await axios.patch<{ user: { id: string; name: string } }>(
+    `users/${userId}`,
+    { pushToken },
+    {
+      baseURL: API_BASE,
+    }
+  )
+  console.log("DONE - updating user")
+  return response.data?.user
+}
+
 const createDayEntry = async (
   userId: string,
   { attemptsDetails, word }: IDayEntry
@@ -71,4 +83,5 @@ export const BackendService = {
   createDayEntry,
   getFeed,
   addFriend,
+  updateUserWithPushToken,
 }

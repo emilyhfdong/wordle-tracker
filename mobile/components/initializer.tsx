@@ -44,16 +44,16 @@ export const Initializer: React.FC = ({ children }) => {
         }
         const { data } = await Notifications.getExpoPushTokenAsync()
         if (data) {
-          setExpoPushToken(data)
+          await BackendService.updateUserWithPushToken(userId, data)
         }
-        console.log("hiii TOKEN", data)
-        setExpoPushToken(data)
       } else {
         console.log("Must use physical device for Push Notifications")
       }
     }
-    registerForNotifications()
-  }, [])
+    if (userId) {
+      registerForNotifications()
+    }
+  }, [userId])
 
   if (!userId) {
     return <Signup />
