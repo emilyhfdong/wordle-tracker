@@ -6,6 +6,10 @@ const GET_FEED_RESPONSE = {
       name: "Emily",
       userId: "BNLGJ",
       averageAttemptsCount: 3.53,
+      pingStatus: "already_pinged" as
+        | "notifications_disabled"
+        | "already_pinged"
+        | "ready",
     },
   ],
   dayEntriesByDate: [

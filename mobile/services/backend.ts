@@ -77,6 +77,18 @@ const addFriend = async (userId: string, friendId: string) => {
   return response.data
 }
 
+const pingFriend = async (userId: string, friendId: string) => {
+  const response = await axios.post(
+    `users/${userId}/friends/${friendId}/ping`,
+    {},
+    {
+      baseURL: API_BASE,
+    }
+  )
+  console.log("DONE - pinging friend")
+  return response.data
+}
+
 export const BackendService = {
   getTodaysWord,
   createUser,
@@ -84,4 +96,5 @@ export const BackendService = {
   getFeed,
   addFriend,
   updateUserWithPushToken,
+  pingFriend,
 }

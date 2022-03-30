@@ -27,6 +27,7 @@ export const useFeedRequest = () => {
             currentStreak: curr.currentStreak,
             lastEntryDate: curr.lastPlayed,
             averageAttemptsCount: curr.averageAttemptsCount,
+            pingStatus: curr.pingStatus,
           },
         }),
         {} as IFriends
