@@ -2,8 +2,11 @@ import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
 import { getFriendDetails, getGroupedDayEntries } from "./utils"
+import { DateTime, Settings } from "luxon"
+import { config } from "@libs/environment"
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+  Settings.defaultZone = config.timezone
   const userId = event.pathParameters.userId
   console.log("finding user with id", userId)
 
@@ -31,9 +34,20 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   const dayEntriesByDate = getGroupedDayEntries(allEntries)
 
+  const userPingedFriendIds = user.initiatedPings
+    .filter((ping) =>
+      ping.sk.includes(`initiated_ping#${DateTime.now().toISODate()}`)
+    )
+    .map((ping) => ping.sk.split("#")[ping.sk.split("#").length - 1])
+
   return createResponse({
     body: {
-      friends: [...friendItems.map(getFriendDetails), getFriendDetails(user)],
+      friends: [
+        ...friendItems.map((item) =>
+          getFriendDetails({ ...item, userPingedFriendIds })
+        ),
+        getFriendDetails({ ...user, userPingedFriendIds }),
+      ],
       dayEntriesByDate,
     },
   })

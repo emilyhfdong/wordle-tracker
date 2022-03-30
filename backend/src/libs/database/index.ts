@@ -1,6 +1,12 @@
 import { config } from "@libs/environment"
 import AWS from "aws-sdk"
-import { IDayEntryItem, IUserMetaDataItem } from "./types"
+import { DateTime } from "luxon"
+import {
+  IDayEntryItem,
+  IInitiatedPingItem,
+  IRecievedPingItem,
+  IUserMetaDataItem,
+} from "./types"
 
 const dynamodb = new AWS.DynamoDB.DocumentClient()
 
@@ -56,15 +62,63 @@ const getUserItems = async (userId: string) => {
     .promise()
   if (response.Items) {
     return {
-      dayEntries: response.Items.filter(
-        (item): item is IDayEntryItem => item.sk !== "metadata"
+      dayEntries: response.Items.filter((item): item is IDayEntryItem =>
+        item.sk.includes("day_entry")
       ),
       metadata: response.Items.find(
         (item): item is IUserMetaDataItem => item.sk === "metadata"
       ),
+      recievedPings: response.Items.filter((item): item is IRecievedPingItem =>
+        item.sk.includes("recieved_ping")
+      ),
+      initiatedPings: response.Items.filter((item): item is IRecievedPingItem =>
+        item.sk.includes("initiated_ping")
+      ),
     }
   }
   return null
+}
+
+const createInitiatedPing = async (
+  userId: string,
+  friendId: string,
+  pingDate: string
+) => {
+  const item: IInitiatedPingItem = {
+    pk: userId,
+    sk: `initiated_ping#${pingDate}#${friendId}`,
+    createdAt: DateTime.now().toUTC().toISO(),
+  }
+
+  await dynamodb
+    .put({
+      TableName: config.dynamoTableName,
+      Item: item,
+    })
+    .promise()
+
+  return item
+}
+
+const createRecievedPing = async (
+  userId: string,
+  friendId: string,
+  pingDate: string
+) => {
+  const item: IRecievedPingItem = {
+    pk: userId,
+    sk: `recieved_ping#${pingDate}#${friendId}`,
+    createdAt: DateTime.now().toUTC().toISO(),
+  }
+
+  await dynamodb
+    .put({
+      TableName: config.dynamoTableName,
+      Item: item,
+    })
+    .promise()
+
+  return item
 }
 
 const createUserDayEntry = async (
@@ -92,4 +146,6 @@ export const database = {
   putUser,
   getUserItems,
   createUserDayEntry,
+  createInitiatedPing,
+  createRecievedPing,
 }

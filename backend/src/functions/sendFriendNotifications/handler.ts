@@ -1,10 +1,9 @@
 import { database } from "@libs/database"
 import { IDayEntryItem } from "@libs/database/types"
+import { expo } from "@libs/expo"
 import { DynamoDBStreamHandler } from "aws-lambda"
 import { Converter } from "aws-sdk/clients/dynamodb"
 import { Expo, ExpoPushMessage } from "expo-server-sdk"
-
-const expo = new Expo()
 
 export const getTileEmoji = ({
   letter,

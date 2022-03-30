@@ -1,5 +1,5 @@
 type TUserId = string
-
+type TFriendId = string
 export interface IUserMetaDataItem {
   pk: TUserId
   sk: "metadata"
@@ -20,5 +20,17 @@ export interface IDayEntryItem {
   }
   attemptsCount: number
   attemptsDetails: string
+  createdAt: string
+}
+
+export interface IInitiatedPingItem {
+  pk: TUserId
+  sk: `initiated_ping#${TISODate}#${TFriendId}`
+  createdAt: string
+}
+
+export interface IRecievedPingItem {
+  pk: TUserId
+  sk: `recieved_ping#${TISODate}#${TFriendId}`
   createdAt: string
 }

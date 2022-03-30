@@ -44,14 +44,11 @@ const getCurrentStreak = (dayEntries: IDayEntryItem[], todaysDate: string) => {
   if (!dayEntries.length) {
     return streak
   }
-  console.log("hii todaysDate", todaysDate)
-  console.log("hii day entries", dayEntries)
+
   let date =
     dayEntries[0].word.date === todaysDate
       ? todaysDate
       : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
-
-  console.log("hii date", date)
 
   for (let i = 0; i < dayEntries.length; i++) {
     console.log("hii day entry date", dayEntries[i].word.date)
@@ -70,6 +67,7 @@ interface IFriendDetails {
   currentStreak: number
   lastPlayed: string
   averageAttemptsCount: number
+  pingStatus: "notifications_disabled" | "already_pinged" | "ready"
 }
 
 const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
@@ -83,9 +81,11 @@ const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
 export const getFriendDetails = ({
   dayEntries,
   metadata,
+  userPingedFriendIds,
 }: {
   dayEntries: IDayEntryItem[]
   metadata: IUserMetaDataItem
+  userPingedFriendIds: string[]
 }): IFriendDetails => {
   Settings.defaultZone = config.timezone
   const sortedDayEntries = [...dayEntries].sort(
@@ -100,5 +100,10 @@ export const getFriendDetails = ({
     averageAttemptsCount: getAverageAtempts(sortedDayEntries),
     name: metadata.name,
     userId: metadata.pk,
+    pingStatus: !metadata.pushToken
+      ? "notifications_disabled"
+      : userPingedFriendIds.includes(metadata.pk)
+      ? "already_pinged"
+      : "ready",
   }
 }

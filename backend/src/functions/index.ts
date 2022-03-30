@@ -54,6 +54,17 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
+  pingFriend: {
+    handler: `src/functions/pingFriend/handler.handler`,
+    events: [
+      {
+        http: {
+          method: "POST",
+          path: "/users/{userId}/friends/{friendId}/ping",
+        },
+      },
+    ],
+  },
   getFeed: {
     handler: `src/functions/getFeed/handler.handler`,
     events: [
