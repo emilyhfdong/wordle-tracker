@@ -32,6 +32,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const dayEntriesByDate = getGroupedDayEntries(allEntries)
 
   return createResponse({
-    body: { friends: friendItems.map(getFriendDetails), dayEntriesByDate },
+    body: {
+      friends: [...friendItems.map(getFriendDetails), getFriendDetails(user)],
+      dayEntriesByDate,
+    },
   })
 }

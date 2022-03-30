@@ -26,6 +26,7 @@ export const useFeedRequest = () => {
             color: COLORS[index % COLORS.length],
             currentStreak: curr.currentStreak,
             lastEntryDate: curr.lastPlayed,
+            averageAttemptsCount: curr.averageAttemptsCount,
           },
         }),
         {} as IFriends

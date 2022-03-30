@@ -69,7 +69,16 @@ interface IFriendDetails {
   name: string
   currentStreak: number
   lastPlayed: string
+  averageAttemptsCount: number
 }
+
+const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
+  Number(
+    (
+      dayEntries.reduce((acc, curr) => acc + curr.attemptsCount, 0) /
+      dayEntries.length
+    ).toFixed(2)
+  )
 
 export const getFriendDetails = ({
   dayEntries,
@@ -88,6 +97,7 @@ export const getFriendDetails = ({
       DateTime.now().toISODate()
     ),
     lastPlayed: sortedDayEntries[0].createdAt,
+    averageAttemptsCount: getAverageAtempts(sortedDayEntries),
     name: metadata.name,
     userId: metadata.pk,
   }

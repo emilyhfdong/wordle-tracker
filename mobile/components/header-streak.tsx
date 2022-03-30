@@ -1,7 +1,7 @@
 import React from "react"
 import { View } from "react-native"
 import { useAppSelector } from "../redux/hooks"
-import { Streak } from "./streak"
+import { Scores } from "./scores"
 import { getCurrentStreak } from "./summary-modal"
 
 export const HeaderStreak: React.FC<{}> = () => {
@@ -12,9 +12,17 @@ export const HeaderStreak: React.FC<{}> = () => {
   const lastPlayedDate = useAppSelector(
     (state) => state.dayEntries[0]?.word.date
   )
+  const userId = useAppSelector((state) => state.user.id)
+  const averageAttemptsCount = useAppSelector((state) =>
+    state.feed.friends ? state.feed.friends[userId].averageAttemptsCount : null
+  )
   return (
     <View style={{ paddingRight: 20 }}>
-      <Streak currentStreak={currentStreak} lastPlayedDate={lastPlayedDate} />
+      <Scores
+        averageAttemptsCount={averageAttemptsCount}
+        currentStreak={currentStreak}
+        lastPlayedDate={lastPlayedDate}
+      />
     </View>
   )
 }

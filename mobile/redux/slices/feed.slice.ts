@@ -7,6 +7,7 @@ export interface IFriends {
     color: string
     lastEntryDate: string
     currentStreak: number
+    averageAttemptsCount: number
   }
 }
 

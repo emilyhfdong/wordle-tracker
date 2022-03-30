@@ -5,6 +5,7 @@ const GET_FEED_RESPONSE = {
       lastPlayed: "2022-03-29T04:42:30.542Z",
       name: "Emily",
       userId: "BNLGJ",
+      averageAttemptsCount: 3.53,
     },
   ],
   dayEntriesByDate: [

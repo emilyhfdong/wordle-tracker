@@ -8,10 +8,10 @@ import {
   View,
 } from "react-native"
 import { useFeedRequest } from "../components/initializer.hooks"
+import { Scores } from "../components/scores"
 import { theme } from "../constants/theme"
 import { useAppSelector } from "../redux/hooks"
 import { RootTabScreenProps } from "../types"
-import { Streak } from "../components/streak"
 
 interface IFriendsProps {}
 
@@ -20,15 +20,22 @@ const getLastPlayedText = (lastPlayedDate: string) => {
     return "Never"
   }
   const lastPlayed = DateTime.fromISO(lastPlayedDate)
-  return `${lastPlayed.toFormat("EEE, MMM d t")} (${lastPlayed.toRelative()})`
+  if (Math.abs(lastPlayed.diffNow("hour").hours) > 24) {
+    return lastPlayed.toFormat("EEE, MMM d t")
+  }
+  return lastPlayed.toRelative()
 }
 
 export const Friends: React.FC<
   IFriendsProps & RootTabScreenProps<"Friends">
 > = ({ navigation }) => {
-  const friends = useAppSelector((state) =>
-    state.feed.friends ? Object.values(state.feed.friends) : []
-  )
+  const userId = useAppSelector((state) => state.user.id)
+  const friends = useAppSelector((state) => {
+    const friendsMap = state.feed.friends || {}
+    return Object.values(friendsMap).filter(
+      (_, idx) => Object.keys(friendsMap)[idx] !== userId
+    )
+  })
   const { refetch, isLoading } = useFeedRequest()
 
   return (
@@ -75,9 +82,10 @@ export const Friends: React.FC<
               Last played: {getLastPlayedText(friend.lastEntryDate)}
             </Text>
           </View>
-          <Streak
+          <Scores
             currentStreak={friend.currentStreak}
             lastPlayedDate={DateTime.fromISO(friend.lastEntryDate).toISODate()}
+            averageAttemptsCount={friend.averageAttemptsCount}
           />
         </View>
       ))}
