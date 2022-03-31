@@ -1,17 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
-import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import {
-  Animated,
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  ActivityIndicator,
-} from "react-native"
-import { useFeedRequest } from "../components/initializer.hooks"
+import { Animated, View, TextInput } from "react-native"
 import { Tile, TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
 import { Title } from "../components/title"
-import { BACKSPACE, Keyboard } from "../components/keyboard"
 import { theme } from "../constants/theme"
 import { BackendService } from "../services/backend"
 import { useDispatch } from "react-redux"

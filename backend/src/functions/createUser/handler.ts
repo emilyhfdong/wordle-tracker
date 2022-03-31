@@ -12,6 +12,7 @@ const generateRandomId = () => {
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   const body = JSON.parse(event.body)
+  console.log("recieved body", event.body)
   if (!body.name) {
     return createResponse({
       body: { message: "Missing `name` field" },
@@ -29,7 +30,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   }
 
   const user = await database.putUser(id, { name: body.name, friendIds: [] })
-
+  console.log("created user", user)
   return createResponse({
     body: {
       user: {

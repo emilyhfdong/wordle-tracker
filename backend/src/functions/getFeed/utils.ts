@@ -96,7 +96,7 @@ export const getFriendDetails = ({
       sortedDayEntries,
       DateTime.now().toISODate()
     ),
-    lastPlayed: sortedDayEntries[0].createdAt,
+    lastPlayed: sortedDayEntries[0]?.createdAt,
     averageAttemptsCount: getAverageAtempts(sortedDayEntries),
     name: metadata.name,
     userId: metadata.pk,

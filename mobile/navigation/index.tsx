@@ -7,14 +7,11 @@ import {
 } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import * as React from "react"
-import { ColorSchemeName, View } from "react-native"
+import { ColorSchemeName } from "react-native"
 import { HeaderStreak } from "../components/header-streak"
-import { SummaryModal } from "../components/summary-modal"
 import { theme } from "../constants/theme"
 
-import useColorScheme from "../hooks/useColorScheme"
 import { AddFriend } from "../screens/add-friend"
-import { CalendarScreen } from "../screens/calendar"
 import { Feed } from "../screens/feed"
 import { Friends } from "../screens/friends"
 import { TodaysWordScreen } from "../screens/todays-word"
@@ -66,8 +63,6 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>()
 
 function BottomTabNavigator() {
-  const colorScheme = useColorScheme()
-
   return (
     <BottomTab.Navigator
       initialRouteName="Today"

@@ -8,6 +8,8 @@ import useColorScheme from "./hooks/useColorScheme"
 import Navigation from "./navigation"
 import { persistor, store } from "./redux/store"
 import { PersistGate } from "redux-persist/integration/react"
+import { ErrorBoundary } from "./components/error-boundary"
+import React from "react"
 
 export default function App() {
   const isLoadingComplete = useCachedResources()
@@ -17,16 +19,18 @@ export default function App() {
     return null
   } else {
     return (
-      <Provider store={store}>
-        <PersistGate persistor={persistor}>
-          <Initializer>
-            <SafeAreaProvider>
-              <Navigation colorScheme={colorScheme} />
-              <StatusBar />
-            </SafeAreaProvider>
-          </Initializer>
-        </PersistGate>
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <PersistGate persistor={persistor}>
+            <Initializer>
+              <SafeAreaProvider>
+                <Navigation colorScheme={colorScheme} />
+                <StatusBar />
+              </SafeAreaProvider>
+            </Initializer>
+          </PersistGate>
+        </Provider>
+      </ErrorBoundary>
     )
   }
 }
