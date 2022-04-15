@@ -1,5 +1,6 @@
 import { IDayEntryItem, IUserMetaDataItem } from "@libs/database/types"
 import { config } from "@libs/environment"
+import { getAverageAtempts, getCurrentStreak } from "@libs/utils"
 import { DateTime, Settings } from "luxon"
 
 interface IDateGroup {
@@ -39,28 +40,6 @@ export const getGroupedDayEntries = (
     [] as IDateGroup[]
   )
 
-const getCurrentStreak = (dayEntries: IDayEntryItem[], todaysDate: string) => {
-  let streak = 0
-  if (!dayEntries.length) {
-    return streak
-  }
-
-  let date =
-    dayEntries[0].word.date === todaysDate
-      ? todaysDate
-      : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
-
-  for (let i = 0; i < dayEntries.length; i++) {
-    console.log("hii day entry date", dayEntries[i].word.date)
-    if (dayEntries[i].word.date !== date) {
-      return streak
-    }
-    streak += 1
-    date = DateTime.fromISO(date).minus({ days: 1 }).toISODate()
-  }
-  return streak
-}
-
 interface IFriendDetails {
   userId: string
   name: string
@@ -69,14 +48,6 @@ interface IFriendDetails {
   averageAttemptsCount: number
   pingStatus: "notifications_disabled" | "already_pinged" | "ready"
 }
-
-const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
-  Number(
-    (
-      dayEntries.reduce((acc, curr) => acc + curr.attemptsCount, 0) /
-      dayEntries.length
-    ).toFixed(2)
-  )
 
 export const getFriendDetails = ({
   dayEntries,

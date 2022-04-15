@@ -38,6 +38,14 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
+  getUser: {
+    handler: `src/functions/getUser/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}" },
+      },
+    ],
+  },
   createDayEntry: {
     handler: `src/functions/createDayEntry/handler.handler`,
     events: [
