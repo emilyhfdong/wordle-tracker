@@ -14,7 +14,7 @@ import { queryClient } from "./query/client"
 
 export default function App() {
   const isLoadingComplete = useCachedResources()
-  persistor.purge()
+  // persistor.purge()
   if (!isLoadingComplete) {
     return null
   } else {

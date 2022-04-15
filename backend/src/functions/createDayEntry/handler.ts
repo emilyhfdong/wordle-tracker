@@ -44,8 +44,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const playedAt = DateTime.now().toUTC().toISO()
 
   console.log("creating day entry for user", userId)
+  const attempts = attemptsDetails.split(" ")
+  const failed = attempts[attempts.length - 1] !== word.answer
   const dayEntry = await database.createUserDayEntry(userId, {
-    attemptsCount: attemptsDetails.split(" ").length,
+    attemptsCount: attemptsDetails.split(" ").length + (failed ? 1 : 0),
     attemptsDetails,
     createdAt: playedAt,
     word: word,

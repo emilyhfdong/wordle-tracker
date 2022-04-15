@@ -193,7 +193,7 @@ export const GuessDistribution: React.FC = () => {
           key={count}
           occurance={occurance}
           count={count}
-          maxOccurance={maxOccurance || 0}
+          maxOccurance={maxOccurance || 1}
         />
       ))}
     </View>

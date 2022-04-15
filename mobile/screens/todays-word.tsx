@@ -22,10 +22,11 @@ export const TodaysWordScreen: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
   const { data } = useUser(userId)
   const [summaryModalIsOpen, setSummaryModalIsOpen] = useState(false)
-
+  const [hasInitialized, setHasInitialized] = useState(false)
   const dispatch = useAppDispatch()
   const [isNotWord, setIsNotWord] = useState(false)
-  const [winToastIsVisible, setWinToastIsVisible] = useState(false)
+  const [toastText, setToastText] = useState("")
+
   const { mutate } = useCreateDayEntry({
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKeys.USER)
@@ -33,21 +34,33 @@ export const TodaysWordScreen: React.FC = () => {
     },
   })
 
+  const hasAlreadyPlayed = data?.datesPlayed.includes(date)
+
   useEffect(() => {
-    if (data?.datesPlayed.includes(date)) {
-      setSummaryModalIsOpen(true)
+    if (data && !hasInitialized) {
+      setSummaryModalIsOpen(hasAlreadyPlayed || false)
+      setHasInitialized(true)
     }
-  }, [data?.datesPlayed])
+  }, [hasAlreadyPlayed])
 
   const handleKeyboardPress = (key: string) => {
+    if (hasAlreadyPlayed) {
+      return
+    }
     if (key === ENTER_KEY) {
       if (currentGuess.length === 5) {
         if (!isValidWord(currentGuess)) {
           setIsNotWord(true)
-          setTimeout(() => setIsNotWord(false), SHAKE_DURATION_IN_S * 1000)
+          setTimeout(() => {
+            setIsNotWord(false)
+          }, SHAKE_DURATION_IN_S * 1000)
+
           return
         }
-        if (word === currentGuess) {
+
+        if (word === currentGuess || prevGuesses.length === 5) {
+          const failed = prevGuesses.length === 5 && word !== currentGuess
+
           const allAttempts = [...prevGuesses, currentGuess]
           const dayEntry: TDayEntry = {
             attemptsCount: allAttempts.length,
@@ -58,7 +71,7 @@ export const TodaysWordScreen: React.FC = () => {
           }
           mutate({ dayEntry, userId })
           setTimeout(() => {
-            setWinToastIsVisible(true)
+            setToastText(failed ? "FAIL! 🧦" : "Impressive")
             setTimeout(() => {
               setSummaryModalIsOpen(true)
             }, 1000)
@@ -97,7 +110,7 @@ export const TodaysWordScreen: React.FC = () => {
         closeModal={() => setSummaryModalIsOpen(false)}
       />
       <Toast isVisible={isNotWord}>Not in word list</Toast>
-      <Toast isVisible={winToastIsVisible}>Impressive</Toast>
+      <Toast isVisible={Boolean(toastText)}>{toastText}</Toast>
       <View style={{ flex: 1, justifyContent: "center" }}>
         {new Array(6).fill(0).map((_, idx) => (
           <Row

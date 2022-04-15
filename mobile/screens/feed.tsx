@@ -140,7 +140,7 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
             {isSelf ? self.name : friend.name}
           </Text>
           <Text style={{ color: theme.light.grey, fontSize: 12 }}>
-            {attemptsCount} / 6
+            {attemptsCount <= 6 ? attemptsCount : "X"} / 6
           </Text>
         </View>
         <Board

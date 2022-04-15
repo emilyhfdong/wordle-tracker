@@ -141,6 +141,17 @@ export const AddFriend: React.FC<
         )}
       </View>
       <Keyboard prevGuesses={[]} onKeyPress={handleKeyboardPress} />
+      <Text
+        style={{
+          position: "absolute",
+          bottom: 5,
+          right: 30,
+          fontSize: 10,
+          color: theme.light.lightGrey,
+        }}
+      >
+        04/15/2022
+      </Text>
     </View>
   )
 }

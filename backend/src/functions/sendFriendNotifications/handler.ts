@@ -40,7 +40,9 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
         .map((friend) => ({
           to: friend.metadata.pushToken,
           title: `${user.metadata.name} played today's wordzle`,
-          body: `Wordzle ${newDayEntry.word.number} ${newDayEntry.attemptsCount}/6`,
+          body: `Wordzle ${newDayEntry.word.number} ${
+            newDayEntry.attemptsCount <= 6 ? newDayEntry.attemptsCount : "X"
+          }/6`,
         }))
 
       const chunks = expo.chunkPushNotifications(messages)
