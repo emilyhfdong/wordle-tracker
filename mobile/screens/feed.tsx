@@ -4,22 +4,17 @@ import { theme } from "../constants/theme"
 import { useAppSelector } from "../redux/hooks"
 import { DateTime } from "luxon"
 import { getTileColor } from "../components/tile"
-import { useFeedRequest } from "../components/initializer.hooks"
-import { RH } from "../utils/responsive"
-import { IDayEntry } from "../redux/slices/day-entries.slice"
+import { useFeed, useFriends, useUser } from "../query/hooks"
+import { FullScreenLoading } from "../components/full-screen-loading"
+import { TDayEntry } from "../services/types"
 
-interface IFeedProps {}
+export const Feed: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data, isLoading, refetch, isRefetching } = useFeed(userId)
+  const { isLoading: friendsIsLoading } = useFriends(userId)
 
-export const Feed: React.FC<IFeedProps> = () => {
-  const { friends, groupedEntries, isLoading, refetch } = useFeedRequest()
-  const todaysDate = useAppSelector((state) => state.todaysWord.date)
-  const hasPlayedToday = useAppSelector(
-    (state) => state.dayEntries[0]?.word?.date === todaysDate
-  )
-  const isCutter = useAppSelector((state) => state.user.id === "SJMKR")
-
-  if (!friends) {
-    return null
+  if (isLoading || friendsIsLoading) {
+    return <FullScreenLoading />
   }
 
   return (
@@ -31,47 +26,43 @@ export const Feed: React.FC<IFeedProps> = () => {
         transform: [{ scaleY: -1 }],
       }}
       refreshControl={
-        <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
       }
     >
       <View style={{ transform: [{ scaleY: -1 }], paddingTop: 20 }}>
-        {!hasPlayedToday && isCutter ? (
-          <CheatingWarning />
-        ) : (
-          groupedEntries
-            ?.slice()
-            .reverse()
-            ?.map((group, groupIdx) => (
+        {data?.dayEntriesByDate
+          ?.slice()
+          .reverse()
+          ?.map((group, groupIdx) => (
+            <View
+              key={groupIdx}
+              style={{
+                alignItems: "center",
+                paddingBottom: 20,
+              }}
+            >
               <View
-                key={groupIdx}
                 style={{
-                  alignItems: "center",
-                  paddingBottom: 20,
+                  backgroundColor: "#F0F0F0",
+                  height: 20,
+                  borderRadius: 8,
+                  paddingHorizontal: 10,
+                  justifyContent: "center",
                 }}
               >
-                <View
-                  style={{
-                    backgroundColor: "#F0F0F0",
-                    height: 20,
-                    borderRadius: 8,
-                    paddingHorizontal: 10,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text>
-                    {DateTime.fromISO(group.date).toFormat("EEE, MMM d")}
-                  </Text>
-                </View>
-                {group.entries
-                  .slice()
-                  .reverse()
-                  .map((entry, idx) => (
-                    <DayEntry key={idx} {...entry} date={group.date} />
-                  ))}
+                <Text>
+                  {DateTime.fromISO(group.date).toFormat("EEE, MMM d")}
+                </Text>
               </View>
-            ))
-        )}
-        {!groupedEntries?.length && (
+              {group.entries
+                .slice()
+                .reverse()
+                .map((entry, idx) => (
+                  <DayEntry key={idx} {...entry} date={group.date} />
+                ))}
+            </View>
+          ))}
+        {!data?.dayEntriesByDate?.length && (
           <View
             style={{
               flex: 1,
@@ -97,7 +88,7 @@ export const Feed: React.FC<IFeedProps> = () => {
   )
 }
 
-export const DayEntry: React.FC<IDayEntry & { date: string }> = ({
+export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   userId,
   word,
   attemptsDetails,
@@ -105,13 +96,14 @@ export const DayEntry: React.FC<IDayEntry & { date: string }> = ({
   date,
   attemptsCount,
 }) => {
-  const self = useAppSelector((state) => state.user)
-  const isSelf = userId === self.id
-  const friends = useAppSelector((state) => state.feed.friends)
-  if (!friends) {
+  const selfUserId = useAppSelector((state) => state.user.id)
+  const isSelf = useAppSelector((state) => state.user.id === userId)
+  const { data } = useFriends(selfUserId)
+
+  if (!data) {
     return null
   }
-  const friend = friends[userId]
+  const friend = data[userId]
 
   return (
     <View
@@ -171,30 +163,6 @@ export const DayEntry: React.FC<IDayEntry & { date: string }> = ({
   )
 }
 
-export const CheatingWarning: React.FC = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        height: 600,
-      }}
-    >
-      <Text style={{ fontSize: 50, marginBottom: 10 }}>🛑</Text>
-      <Text
-        style={{
-          fontSize: 20,
-          textAlign: "center",
-          marginBottom: 30,
-        }}
-      >
-        stop cheating cutter!!
-      </Text>
-    </View>
-  )
-}
-
 interface IBoardProps {
   attemptsDetail: string
   word: string
@@ -206,10 +174,12 @@ export const Board: React.FC<IBoardProps> = ({
   attemptsDetail,
   date,
 }) => {
-  const selfDayEntries = useAppSelector((state) => state.dayEntries)
-  const hasPlayedThisDay = selfDayEntries.some(
-    (entry) => entry.word.date === date
-  )
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useUser(userId)
+  const todaysDate = useAppSelector((state) => state.todaysWord.date)
+  const hasPlayedThisDay = data?.datesPlayed.includes(date)
+  const isTodaysWordAndHaventPlayed = !hasPlayedThisDay && todaysDate === date
+
   return (
     <View>
       {attemptsDetail.split(" ").map((attemptWord, wordIdx) => (
@@ -217,7 +187,9 @@ export const Board: React.FC<IBoardProps> = ({
           {attemptWord.split("").map((letter, index) => (
             <View
               style={{
-                backgroundColor: getTileColor({ letter, word, index }),
+                backgroundColor: !isTodaysWordAndHaventPlayed
+                  ? getTileColor({ letter, word, index })
+                  : theme.light.grey,
                 height: 35,
                 width: 35,
                 margin: 2,

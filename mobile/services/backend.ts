@@ -1,10 +1,18 @@
 import axios from "axios"
-import { IDayEntry } from "../redux/slices/day-entries.slice"
-import { TGetFeedResponse } from "./types"
+import {
+  TDayEntry,
+  TGetFeedResponse,
+  TGetFriendsResponse,
+  TGetUserResponse,
+} from "./types"
 
 const API_BASE = "https://v48qv8vkjg.execute-api.us-east-1.amazonaws.com/dev/"
 
-const getTodaysWord = async () => {
+const getTodaysWord = async (): Promise<{
+  word: string
+  number: number
+  date: string
+}> => {
   const response = await axios.get("today", {
     baseURL: API_BASE,
   })
@@ -28,6 +36,14 @@ const createUser = async (name: string) => {
   return response.data?.user
 }
 
+export const getUser = async (userId: string) => {
+  const response = await axios.get<TGetUserResponse>(`users/${userId}`, {
+    baseURL: API_BASE,
+  })
+  console.log("DONE - getting user")
+  return response.data
+}
+
 const updateUserWithPushToken = async (userId: string, pushToken: string) => {
   const response = await axios.patch<{ user: { id: string; name: string } }>(
     `users/${userId}`,
@@ -42,7 +58,7 @@ const updateUserWithPushToken = async (userId: string, pushToken: string) => {
 
 const createDayEntry = async (
   userId: string,
-  { attemptsDetails, word }: IDayEntry
+  { attemptsDetails, word }: TDayEntry
 ) => {
   const response = await axios.post(
     `users/${userId}/day-entry`,
@@ -63,6 +79,17 @@ const getFeed = async (userId: string) => {
     baseURL: API_BASE,
   })
   console.log("DONE - getting feed")
+  return response.data
+}
+
+const getFriends = async (userId: string) => {
+  const response = await axios.get<TGetFriendsResponse>(
+    `users/${userId}/friends`,
+    {
+      baseURL: API_BASE,
+    }
+  )
+  console.log("DONE - getting friends")
   return response.data
 }
 
@@ -98,4 +125,6 @@ export const BackendService = {
   addFriend,
   updateUserWithPushToken,
   pingFriend,
+  getUser,
+  getFriends,
 }

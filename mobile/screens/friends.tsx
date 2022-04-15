@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
 } from "react-native"
 import { FriendListItem } from "../components/friend-list-item"
-import { useFeedRequest } from "../components/initializer.hooks"
+import { FullScreenLoading } from "../components/full-screen-loading"
+import { useFriends } from "../query/hooks"
 import { useAppSelector } from "../redux/hooks"
 import { RootTabScreenProps } from "../types"
 
@@ -16,16 +17,11 @@ export const Friends: React.FC<
   IFriendsProps & RootTabScreenProps<"Friends">
 > = ({ navigation }) => {
   const userId = useAppSelector((state) => state.user.id)
-  const friends = useAppSelector((state) => {
-    const friendsMap = state.feed.friends || {}
-    return Object.values(friendsMap)
-      .map((friend, idx) => ({
-        ...friend,
-        friendId: Object.keys(friendsMap)[idx],
-      }))
-      .filter((friend) => friend.friendId !== userId)
-  })
-  const { refetch, isLoading } = useFeedRequest()
+  const { data, isLoading, isRefetching, refetch } = useFriends(userId)
+
+  if (isLoading || !data) {
+    return <FullScreenLoading />
+  }
 
   return (
     <ScrollView
@@ -36,10 +32,10 @@ export const Friends: React.FC<
         paddingHorizontal: 15,
       }}
       refreshControl={
-        <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
       }
     >
-      {friends.map((friend, idx) => (
+      {Object.values(data).map((friend, idx) => (
         <FriendListItem key={idx} {...friend} />
       ))}
       <TouchableOpacity

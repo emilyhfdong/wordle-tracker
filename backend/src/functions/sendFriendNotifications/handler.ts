@@ -5,32 +5,6 @@ import { DynamoDBStreamHandler } from "aws-lambda"
 import { Converter } from "aws-sdk/clients/dynamodb"
 import { Expo, ExpoPushMessage } from "expo-server-sdk"
 
-export const getTileEmoji = ({
-  letter,
-  word,
-  index,
-}: {
-  letter: string
-  word: string
-  index: number
-}) => {
-  if (word[index] === letter) return "🟩"
-  if (letter && word.includes(letter)) return "🟨"
-  return "⬜"
-}
-
-const getSquares = (guesses: string[], word: string) => {
-  return guesses
-    .map(
-      (guess) =>
-        `${guess
-          .split("")
-          .map((letter, index) => getTileEmoji({ index, letter, word }))
-          .join("")}`
-    )
-    .join("\r\n")
-}
-
 export const handler: DynamoDBStreamHandler = async (streamEvent) => {
   const { Records } = streamEvent
 
@@ -66,12 +40,7 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
         .map((friend) => ({
           to: friend.metadata.pushToken,
           title: `${user.metadata.name} played today's wordzle`,
-          body: `Wordzle ${newDayEntry.word.number} ${
-            newDayEntry.attemptsCount
-          }/6\n\n${getSquares(
-            newDayEntry.attemptsDetails.split(" "),
-            newDayEntry.word.answer
-          )}`,
+          body: `Wordzle ${newDayEntry.word.number} ${newDayEntry.attemptsCount}/6`,
         }))
 
       const chunks = expo.chunkPushNotifications(messages)

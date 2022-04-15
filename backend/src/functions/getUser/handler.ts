@@ -3,6 +3,7 @@ import {
   createResponse,
   getAverageAtempts,
   getCurrentStreak,
+  getGuessDistribution,
   getMaxStreak,
   getWinPercent,
 } from "@libs/utils"
@@ -34,6 +35,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )
 
+  const datesPlayed = sortedDayEntries.map((entry) => entry.word.date)
+
   return createResponse({
     body: {
       userId,
@@ -44,6 +47,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       winPercent: getWinPercent(sortedDayEntries),
       numberOfDaysPlayed: sortedDayEntries.length,
       lastPlayed: sortedDayEntries[0]?.createdAt,
+      datesPlayed,
+      lastEntry: sortedDayEntries[0],
+      guessDistribution: getGuessDistribution(sortedDayEntries),
     },
   })
 }

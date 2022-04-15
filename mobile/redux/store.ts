@@ -1,17 +1,13 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit"
-import { dayEntriesSlice } from "./slices/day-entries.slice"
 import { todaysWordSlice } from "./slices/todays-word"
 import { userSlice } from "./slices/user.slice"
 import { persistStore, persistReducer } from "redux-persist"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import thunk from "redux-thunk"
-import { feedSlice } from "./slices/feed.slice"
 
 const rootReducer = combineReducers({
   user: userSlice.reducer,
-  dayEntries: dayEntriesSlice.reducer,
   todaysWord: todaysWordSlice.reducer,
-  feed: feedSlice.reducer,
 })
 
 const persistedRootReducer = persistReducer(

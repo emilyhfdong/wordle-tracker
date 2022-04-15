@@ -2,54 +2,20 @@ import React, { useEffect, useState } from "react"
 import {
   View,
   Text,
-  Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Share,
 } from "react-native"
 import { theme } from "../constants/theme"
 import { useAppSelector } from "../redux/hooks"
-import { IDayEntry } from "../redux/slices/day-entries.slice"
 import ShareIcon from "../assets/images/share.svg"
 import { DateTime, Settings } from "luxon"
 import { getTileColor } from "./tile"
+import { useUser } from "../query/hooks"
 
 interface ISummaryModalProps {
   isOpen: boolean
   closeModal: () => void
-}
-
-export const getCurrentStreak = (
-  dayEntries: IDayEntry[],
-  todaysDate: string
-) => {
-  let streak = 0
-  if (!dayEntries.length) {
-    return streak
-  }
-  let date =
-    dayEntries[0].word.date === todaysDate
-      ? todaysDate
-      : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
-
-  for (let i = 0; i < dayEntries.length; i++) {
-    if (dayEntries[i].word.date !== date) {
-      return streak
-    }
-    streak += 1
-    date = DateTime.fromISO(date).minus({ days: 1 }).toISODate()
-  }
-  return streak
-}
-
-const getMaxStreak = (dayEntries: IDayEntry[], todaysDate: string) => {
-  let streak = 0
-  let date = todaysDate
-  for (let i = 0; i < dayEntries.length; i++) {
-    streak += dayEntries[i].word.date === date ? 1 : 0
-    date = DateTime.fromISO(date).minus({ days: 1 }).toISODate()
-  }
-  return streak
 }
 
 const tileColorToEmoji = {
@@ -77,13 +43,9 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
   isOpen,
   closeModal,
 }) => {
-  const todaysDate = useAppSelector((state) => state.todaysWord.date)
-  const dayEntries = useAppSelector((state) => state.dayEntries)
-  const wonEntries = dayEntries.filter((entry) => entry.attemptsCount <= 6)
-  const winPercent = Math.round((wonEntries.length / dayEntries.length) * 100)
-  const currentStreak = getCurrentStreak(dayEntries, todaysDate)
-  const maxStreak = getMaxStreak(dayEntries, todaysDate)
-  const lastEntry = dayEntries[0]
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useUser(userId)
+  const lastEntry = data?.lastEntry
   const [currentTime, setCurrentTime] = useState(DateTime.now())
 
   Settings.defaultZone = "America/Toronto"
@@ -141,10 +103,13 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
       >
         <Text style={{ fontWeight: "bold", fontSize: 16 }}>STATISTICS</Text>
         <View style={{ flexDirection: "row", marginBottom: 25, marginTop: 10 }}>
-          <Statistic label="Played" value={dayEntries.length} />
-          <Statistic label="Win %" value={winPercent} />
-          <Statistic label={"Current\nStreak"} value={currentStreak} />
-          <Statistic label={"Max\nStreak"} value={maxStreak} />
+          <Statistic label="Played" value={data?.numberOfDaysPlayed || 0} />
+          <Statistic label="Win %" value={data?.winPercent || 0} />
+          <Statistic
+            label={"Current\nStreak"}
+            value={data?.currentStreak || 0}
+          />
+          <Statistic label={"Max\nStreak"} value={data?.maxStreak || 0} />
         </View>
         <Text style={{ fontWeight: "bold", fontSize: 16 }}>
           GUESS DISTRIBUTION
@@ -214,24 +179,21 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
 }
 
 export const GuessDistribution: React.FC = () => {
-  const dayEntries = useAppSelector((state) => state.dayEntries)
-  const countOccurances = new Array(6).fill(0).map((_, idx) => ({
-    count: idx + 1,
-    occurance: dayEntries.filter((entry) => entry.attemptsCount - 1 === idx)
-      .length,
-  }))
-  const maxOccurance = countOccurances.reduce(
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useUser(userId)
+  const countOccurances = data?.guessDistribution
+  const maxOccurance = countOccurances?.reduce(
     (acc, curr) => Math.max(acc, curr.occurance),
     0
   )
   return (
     <View style={{ width: "100%", marginVertical: 10 }}>
-      {countOccurances.map(({ count, occurance }) => (
+      {countOccurances?.map(({ count, occurance }) => (
         <OccuranceBar
           key={count}
           occurance={occurance}
           count={count}
-          maxOccurance={maxOccurance}
+          maxOccurance={maxOccurance || 0}
         />
       ))}
     </View>

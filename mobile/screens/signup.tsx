@@ -1,20 +1,25 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Animated, View, TextInput, Text } from "react-native"
+import { Animated, View, TextInput } from "react-native"
 import { Tile, TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
 import { Title } from "../components/title"
 import { theme } from "../constants/theme"
-import { BackendService } from "../services/backend"
 import { useDispatch } from "react-redux"
 import { userActions } from "../redux/slices/user.slice"
 import { FullScreenLoading } from "../components/full-screen-loading"
+import { useCreateUser } from "../query/hooks"
 
-export const Signup: React.FC = ({ children }) => {
+export const Signup: React.FC = () => {
   const [name, setName] = useState("")
   const [currentView, setCurrentView] = useState<"HELLO" | "INPUT">("HELLO")
-  const [isLoading, setIsLoading] = useState(false)
   const opacityAnim = useRef(new Animated.Value(1)).current
   const dispatch = useDispatch()
   const inputRef = useRef<TextInput>(null)
+
+  const { mutate, isLoading } = useCreateUser(name, {
+    onSuccess: (user) => {
+      dispatch(userActions.setUser(user))
+    },
+  })
 
   useEffect(() => {
     Animated.timing(opacityAnim, {
@@ -90,12 +95,7 @@ export const Signup: React.FC = ({ children }) => {
                 onChangeText={setName}
                 returnKeyType="go"
                 onSubmitEditing={async () => {
-                  if (name) {
-                    setIsLoading(true)
-                    const user = await BackendService.createUser(name)
-                    dispatch(userActions.setUser(user))
-                    setIsLoading(false)
-                  }
+                  mutate()
                 }}
               />
             </View>

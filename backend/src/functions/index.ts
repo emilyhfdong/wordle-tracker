@@ -62,6 +62,14 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
+  getFriendsList: {
+    handler: `src/functions/getFriendsList/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/friends" },
+      },
+    ],
+  },
   pingFriend: {
     handler: `src/functions/pingFriend/handler.handler`,
     events: [

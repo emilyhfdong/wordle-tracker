@@ -66,3 +66,11 @@ export const getWinPercent = (dayEntries: IDayEntryItem[]) => {
   const wonEntries = dayEntries.filter((entry) => entry.attemptsCount <= 6)
   return Math.round((wonEntries.length / dayEntries.length) * 100)
 }
+
+export const getGuessDistribution = (dayEntries: IDayEntryItem[]) => {
+  return new Array(6).fill(0).map((_, idx) => ({
+    count: idx + 1,
+    occurance: dayEntries.filter((entry) => entry.attemptsCount - 1 === idx)
+      .length,
+  }))
+}

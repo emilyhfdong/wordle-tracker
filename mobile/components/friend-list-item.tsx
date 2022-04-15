@@ -1,21 +1,21 @@
 import { DateTime } from "luxon"
 import React from "react"
 import { View, Text, TouchableOpacity, Alert, AlertButton } from "react-native"
-import { useDispatch } from "react-redux"
 import { theme } from "../constants/theme"
+import { queryClient } from "../query/client"
+import { QueryKeys, usePingFriend } from "../query/hooks"
 import { useAppSelector } from "../redux/hooks"
-import { feedActions, TPingStatus } from "../redux/slices/feed.slice"
-import { BackendService } from "../services/backend"
+import { TGetFriendsResponse, TPingStatus } from "../services/types"
 import { Scores } from "./scores"
 
 interface IFriendListItemProps {
   name: string
   color: string
-  lastEntryDate: string
+  lastPlayed: string
   currentStreak: number
   averageAttemptsCount: number
   pingStatus: TPingStatus
-  friendId: string
+  userId: string
 }
 
 const getLastPlayedText = (lastPlayedDate: string) => {
@@ -81,7 +81,6 @@ const getAlertArgs = ({
           text: "OK",
           onPress: async () => {
             updateFriend()
-            await BackendService.pingFriend(userId, friendId)
           },
         },
       ],
@@ -94,32 +93,47 @@ export const FriendListItem: React.FC<IFriendListItemProps> = ({
   averageAttemptsCount,
   color,
   currentStreak,
-  lastEntryDate,
+  lastPlayed,
   name,
   pingStatus,
-  friendId,
+  userId,
 }) => {
-  const userId = useAppSelector((state) => state.user.id)
-  const dispatch = useDispatch()
+  const selfUserId = useAppSelector((state) => state.user.id)
   const todaysDate = useAppSelector((state) => state.todaysWord.date)
   const hasPlayedToday =
-    DateTime.fromISO(lastEntryDate, {
+    DateTime.fromISO(lastPlayed, {
       zone: "America/Toronto",
     }).toISODate() === todaysDate
 
+  const { mutate } = usePingFriend({
+    onSuccess: () => {
+      queryClient.invalidateQueries(QueryKeys.FRIENDS)
+    },
+    onMutate: () => {
+      queryClient.setQueryData(
+        QueryKeys.FRIENDS,
+        (prev: TGetFriendsResponse | undefined) =>
+          prev
+            ? {
+                ...prev,
+                [userId]: {
+                  ...prev[userId],
+                  pingStatus: "already_pinged" as const,
+                },
+              }
+            : {}
+      )
+    },
+  })
+
   const alertArgs = getAlertArgs({
     hasPlayedToday,
-    friendId,
-    userId,
+    friendId: userId,
+    userId: selfUserId,
     name,
     pingStatus,
     updateFriend: () => {
-      dispatch(
-        feedActions.editFriend({
-          friendId,
-          updatedFields: { pingStatus: "already_pinged" },
-        })
-      )
+      mutate({ userId: selfUserId, friendId: userId })
     },
   })
 
@@ -153,12 +167,12 @@ export const FriendListItem: React.FC<IFriendListItemProps> = ({
             fontStyle: "italic",
           }}
         >
-          Last played: {getLastPlayedText(lastEntryDate)}
+          Last played: {getLastPlayedText(lastPlayed)}
         </Text>
       </View>
       <Scores
         currentStreak={currentStreak}
-        lastPlayedDate={DateTime.fromISO(lastEntryDate).toISODate()}
+        lastPlayedDate={DateTime.fromISO(lastPlayed).toISODate()}
         averageAttemptsCount={averageAttemptsCount}
       />
     </TouchableOpacity>

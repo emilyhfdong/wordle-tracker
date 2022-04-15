@@ -1,7 +1,7 @@
 import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { getFriendDetails, getGroupedDayEntries } from "./utils"
+import { getFriendDetails } from "./utils"
 import { DateTime, Settings } from "luxon"
 import { config } from "@libs/environment"
 
@@ -23,34 +23,22 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     user.metadata.friendIds.map((friendId) => database.getUserItems(friendId))
   )
 
-  const allEntries = friendItems.reduce(
-    (acc, curr) => [...acc, ...curr.dayEntries],
-    user.dayEntries
-  )
-
-  allEntries.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  )
-
-  // TODO - paginate this request
-  const dayEntriesByDate = getGroupedDayEntries(allEntries).slice(0, 7)
-
   const userPingedFriendIds = user.initiatedPings
     .filter((ping) =>
       ping.sk.includes(`initiated_ping#${DateTime.now().toISODate()}`)
     )
     .map((ping) => ping.sk.split("#")[ping.sk.split("#").length - 1])
 
+  const friendsList = friendItems.map((item, index) =>
+    getFriendDetails({ ...item, userPingedFriendIds, index })
+  )
+
+  const friendsMap = friendsList.reduce(
+    (acc, curr) => ({ ...acc, [curr.userId]: curr }),
+    {}
+  )
+
   return createResponse({
-    body: {
-      // TODO - remove this
-      friends: [
-        ...friendItems.map((item) =>
-          getFriendDetails({ ...item, userPingedFriendIds })
-        ),
-        getFriendDetails({ ...user, userPingedFriendIds }),
-      ],
-      dayEntriesByDate,
-    },
+    body: friendsMap,
   })
 }

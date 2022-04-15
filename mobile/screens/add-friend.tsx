@@ -6,12 +6,11 @@ import { Keyboard, ENTER_KEY, BACKSPACE } from "../components/keyboard"
 import { theme } from "../constants/theme"
 import { useAppSelector } from "../redux/hooks"
 import { Title } from "../components/title"
-import { FontAwesome } from "@expo/vector-icons"
 import CloseIcon from "../assets/images/close-icon.svg"
 import { RootStackScreenProps } from "../types"
-import { BackendService } from "../services/backend"
 import { FullScreenLoading } from "../components/full-screen-loading"
-import { useFeedRequest } from "../components/initializer.hooks"
+import { QueryKeys, useAddFriend } from "../query/hooks"
+import { queryClient } from "../query/client"
 interface IAddFriendProps {}
 
 export const AddFriend: React.FC<
@@ -19,22 +18,19 @@ export const AddFriend: React.FC<
 > = ({ navigation }) => {
   const id = useAppSelector((state) => state.user.id)
   const [friendCode, setFriendCode] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [hasError, setHasError] = useState(false)
-  const { refetch } = useFeedRequest()
+
+  const { mutate, isLoading, error } = useAddFriend({
+    onSuccess: () => {
+      queryClient.invalidateQueries(QueryKeys.FRIENDS)
+      queryClient.invalidateQueries(QueryKeys.FEED)
+      navigation.pop()
+    },
+  })
 
   const handleKeyboardPress = async (key: string) => {
     if (key === ENTER_KEY) {
       if (friendCode.length === 5) {
-        setIsLoading(true)
-        try {
-          await BackendService.addFriend(id, friendCode)
-          refetch()
-          navigation.pop()
-        } catch (e) {
-          setHasError(true)
-        }
-        setIsLoading(false)
+        mutate({ userId: id, friendId: friendCode })
       }
       return
     }
@@ -138,7 +134,7 @@ export const AddFriend: React.FC<
             />
           ))}
         </View>
-        {hasError && (
+        {error && (
           <Text style={{ marginTop: 30, color: "#e85a5a" }}>
             Something went wrong!
           </Text>

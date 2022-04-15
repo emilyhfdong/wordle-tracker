@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { View } from "react-native"
 import { BACKSPACE, ENTER_KEY, Keyboard } from "../components/keyboard"
 import { Row, SHAKE_DURATION_IN_S } from "../components/row"
@@ -7,28 +7,37 @@ import { Toast } from "../components/toast"
 import { theme } from "../constants/theme"
 
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import { RootTabScreenProps } from "../types"
 import { isValidWord } from "../utils/valid-words"
 import { todaysWordActions } from "../redux/slices/todays-word"
 import { SummaryModal } from "../components/summary-modal"
-import { dayEntriesActions, IDayEntry } from "../redux/slices/day-entries.slice"
-import { BackendService } from "../services/backend"
 import { DateTime } from "luxon"
+import { QueryKeys, useCreateDayEntry, useUser } from "../query/hooks"
+import { queryClient } from "../query/client"
+import { TDayEntry } from "../services/types"
 
-export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
-  navigation,
-}) => {
+export const TodaysWordScreen: React.FC = () => {
   const { currentGuess, prevGuesses, word, date, number } = useAppSelector(
     (state) => state.todaysWord
   )
-  const lastDayEntry = useAppSelector((state) => state.dayEntries[0])
   const userId = useAppSelector((state) => state.user.id)
-  const [summaryModalIsOpen, setSummaryModalIsOpen] = useState(
-    lastDayEntry?.word.date === date
-  )
+  const { data } = useUser(userId)
+  const [summaryModalIsOpen, setSummaryModalIsOpen] = useState(false)
+
   const dispatch = useAppDispatch()
   const [isNotWord, setIsNotWord] = useState(false)
   const [winToastIsVisible, setWinToastIsVisible] = useState(false)
+  const { mutate } = useCreateDayEntry({
+    onSuccess: () => {
+      queryClient.invalidateQueries(QueryKeys.USER)
+      queryClient.invalidateQueries(QueryKeys.FEED)
+    },
+  })
+
+  useEffect(() => {
+    if (data?.datesPlayed.includes(date)) {
+      setSummaryModalIsOpen(true)
+    }
+  }, [data?.datesPlayed])
 
   const handleKeyboardPress = (key: string) => {
     if (key === ENTER_KEY) {
@@ -39,20 +48,19 @@ export const TodaysWordScreen: React.FC<RootTabScreenProps<"Today">> = ({
           return
         }
         if (word === currentGuess) {
+          const allAttempts = [...prevGuesses, currentGuess]
+          const dayEntry: TDayEntry = {
+            attemptsCount: allAttempts.length,
+            attemptsDetails: allAttempts.join(" "),
+            word: { date, answer: word, number },
+            createdAt: DateTime.now().toUTC().toISO(),
+            userId,
+          }
+          mutate({ dayEntry, userId })
           setTimeout(() => {
-            const allAttempts = [...prevGuesses, currentGuess]
             setWinToastIsVisible(true)
             setTimeout(() => {
               setSummaryModalIsOpen(true)
-              const dayEntry: IDayEntry = {
-                attemptsCount: allAttempts.length,
-                attemptsDetails: allAttempts.join(" "),
-                word: { date, answer: word, number },
-                createdAt: DateTime.now().toUTC().toISO(),
-                userId,
-              }
-              dispatch(dayEntriesActions.addDayEntry(dayEntry))
-              BackendService.createDayEntry(userId, dayEntry)
             }, 1000)
           }, TOTAL_WORD_FLIP_DURATION_IN_S * 1000)
         }
