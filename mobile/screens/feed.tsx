@@ -12,6 +12,11 @@ interface IFeedProps {}
 
 export const Feed: React.FC<IFeedProps> = () => {
   const { friends, groupedEntries, isLoading, refetch } = useFeedRequest()
+  const todaysDate = useAppSelector((state) => state.todaysWord.date)
+  const hasPlayedToday = useAppSelector(
+    (state) => state.dayEntries[0]?.word?.date === todaysDate
+  )
+  const isCutter = useAppSelector((state) => state.user.id === "SJMKR")
 
   if (!friends) {
     return null
@@ -30,38 +35,42 @@ export const Feed: React.FC<IFeedProps> = () => {
       }
     >
       <View style={{ transform: [{ scaleY: -1 }], paddingTop: 20 }}>
-        {groupedEntries
-          ?.slice()
-          .reverse()
-          ?.map((group, groupIdx) => (
-            <View
-              key={groupIdx}
-              style={{
-                alignItems: "center",
-                paddingBottom: 20,
-              }}
-            >
+        {!hasPlayedToday && isCutter ? (
+          <CheatingWarning />
+        ) : (
+          groupedEntries
+            ?.slice()
+            .reverse()
+            ?.map((group, groupIdx) => (
               <View
+                key={groupIdx}
                 style={{
-                  backgroundColor: "#F0F0F0",
-                  height: 20,
-                  borderRadius: 8,
-                  paddingHorizontal: 10,
-                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingBottom: 20,
                 }}
               >
-                <Text>
-                  {DateTime.fromISO(group.date).toFormat("EEE, MMM d")}
-                </Text>
+                <View
+                  style={{
+                    backgroundColor: "#F0F0F0",
+                    height: 20,
+                    borderRadius: 8,
+                    paddingHorizontal: 10,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text>
+                    {DateTime.fromISO(group.date).toFormat("EEE, MMM d")}
+                  </Text>
+                </View>
+                {group.entries
+                  .slice()
+                  .reverse()
+                  .map((entry, idx) => (
+                    <DayEntry key={idx} {...entry} date={group.date} />
+                  ))}
               </View>
-              {group.entries
-                .slice()
-                .reverse()
-                .map((entry, idx) => (
-                  <DayEntry key={idx} {...entry} date={group.date} />
-                ))}
-            </View>
-          ))}
+            ))
+        )}
         {!groupedEntries?.length && (
           <View
             style={{
@@ -158,6 +167,30 @@ export const DayEntry: React.FC<IDayEntry & { date: string }> = ({
           {DateTime.fromISO(createdAt).toFormat("t")}
         </Text>
       </View>
+    </View>
+  )
+}
+
+export const CheatingWarning: React.FC = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        height: 600,
+      }}
+    >
+      <Text style={{ fontSize: 50, marginBottom: 10 }}>🛑</Text>
+      <Text
+        style={{
+          fontSize: 20,
+          textAlign: "center",
+          marginBottom: 30,
+        }}
+      >
+        stop cheating cutter!!
+      </Text>
     </View>
   )
 }

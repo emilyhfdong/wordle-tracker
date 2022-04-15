@@ -32,7 +32,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )
 
-  const dayEntriesByDate = getGroupedDayEntries(allEntries)
+  // TODO - paginate this request
+  const dayEntriesByDate = getGroupedDayEntries(allEntries).slice(0, 7)
 
   const userPingedFriendIds = user.initiatedPings
     .filter((ping) =>

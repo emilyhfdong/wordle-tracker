@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Animated, View, TextInput } from "react-native"
+import { Animated, View, TextInput, Text } from "react-native"
 import { Tile, TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
 import { Title } from "../components/title"
 import { theme } from "../constants/theme"

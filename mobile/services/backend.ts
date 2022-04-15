@@ -1,7 +1,8 @@
 import axios from "axios"
-import { API_BASE } from "@env"
 import { IDayEntry } from "../redux/slices/day-entries.slice"
 import { TGetFeedResponse } from "./types"
+
+const API_BASE = "https://v48qv8vkjg.execute-api.us-east-1.amazonaws.com/dev/"
 
 const getTodaysWord = async () => {
   const response = await axios.get("today", {
