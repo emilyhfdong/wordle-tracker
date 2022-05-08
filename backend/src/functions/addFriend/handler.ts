@@ -32,11 +32,19 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   }
 
   console.log("finding friend with id", friendId)
+
   const friend = await database.getUser(friendId)
   if (!friend) {
     return createResponse({
       statusCode: 404,
       body: { message: `User ${friendId} not found` },
+    })
+  }
+
+  if (user.friendIds.includes(friendId)) {
+    console.log("already friends... returning early")
+    return createResponse({
+      body: { user, friend },
     })
   }
 
