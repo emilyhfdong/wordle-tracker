@@ -32,14 +32,10 @@ export const useCreateUser = (
   return useMutation(() => BackendService.createUser(name), { onSuccess })
 }
 
-export const useCreateTDayEntry = ({
-  onSuccess,
-}: {
-  onSuccess: () => void
-}) => {
+export const usecreateDayEntry = ({ onSuccess }: { onSuccess: () => void }) => {
   return useMutation(
     ({ userId, TDayEntry }: { userId: string; TDayEntry: TDayEntry }) =>
-      BackendService.createTDayEntry(userId, TDayEntry),
+      BackendService.createDayEntry(userId, TDayEntry),
     {
       onSuccess,
       retry: 3,

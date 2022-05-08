@@ -6,7 +6,7 @@ import { theme } from "../../../constants"
 import { useAppSelector } from "../../../redux"
 import { useFriends } from "../../../query"
 import { TDayEntry } from "../../../services"
-import { Board } from "./GroupedDayEntries"
+import { DayEntryBoard } from "./DayEntryBoard"
 
 export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   userId,
@@ -63,7 +63,7 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
             {attemptsCount <= 6 ? attemptsCount : "X"} / 6
           </Text>
         </View>
-        <Board
+        <DayEntryBoard
           word={word.answer}
           attemptsDetail={attemptsDetails}
           date={date}

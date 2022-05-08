@@ -4,12 +4,7 @@ import { theme } from "../../constants/theme"
 import { isValidWord } from "../../utils"
 import { todaysWordActions, useAppDispatch, useAppSelector } from "../../redux"
 import { DateTime } from "luxon"
-import {
-  queryClient,
-  QueryKeys,
-  useCreateTDayEntry,
-  useUser,
-} from "../../query"
+import { queryClient, QueryKeys, usecreateDayEntry, useUser } from "../../query"
 import { TDayEntry } from "../../services"
 import {
   Toast,
@@ -34,7 +29,7 @@ export const TodaysWord: React.FC = () => {
   const [isNotWord, setIsNotWord] = useState(false)
   const [toastText, setToastText] = useState("")
 
-  const { mutate } = useCreateTDayEntry({
+  const { mutate } = usecreateDayEntry({
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKeys.USER)
       queryClient.invalidateQueries(QueryKeys.FEED)

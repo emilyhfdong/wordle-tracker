@@ -60,7 +60,7 @@ export const ListItem: React.FC<TListItemProps> = ({
               fontStyle: "italic",
             }}
           >
-            {subtitle}{" "}
+            {subtitle}
           </Text>
         </View>
         {rightComponent}

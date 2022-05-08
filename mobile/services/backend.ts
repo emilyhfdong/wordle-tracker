@@ -56,7 +56,7 @@ const updateUserWithPushToken = async (userId: string, pushToken: string) => {
   return response.data?.user
 }
 
-const createTDayEntry = async (
+const createDayEntry = async (
   userId: string,
   { attemptsDetails, word }: TDayEntry
 ) => {
@@ -75,9 +75,12 @@ const createTDayEntry = async (
 }
 
 const getFeed = async (userId: string) => {
-  const response = await axios.get<TGetFeedResponse>(`users/${userId}/feed`, {
-    baseURL: API_BASE,
-  })
+  const response = await axios.get<TGetFeedResponse>(
+    `users/${userId}/grouped-feed`,
+    {
+      baseURL: API_BASE,
+    }
+  )
   console.log("DONE - getting feed")
   return response.data
 }
@@ -120,7 +123,7 @@ const pingFriend = async (userId: string, friendId: string) => {
 export const BackendService = {
   getTodaysWord,
   createUser,
-  createTDayEntry,
+  createDayEntry,
   getFeed,
   addFriend,
   updateUserWithPushToken,

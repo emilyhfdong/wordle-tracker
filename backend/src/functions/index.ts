@@ -46,7 +46,7 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-  createTDayEntry: {
+  createDayEntry: {
     handler: `src/functions/createDayEntry/handler.handler`,
     events: [
       {

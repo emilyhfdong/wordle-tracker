@@ -21,7 +21,7 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
   const { data } = useUser(userId)
   const todaysDate = useAppSelector((state) => state.todaysWord.date)
   const hasPlayedThisDay = data?.datesPlayed.includes(date)
-  const isTodaysWordAndHaventPlayed = !hasPlayedThisDay && todaysDate === date
+  const hideAnswer = !hasPlayedThisDay && todaysDate === date
 
   return (
     <View>
@@ -30,9 +30,9 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
           {attemptWord.split("").map((letter, index) => (
             <View
               style={{
-                backgroundColor: !isTodaysWordAndHaventPlayed
-                  ? getTileColor({ letter, word, index })
-                  : theme.light.grey,
+                backgroundColor: hideAnswer
+                  ? theme.light.grey
+                  : getTileColor({ letter, word, index }),
                 height: 35,
                 width: 35,
                 margin: 2,
@@ -48,7 +48,7 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
                   fontSize: 18,
                 }}
               >
-                {hasPlayedThisDay ? letter : ""}
+                {hideAnswer ? "" : letter}
               </Text>
             </View>
           ))}

@@ -26,7 +26,7 @@ export const Friends: React.FC = () => {
         flex: 1,
         backgroundColor: "#F9F9F9",
       }}
-      contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 10 }}
+      contentContainerStyle={{ paddingVertical: 5, paddingHorizontal: 10 }}
       refreshControl={
         <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
       }
