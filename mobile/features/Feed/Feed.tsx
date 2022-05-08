@@ -13,9 +13,16 @@ import { FeedEmptyState, GroupedDayEntries } from "./components"
 
 export const Feed: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
-  const { data, isLoading, refetch, isRefetching } = useFeed(userId)
+  const { data, isLoading, refetch } = useFeed(userId)
   const { isLoading: friendsIsLoading } = useFriends(userId)
   const [interationsIsLoading, setInteractionsIsLoading] = useState(true)
+  const [isRefetching, setIsRefetching] = useState(false)
+
+  const onRefresh = async () => {
+    setIsRefetching(true)
+    await refetch()
+    setIsRefetching(false)
+  }
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() =>
@@ -37,7 +44,7 @@ export const Feed: React.FC = () => {
         paddingHorizontal: 10,
       }}
       refreshControl={
-        <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+        <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
       }
     >
       <View style={{ paddingTop: 5 }}>

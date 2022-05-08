@@ -12,6 +12,7 @@ import {
 } from "../../redux"
 import { FullScreenLoading } from "../../shared"
 import { Signup } from "./components"
+import { AppState, AppStateStatus } from "react-native"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -26,10 +27,20 @@ export const Initializer: React.FC = ({ children }) => {
   const currentWordNumber = useAppSelector((state) => state.todaysWord.number)
   const dispatch = useAppDispatch()
 
-  const { data, isLoading } = useTodaysWord()
+  const { data, isLoading, refetch } = useTodaysWord()
 
   useEffect(() => {
     dispatch(userActions.setUser({ id: "NPCAM", name: "Emily" }))
+  }, [])
+
+  useEffect(() => {
+    const onAppStateChange = (state: AppStateStatus) => {
+      if (state === "active") {
+        refetch()
+      }
+    }
+    AppState.addEventListener("change", onAppStateChange)
+    return () => AppState.removeEventListener("change", onAppStateChange)
   }, [])
 
   useEffect(() => {

@@ -68,7 +68,7 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
       {isExpanded && (
         <View
           style={{
-            paddingTop: 5,
+            paddingTop: 10,
             flexDirection: "row",
             flexWrap: "wrap",
             justifyContent: "space-between",

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
   RefreshControl,
   ScrollView,
@@ -13,8 +13,16 @@ import { useNavigation } from "@react-navigation/native"
 
 export const Friends: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
-  const { data, isLoading, isRefetching, refetch } = useFriends(userId)
+  const { data, isLoading, refetch } = useFriends(userId)
   const { navigate } = useNavigation()
+
+  const [isRefetching, setIsRefetching] = useState(false)
+
+  const onRefresh = async () => {
+    setIsRefetching(true)
+    await refetch()
+    setIsRefetching(false)
+  }
 
   if (isLoading || !data) {
     return <FullScreenLoading />
@@ -28,7 +36,7 @@ export const Friends: React.FC = () => {
       }}
       contentContainerStyle={{ paddingVertical: 5, paddingHorizontal: 10 }}
       refreshControl={
-        <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+        <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
       }
     >
       {Object.values(data).map((friend, idx) => (
