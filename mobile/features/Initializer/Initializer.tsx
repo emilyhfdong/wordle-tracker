@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react"
-import { BackendService } from "../services/backend"
-import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import { todaysWordActions } from "../redux/slices/todays-word"
-import { Signup } from "../screens/signup"
-import { FullScreenLoading } from "./full-screen-loading"
+import React, { useEffect } from "react"
 import * as Device from "expo-device"
 import * as Notifications from "expo-notifications"
-import { QueryKeys, useTodaysWord } from "../query/hooks"
-import { queryClient } from "../query/client"
+
+import { BackendService } from "../../services"
+import { QueryKeys, useTodaysWord, queryClient } from "../../query"
+import {
+  userActions,
+  todaysWordActions,
+  useAppDispatch,
+  useAppSelector,
+} from "../../redux"
+import { FullScreenLoading } from "../../shared"
+import { Signup } from "./components"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,6 +27,10 @@ export const Initializer: React.FC = ({ children }) => {
   const dispatch = useAppDispatch()
 
   const { data, isLoading } = useTodaysWord()
+
+  useEffect(() => {
+    dispatch(userActions.setUser({ id: "NPCAM", name: "Emily" }))
+  }, [])
 
   useEffect(() => {
     if (data) {

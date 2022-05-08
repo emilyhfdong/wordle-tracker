@@ -1,4 +1,4 @@
-import { IDayEntryItem, IUserMetaDataItem } from "@libs/database/types"
+import { ITDayEntryItem, IUserMetaDataItem } from "@libs/database/types"
 import { config } from "@libs/environment"
 import {
   getAverageAtempts,
@@ -26,7 +26,7 @@ export const getFriendDetails = ({
   userPingedFriendIds,
   index,
 }: {
-  dayEntries: IDayEntryItem[]
+  dayEntries: ITDayEntryItem[]
   metadata: IUserMetaDataItem
   userPingedFriendIds: string[]
   index: number

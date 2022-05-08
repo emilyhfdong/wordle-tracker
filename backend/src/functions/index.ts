@@ -46,8 +46,8 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-  createDayEntry: {
-    handler: `src/functions/createDayEntry/handler.handler`,
+  createTDayEntry: {
+    handler: `src/functions/createTDayEntry/handler.handler`,
     events: [
       {
         http: { method: "POST", path: "/users/{userId}/day-entry" },

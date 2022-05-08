@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Animated, Text } from "react-native"
-import { theme } from "../constants/theme"
-import { Dimensions } from "react-native"
-import { RH } from "../utils/responsive"
+import { theme } from "../constants"
+import { RH } from "../utils"
 
 interface ITileProps {
   letter: string | null

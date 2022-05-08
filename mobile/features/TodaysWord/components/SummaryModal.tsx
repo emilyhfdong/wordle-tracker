@@ -6,12 +6,12 @@ import {
   TouchableWithoutFeedback,
   Share,
 } from "react-native"
-import { theme } from "../constants/theme"
-import { useAppSelector } from "../redux/hooks"
-import ShareIcon from "../assets/images/share.svg"
+import ShareIcon from "../../../assets/images/share.svg"
 import { DateTime, Settings } from "luxon"
-import { getTileColor } from "./tile"
-import { useUser } from "../query/hooks"
+import { theme } from "../../../constants"
+import { getTileColor } from "../../../shared"
+import { useAppSelector } from "../../../redux"
+import { useUser } from "../../../query"
 
 interface ISummaryModalProps {
   isOpen: boolean

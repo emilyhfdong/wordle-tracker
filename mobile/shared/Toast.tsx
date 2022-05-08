@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react"
 import { Text, Animated } from "react-native"
-import { theme } from "../constants/theme"
+import { theme } from "../constants"
 
 interface IToastProps {
   isVisible: boolean

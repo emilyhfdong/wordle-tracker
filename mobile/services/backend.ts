@@ -56,7 +56,7 @@ const updateUserWithPushToken = async (userId: string, pushToken: string) => {
   return response.data?.user
 }
 
-const createDayEntry = async (
+const createTDayEntry = async (
   userId: string,
   { attemptsDetails, word }: TDayEntry
 ) => {
@@ -71,7 +71,7 @@ const createDayEntry = async (
     }
   )
   console.log("DONE - creating day entry")
-  return response.data?.dayEntry
+  return response.data?.TDayEntry
 }
 
 const getFeed = async (userId: string) => {
@@ -120,7 +120,7 @@ const pingFriend = async (userId: string, friendId: string) => {
 export const BackendService = {
   getTodaysWord,
   createUser,
-  createDayEntry,
+  createTDayEntry,
   getFeed,
   addFriend,
   updateUserWithPushToken,

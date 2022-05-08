@@ -1,5 +1,5 @@
 import { DateTime } from "luxon"
-import { IDayEntryItem } from "./database/types"
+import { ITDayEntryItem } from "./database/types"
 
 export const createResponse = ({
   statusCode,
@@ -17,7 +17,7 @@ export const createResponse = ({
 })
 
 export const getCurrentStreak = (
-  dayEntries: IDayEntryItem[],
+  dayEntries: ITDayEntryItem[],
   todaysDate: string
 ) => {
   let streak = 0
@@ -40,7 +40,7 @@ export const getCurrentStreak = (
   return streak
 }
 
-export const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
+export const getAverageAtempts = (dayEntries: ITDayEntryItem[]) =>
   Number(
     (
       dayEntries.reduce((acc, curr) => acc + curr.attemptsCount, 0) /
@@ -49,7 +49,7 @@ export const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
   )
 
 export const getAverageChange = (
-  dayEntries: IDayEntryItem[],
+  dayEntries: ITDayEntryItem[],
   currentStreak: number
 ) => {
   const todaysDate = DateTime.now().toISODate()
@@ -64,7 +64,7 @@ export const getAverageChange = (
 }
 
 export const getMaxStreak = (
-  dayEntries: IDayEntryItem[],
+  dayEntries: ITDayEntryItem[],
   todaysDate: string
 ) => {
   let streak = 0
@@ -76,12 +76,12 @@ export const getMaxStreak = (
   return streak
 }
 
-export const getWinPercent = (dayEntries: IDayEntryItem[]) => {
+export const getWinPercent = (dayEntries: ITDayEntryItem[]) => {
   const wonEntries = dayEntries.filter((entry) => entry.attemptsCount <= 6)
   return Math.round((wonEntries.length / dayEntries.length) * 100)
 }
 
-export const getGuessDistribution = (dayEntries: IDayEntryItem[]) => {
+export const getGuessDistribution = (dayEntries: ITDayEntryItem[]) => {
   return new Array(6).fill(0).map((_, idx) => ({
     count: idx + 1,
     occurance: dayEntries.filter((entry) => entry.attemptsCount - 1 === idx)

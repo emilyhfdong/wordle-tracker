@@ -1,26 +1,17 @@
 import { FontAwesome } from "@expo/vector-icons"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from "@react-navigation/native"
+import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import * as React from "react"
-import { ColorSchemeName } from "react-native"
-import { HeaderStreak } from "../components/header-streak"
-import { theme } from "../constants/theme"
 
-import { AddFriend } from "../screens/add-friend"
-import { Feed } from "../screens/feed"
-import { Friends } from "../screens/friends"
-import { TodaysWordScreen } from "../screens/todays-word"
+import { theme } from "../constants"
 import {
   RootStackParamList,
   RootTabParamList,
   RootTabScreenProps,
 } from "../types"
 import LinkingConfiguration from "./LinkingConfiguration"
+import { AddFriend, TodaysWord, Friends, HeaderStreak, Feed } from "../features"
 
 export default function Navigation({}: {}) {
   return (
@@ -65,7 +56,7 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Today"
-        component={TodaysWordScreen}
+        component={TodaysWord}
         options={({ navigation }: RootTabScreenProps<"Today">) => ({
           title: "Home",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,

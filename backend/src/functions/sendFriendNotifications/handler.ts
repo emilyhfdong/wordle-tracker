@@ -1,5 +1,5 @@
 import { database } from "@libs/database"
-import { IDayEntryItem } from "@libs/database/types"
+import { ITDayEntryItem } from "@libs/database/types"
 import { expo } from "@libs/expo"
 import { DynamoDBStreamHandler } from "aws-lambda"
 import { Converter } from "aws-sdk/clients/dynamodb"
@@ -19,16 +19,16 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
     try {
       console.log("new entry", record.dynamodb.NewImage)
 
-      const newDayEntry = Converter.unmarshall(
+      const newTDayEntry = Converter.unmarshall(
         record.dynamodb.NewImage
-      ) as IDayEntryItem
+      ) as ITDayEntryItem
 
-      if (!newDayEntry.sk.includes("day_entry")) {
+      if (!newTDayEntry.sk.includes("day_entry")) {
         console.log("event is not a day_entry")
         continue
       }
 
-      const user = await database.getUserItems(newDayEntry.pk)
+      const user = await database.getUserItems(newTDayEntry.pk)
       const { friendIds } = user.metadata
       console.log("found user with friends", user.metadata.friendIds)
 
@@ -40,8 +40,8 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
         .map((friend) => ({
           to: friend.metadata.pushToken,
           title: `${user.metadata.name} played today's wordzle`,
-          body: `Wordzle ${newDayEntry.word.number} ${
-            newDayEntry.attemptsCount <= 6 ? newDayEntry.attemptsCount : "X"
+          body: `Wordzle ${newTDayEntry.word.number} ${
+            newTDayEntry.attemptsCount <= 6 ? newTDayEntry.attemptsCount : "X"
           }/6`,
         }))
 

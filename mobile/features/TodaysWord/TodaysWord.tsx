@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react"
 import { View } from "react-native"
-import { BACKSPACE, ENTER_KEY, Keyboard } from "../components/keyboard"
-import { Row, SHAKE_DURATION_IN_S } from "../components/row"
-import { TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
-import { Toast } from "../components/toast"
-import { theme } from "../constants/theme"
-
-import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import { isValidWord } from "../utils/valid-words"
-import { todaysWordActions } from "../redux/slices/todays-word"
-import { SummaryModal } from "../components/summary-modal"
+import { theme } from "../../constants/theme"
+import { isValidWord } from "../../utils"
+import { todaysWordActions, useAppDispatch, useAppSelector } from "../../redux"
 import { DateTime } from "luxon"
-import { QueryKeys, useCreateDayEntry, useUser } from "../query/hooks"
-import { queryClient } from "../query/client"
-import { TDayEntry } from "../services/types"
+import {
+  queryClient,
+  QueryKeys,
+  useCreateTDayEntry,
+  useUser,
+} from "../../query"
+import { TDayEntry } from "../../services"
+import {
+  Toast,
+  TOTAL_WORD_FLIP_DURATION_IN_S,
+  Row,
+  SHAKE_DURATION_IN_S,
+  BACKSPACE,
+  ENTER_KEY,
+  Keyboard,
+} from "../../shared"
+import { SummaryModal } from "./components"
 
-export const TodaysWordScreen: React.FC = () => {
+export const TodaysWord: React.FC = () => {
   const { currentGuess, prevGuesses, word, date, number } = useAppSelector(
     (state) => state.todaysWord
   )
@@ -27,7 +34,7 @@ export const TodaysWordScreen: React.FC = () => {
   const [isNotWord, setIsNotWord] = useState(false)
   const [toastText, setToastText] = useState("")
 
-  const { mutate } = useCreateDayEntry({
+  const { mutate } = useCreateTDayEntry({
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKeys.USER)
       queryClient.invalidateQueries(QueryKeys.FEED)
@@ -62,14 +69,14 @@ export const TodaysWordScreen: React.FC = () => {
           const failed = prevGuesses.length === 5 && word !== currentGuess
 
           const allAttempts = [...prevGuesses, currentGuess]
-          const dayEntry: TDayEntry = {
+          const TDayEntry: TDayEntry = {
             attemptsCount: allAttempts.length,
             attemptsDetails: allAttempts.join(" "),
             word: { date, answer: word, number },
             createdAt: DateTime.now().toUTC().toISO(),
             userId,
           }
-          mutate({ dayEntry, userId })
+          mutate({ TDayEntry, userId })
           setTimeout(() => {
             setToastText(failed ? "FAIL! 🧦" : "Impressive")
             setTimeout(() => {

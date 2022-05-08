@@ -1,4 +1,4 @@
-import { IDayEntryItem, IUserMetaDataItem } from "@libs/database/types"
+import { ITDayEntryItem, IUserMetaDataItem } from "@libs/database/types"
 import { config } from "@libs/environment"
 import { getAverageAtempts, getCurrentStreak } from "@libs/utils"
 import { DateTime, Settings } from "luxon"
@@ -9,13 +9,13 @@ interface IDateGroup {
     userId: string
     attemptsCount: number
     attemptsDetails: string
-    word: IDayEntryItem["word"]
+    word: ITDayEntryItem["word"]
     createdAt: string
   }[]
 }
 
-export const getGroupedDayEntries = (
-  dayEntries: IDayEntryItem[]
+export const getTGroupedDayEntries = (
+  dayEntries: ITDayEntryItem[]
 ): IDateGroup[] =>
   dayEntries.reduce(
     (acc, { pk: userId, attemptsCount, attemptsDetails, word, createdAt }) => {
@@ -54,7 +54,7 @@ export const getFriendDetails = ({
   metadata,
   userPingedFriendIds,
 }: {
-  dayEntries: IDayEntryItem[]
+  dayEntries: ITDayEntryItem[]
   metadata: IUserMetaDataItem
   userPingedFriendIds: string[]
 }): IFriendDetails => {

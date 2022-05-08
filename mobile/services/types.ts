@@ -141,7 +141,8 @@ const GET_FEED_RESPONSE = {
 }
 
 export type TGetFeedResponse = typeof GET_FEED_RESPONSE
-export type TDayEntry = TGetFeedResponse["dayEntriesByDate"][0]["entries"][0]
+export type TGroupedDayEntries = TGetFeedResponse["dayEntriesByDate"][0]
+export type TDayEntry = TGroupedDayEntries["entries"][0]
 
 export const GET_USER_RESPONSE = {
   userId: "NPCAM",

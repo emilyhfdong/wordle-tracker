@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { View, Text, TouchableOpacity } from "react-native"
-import { theme } from "../constants/theme"
-import { TOTAL_WORD_FLIP_DURATION_IN_S } from "./tile"
+import { theme } from "../constants"
+import { TOTAL_WORD_FLIP_DURATION_IN_S } from "./Tile"
 import Backspace from "../assets/images/backspace.svg"
-import { useAppSelector } from "../redux/hooks"
+import { useAppSelector } from "../redux"
 
 interface IKeyboardProps {
   prevGuesses: string[]

@@ -1,7 +1,7 @@
 import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { getFriendDetails, getGroupedDayEntries } from "./utils"
+import { getFriendDetails, getTGroupedDayEntries } from "./utils"
 import { DateTime, Settings } from "luxon"
 import { config } from "@libs/environment"
 
@@ -33,7 +33,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   )
 
   // TODO - paginate this request
-  const dayEntriesByDate = getGroupedDayEntries(allEntries).slice(0, 7)
+  const dayEntriesByDate = getTGroupedDayEntries(allEntries).slice(0, 7)
 
   const userPingedFriendIds = user.initiatedPings
     .filter((ping) =>

@@ -1,6 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit"
-import { todaysWordSlice } from "./slices/todays-word"
-import { userSlice } from "./slices/user.slice"
+import { todaysWordSlice, userSlice } from "./slices"
 import { persistStore, persistReducer } from "redux-persist"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import thunk from "redux-thunk"

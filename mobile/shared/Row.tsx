@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react"
 import { Animated } from "react-native"
-import { useAppSelector } from "../redux/hooks"
-import { Tile } from "./tile"
+import { useAppSelector } from "../redux"
+import { Tile } from "./Tile"
 
 export const SHAKE_DURATION_IN_S = 0.6
 

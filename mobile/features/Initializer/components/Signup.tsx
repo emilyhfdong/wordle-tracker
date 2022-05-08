@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from "react"
 import { Animated, View, TextInput } from "react-native"
-import { Tile, TOTAL_WORD_FLIP_DURATION_IN_S } from "../components/tile"
-import { Title } from "../components/title"
-import { theme } from "../constants/theme"
 import { useDispatch } from "react-redux"
-import { userActions } from "../redux/slices/user.slice"
-import { FullScreenLoading } from "../components/full-screen-loading"
-import { useCreateUser } from "../query/hooks"
+
+import { theme } from "../../../constants"
+import { userActions } from "../../../redux"
+import { useCreateUser } from "../../../query"
+import {
+  Title,
+  Tile,
+  TOTAL_WORD_FLIP_DURATION_IN_S,
+  FullScreenLoading,
+} from "../../../shared"
 
 export const Signup: React.FC = () => {
   const [name, setName] = useState("")

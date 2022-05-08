@@ -1,12 +1,10 @@
 import { DateTime } from "luxon"
 import React from "react"
-import { View, Text, TouchableOpacity, Alert, AlertButton } from "react-native"
-import { theme } from "../constants/theme"
-import { queryClient } from "../query/client"
-import { QueryKeys, usePingFriend } from "../query/hooks"
-import { useAppSelector } from "../redux/hooks"
-import { TGetFriendsResponse, TPingStatus } from "../services/types"
-import { Scores } from "./scores"
+import { Alert, AlertButton } from "react-native"
+import { QueryKeys, usePingFriend, queryClient } from "../../../query"
+import { useAppSelector } from "../../../redux"
+import { TGetFriendsResponse, TPingStatus } from "../../../services"
+import { ListItem, Scores } from "../../../shared"
 
 interface IFriendListItemProps {
   name: string
@@ -141,40 +139,18 @@ export const FriendListItem: React.FC<IFriendListItemProps> = ({
     Alert.alert(alertArgs.title, alertArgs.message, alertArgs.buttons)
   }
   return (
-    <TouchableOpacity
+    <ListItem
       onPress={onPress}
-      style={{
-        marginVertical: 5,
-        borderColor: "#E6E6E6",
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingVertical: 15,
-        paddingHorizontal: 15,
-        backgroundColor: theme.light.background,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <View>
-        <Text style={{ fontWeight: "bold", color }}>{name}</Text>
-        <Text
-          style={{
-            color: theme.light.grey,
-            marginTop: 5,
-            textAlign: "right",
-            fontSize: 10,
-            fontStyle: "italic",
-          }}
-        >
-          Last played: {getLastPlayedText(lastPlayed)}
-        </Text>
-      </View>
-      <Scores
-        currentStreak={currentStreak}
-        lastPlayedDate={DateTime.fromISO(lastPlayed).toISODate()}
-        averageAttemptsCount={averageAttemptsCount}
-      />
-    </TouchableOpacity>
+      titleColor={color}
+      title={name}
+      subtitle={`Last played: ${getLastPlayedText(lastPlayed)}`}
+      rightComponent={
+        <Scores
+          currentStreak={currentStreak}
+          lastPlayedDate={DateTime.fromISO(lastPlayed).toISODate()}
+          averageAttemptsCount={averageAttemptsCount}
+        />
+      }
+    ></ListItem>
   )
 }

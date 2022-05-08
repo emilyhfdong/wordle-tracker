@@ -5,19 +5,16 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native"
-import { FriendListItem } from "../components/friend-list-item"
-import { FullScreenLoading } from "../components/full-screen-loading"
-import { useFriends } from "../query/hooks"
-import { useAppSelector } from "../redux/hooks"
-import { RootTabScreenProps } from "../types"
+import { useFriends } from "../../query"
+import { useAppSelector } from "../../redux"
+import { FullScreenLoading } from "../../shared"
+import { FriendListItem } from "./components"
+import { useNavigation } from "@react-navigation/native"
 
-interface IFriendsProps {}
-
-export const Friends: React.FC<
-  IFriendsProps & RootTabScreenProps<"Friends">
-> = ({ navigation }) => {
+export const Friends: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
   const { data, isLoading, isRefetching, refetch } = useFriends(userId)
+  const { navigate } = useNavigation()
 
   if (isLoading || !data) {
     return <FullScreenLoading />
@@ -28,9 +25,8 @@ export const Friends: React.FC<
       style={{
         flex: 1,
         backgroundColor: "#F9F9F9",
-        paddingVertical: 20,
-        paddingHorizontal: 15,
       }}
+      contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 10 }}
       refreshControl={
         <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
       }
@@ -48,7 +44,7 @@ export const Friends: React.FC<
           paddingHorizontal: 15,
           backgroundColor: "#F8F8F8",
         }}
-        onPress={() => navigation.navigate("AddFriend")}
+        onPress={() => navigate("AddFriend")}
       >
         <Text style={{ fontWeight: "bold", color: "black" }}>+ Add Friend</Text>
       </TouchableOpacity>

@@ -1,8 +1,8 @@
 import React from "react"
 import { View } from "react-native"
-import { useUser } from "../query/hooks"
-import { useAppSelector } from "../redux/hooks"
-import { Scores } from "./scores"
+import { useUser } from "../../query"
+import { useAppSelector } from "../../redux"
+import { Scores } from "../../shared"
 
 export const HeaderStreak: React.FC<{}> = () => {
   const userId = useAppSelector((state) => state.user.id)

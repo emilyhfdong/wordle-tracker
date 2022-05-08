@@ -1,29 +1,30 @@
 import React, { useState } from "react"
 import { View, Text, TouchableOpacity } from "react-native"
-import { Tile } from "../components/tile"
-import { Keyboard, ENTER_KEY, BACKSPACE } from "../components/keyboard"
 
-import { theme } from "../constants/theme"
-import { useAppSelector } from "../redux/hooks"
-import { Title } from "../components/title"
-import CloseIcon from "../assets/images/close-icon.svg"
-import { RootStackScreenProps } from "../types"
-import { FullScreenLoading } from "../components/full-screen-loading"
-import { QueryKeys, useAddFriend } from "../query/hooks"
-import { queryClient } from "../query/client"
-interface IAddFriendProps {}
+import { theme } from "../../constants"
+import { useAppSelector } from "../../redux"
+import CloseIcon from "../../assets/images/close-icon.svg"
+import { queryClient, QueryKeys, useAddFriend } from "../../query"
+import {
+  Title,
+  Keyboard,
+  ENTER_KEY,
+  BACKSPACE,
+  FullScreenLoading,
+  Tile,
+} from "../../shared"
+import { useNavigation } from "@react-navigation/native"
 
-export const AddFriend: React.FC<
-  IAddFriendProps & RootStackScreenProps<"AddFriend">
-> = ({ navigation }) => {
+export const AddFriend: React.FC = () => {
   const id = useAppSelector((state) => state.user.id)
   const [friendCode, setFriendCode] = useState("")
+  const { goBack } = useNavigation()
 
   const { mutate, isLoading, error } = useAddFriend({
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKeys.FRIENDS)
       queryClient.invalidateQueries(QueryKeys.FEED)
-      navigation.pop()
+      goBack()
     },
   })
 
@@ -61,7 +62,7 @@ export const AddFriend: React.FC<
     >
       <TouchableOpacity
         style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}
-        onPress={() => navigation.pop()}
+        onPress={() => goBack()}
       >
         <CloseIcon fill={theme.light.grey} />
       </TouchableOpacity>

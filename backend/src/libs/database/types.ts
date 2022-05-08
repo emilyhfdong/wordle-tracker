@@ -10,7 +10,7 @@ export interface IUserMetaDataItem {
 
 type TISODate = string
 
-export interface IDayEntryItem {
+export interface ITDayEntryItem {
   pk: TUserId
   sk: `day_entry#${TISODate}`
   word: {

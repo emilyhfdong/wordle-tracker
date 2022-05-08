@@ -1,9 +1,9 @@
 import React from "react"
 import { View, Text } from "react-native"
-import { theme } from "../constants/theme"
+import { theme } from "../constants"
 import FireIcon from "../assets/images/fire.svg"
 import AverageIcon from "../assets/images/average-icon.svg"
-import { useAppSelector } from "../redux/hooks"
+import { useAppSelector } from "../redux"
 
 interface IScoresProps {
   currentStreak: number
