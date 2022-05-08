@@ -9,6 +9,6 @@ export const theme = {
     pink: "rgb(217,146,146)",
     blue: "rgb(146,169,217)",
     orange: "rgb(226,164,106)",
-    red: "226,106,106",
+    red: "rgb(226,106,106)",
   },
 }

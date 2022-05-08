@@ -2,6 +2,7 @@ import { database } from "@libs/database"
 import {
   createResponse,
   getAverageAtempts,
+  getAverageChange,
   getCurrentStreak,
   getGuessDistribution,
   getMaxStreak,
@@ -36,20 +37,22 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   )
 
   const datesPlayed = sortedDayEntries.map((entry) => entry.word.date)
+  const currentStreak = getCurrentStreak(sortedDayEntries, todaysDate)
 
   return createResponse({
     body: {
       userId,
       name,
       maxStreak: getMaxStreak(sortedDayEntries, todaysDate),
-      currentStreak: getCurrentStreak(sortedDayEntries, todaysDate),
+      currentStreak,
       averageAttemptsCount: getAverageAtempts(sortedDayEntries),
       winPercent: getWinPercent(sortedDayEntries),
       numberOfDaysPlayed: sortedDayEntries.length,
       lastPlayed: sortedDayEntries[0]?.createdAt,
-      datesPlayed,
       lastEntry: sortedDayEntries[0],
+      averageChange: getAverageChange(sortedDayEntries, currentStreak),
       guessDistribution: getGuessDistribution(sortedDayEntries),
+      datesPlayed,
     },
   })
 }

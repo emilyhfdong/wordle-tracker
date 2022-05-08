@@ -31,7 +31,6 @@ export const getCurrentStreak = (
       : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
 
   for (let i = 0; i < dayEntries.length; i++) {
-    console.log("hii day entry date", dayEntries[i].word.date)
     if (dayEntries[i].word.date !== date) {
       return streak
     }
@@ -48,6 +47,21 @@ export const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
       dayEntries.length
     ).toFixed(2)
   )
+
+export const getAverageChange = (
+  dayEntries: IDayEntryItem[],
+  currentStreak: number
+) => {
+  const todaysDate = DateTime.now().toISODate()
+  if (dayEntries[0]?.word?.date !== todaysDate || currentStreak < 2) {
+    return null
+  }
+  const prevAvg = getAverageAtempts(dayEntries.slice(1))
+  console.log("prev avg", prevAvg)
+  const currentAvg = getAverageAtempts(dayEntries)
+  console.log("current avg", currentAvg)
+  return Number((currentAvg - prevAvg).toFixed(2))
+}
 
 export const getMaxStreak = (
   dayEntries: IDayEntryItem[],

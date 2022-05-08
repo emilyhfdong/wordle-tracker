@@ -153,6 +153,7 @@ export const GET_USER_RESPONSE = {
   numberOfDaysPlayed: 15,
   lastPlayed: "2022-04-15T15:55:30.478Z",
   datesPlayed: ["2022-04-15", "2022-04-14"],
+  averageChange: 0.03,
   lastEntry: {
     attemptsCount: 3,
     createdAt: "2022-04-15T15:55:30.478Z",
@@ -204,6 +205,7 @@ export const GET_FRIENDS_RESPONSE = {
     userId: "MFFUE",
     pingStatus: "ready" as TPingStatus,
     color: "#78CFA0",
+    averageChange: 0.03,
   },
 }
 
