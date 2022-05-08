@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { DateTime } from "luxon"
 
 import { useAppSelector } from "../../../redux"
@@ -6,7 +6,7 @@ import { TDayEntry, TGroupedDayEntries } from "../../../services"
 import { ListItem } from "../../../shared"
 import { UserIcon } from "./UserIcon"
 import { DayEntry } from "./DayEntry"
-import { View } from "react-native"
+import { LayoutAnimation, View } from "react-native"
 import { useUser } from "../../../query"
 
 type TGroupedDayEntriesProps = {
@@ -36,7 +36,7 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
   group: { date, entries },
 }) => {
   const todaysDate = useAppSelector((state) => state.todaysWord.date)
-  const expanded = todaysDate === date
+  const [isExpanded, setIsExpanded] = useState(todaysDate === date)
   const formattedDate = DateTime.fromISO(date).toFormat("EEE, MMM d")
   const answer = entries[0]?.word.answer || ""
   const userId = useAppSelector((state) => state.user.id)
@@ -60,14 +60,25 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
           ))}
         </View>
       }
+      onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        setIsExpanded(!isExpanded)
+      }}
     >
-      <View style={{ paddingTop: 5 }}>
-        {expanded &&
-          entries
-            .slice()
-            .reverse()
-            .map((entry, idx) => <DayEntry key={idx} {...entry} date={date} />)}
-      </View>
+      {isExpanded && (
+        <View
+          style={{
+            paddingTop: 5,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          {entries.map((entry, idx) => (
+            <DayEntry key={idx} {...entry} date={date} />
+          ))}
+        </View>
+      )}
     </ListItem>
   )
 }

@@ -33,9 +33,9 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
                 backgroundColor: hideAnswer
                   ? theme.light.grey
                   : getTileColor({ letter, word, index }),
-                height: 35,
-                width: 35,
-                margin: 2,
+                height: 26,
+                width: 26,
+                margin: 1.5,
                 justifyContent: "center",
                 alignItems: "center",
               }}
@@ -45,7 +45,7 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
                 style={{
                   color: theme.light.background,
                   fontWeight: "bold",
-                  fontSize: 18,
+                  fontSize: 15,
                 }}
               >
                 {hideAnswer ? "" : letter}

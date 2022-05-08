@@ -34,6 +34,7 @@ export const ListItem: React.FC<TListItemProps> = ({
         backgroundColor: theme.light.background,
         ...style,
       }}
+      activeOpacity={0.8}
     >
       <View
         style={{

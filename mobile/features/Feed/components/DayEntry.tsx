@@ -16,22 +16,19 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   date,
   attemptsCount,
 }) => {
-  const selfUserId = useAppSelector((state) => state.user.id)
+  const authUser = useAppSelector((state) => state.user)
   const isSelf = useAppSelector((state) => state.user.id === userId)
-  const { data } = useFriends(selfUserId)
+  const { data } = useFriends(authUser.id)
 
   if (!data) {
     return null
   }
   const friend = data[userId]
 
+  const color = isSelf ? theme.light.grey : friend.color
+
   return (
-    <View
-      style={{
-        width: "100%",
-        alignItems: isSelf ? "flex-end" : "flex-start",
-      }}
-    >
+    <View>
       <View
         style={{
           marginTop: 10,
@@ -39,13 +36,13 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
           borderWidth: 1,
           borderRadius: 5,
           paddingVertical: 6,
-          paddingHorizontal: 10,
+          paddingHorizontal: 6,
           backgroundColor: theme.light.background,
         }}
       >
         <View
           style={{
-            flexDirection: isSelf ? "row-reverse" : "row",
+            flexDirection: "row",
             justifyContent: "space-between",
             marginBottom: 5,
           }}
@@ -53,11 +50,10 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
           <Text
             style={{
               fontWeight: "bold",
-              color: isSelf ? theme.light.grey : friend.color,
-              textAlign: isSelf ? "right" : "left",
+              color,
             }}
           >
-            {isSelf ? self.name : friend.name}
+            {isSelf ? authUser.name : friend.name}
           </Text>
           <Text style={{ color: theme.light.grey, fontSize: 12 }}>
             {attemptsCount <= 6 ? attemptsCount : "X"} / 6
