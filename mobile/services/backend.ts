@@ -16,7 +16,7 @@ const getTodaysWord = async (): Promise<{
   const response = await axios.get("today", {
     baseURL: API_BASE,
   })
-  console.log("hii DONE - geting today's word")
+  console.log("DONE - geting today's word")
   return {
     word: response.data?.word,
     number: response.data?.number,
