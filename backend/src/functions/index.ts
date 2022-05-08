@@ -47,7 +47,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   createTDayEntry: {
-    handler: `src/functions/createTDayEntry/handler.handler`,
+    handler: `src/functions/createDayEntry/handler.handler`,
     events: [
       {
         http: { method: "POST", path: "/users/{userId}/day-entry" },
@@ -86,6 +86,14 @@ export const functions: AWS["functions"] = {
     events: [
       {
         http: { method: "GET", path: "/users/{userId}/feed" },
+      },
+    ],
+  },
+  getGroupedFeed: {
+    handler: `src/functions/getGroupedFeed/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/grouped-feed" },
       },
     ],
   },

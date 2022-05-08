@@ -1,9 +1,8 @@
-// DEPRECATED
 import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { getFriendDetails, getTGroupedDayEntries } from "./utils"
-import { DateTime, Settings } from "luxon"
+import { getGroupedDayEntries } from "./utils"
+import { Settings } from "luxon"
 import { config } from "@libs/environment"
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -34,23 +33,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   )
 
   // TODO - paginate this request
-  const dayEntriesByDate = getTGroupedDayEntries(allEntries).slice(0, 7)
-
-  const userPingedFriendIds = user.initiatedPings
-    .filter((ping) =>
-      ping.sk.includes(`initiated_ping#${DateTime.now().toISODate()}`)
-    )
-    .map((ping) => ping.sk.split("#")[ping.sk.split("#").length - 1])
+  const dayEntriesByDate = getGroupedDayEntries(allEntries)
 
   return createResponse({
     body: {
-      // TODO - remove this
-      friends: [
-        ...friendItems.map((item) =>
-          getFriendDetails({ ...item, userPingedFriendIds })
-        ),
-        getFriendDetails({ ...user, userPingedFriendIds }),
-      ],
       dayEntriesByDate,
     },
   })
