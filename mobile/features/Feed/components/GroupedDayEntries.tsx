@@ -43,10 +43,15 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
   const { data } = useUser(userId)
   const hideAnswer = !data?.datesPlayed.includes(date) && todaysDate === date
 
-  const sortedEntries = entries.sort(
+  const sortedEntries = [...entries].sort(
     (a, b) => a.attemptsCount - b.attemptsCount
   )
   const subtitle = getSubtitle({ entries, formattedDate })
+
+  const reversedEntries = entries.slice().reverse()
+
+  const evenEntries = reversedEntries.filter((_, idx) => idx % 2 === 0)
+  const oddEntries = reversedEntries.filter((_, idx) => idx % 2 === 1)
 
   return (
     <ListItem
@@ -69,13 +74,19 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
           style={{
             paddingTop: 10,
             flexDirection: "row",
-            flexWrap: "wrap",
             justifyContent: "space-between",
           }}
         >
-          {entries.map((entry, idx) => (
-            <DayEntry key={idx} {...entry} date={date} />
-          ))}
+          <View>
+            {evenEntries.map((entry, idx) => (
+              <DayEntry key={idx} {...entry} date={date} />
+            ))}
+          </View>
+          <View>
+            {oddEntries.map((entry, idx) => (
+              <DayEntry key={idx} {...entry} date={date} />
+            ))}
+          </View>
         </View>
       )}
     </ListItem>
