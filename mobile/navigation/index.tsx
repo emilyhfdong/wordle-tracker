@@ -68,7 +68,7 @@ function BottomTabNavigator() {
         name="Feed"
         component={Feed}
         options={{
-          title: "Feed",
+          title: "History",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />
           ),
@@ -94,5 +94,5 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"]
   color: string
 }) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />
+  return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />
 }
