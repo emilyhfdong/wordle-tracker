@@ -77,7 +77,7 @@ export const AddFriend: React.FC = () => {
         <View style={{ flexDirection: "row" }}>
           {id.split("").map((letter, idx) => (
             <Tile
-              word={id}
+              lockedColor={theme.light.green}
               key={idx}
               hasWon={false}
               index={idx}
@@ -126,7 +126,6 @@ export const AddFriend: React.FC = () => {
         <View style={{ flexDirection: "row" }}>
           {new Array(5).fill(null).map((_, idx) => (
             <Tile
-              word={id}
               key={idx}
               hasWon={false}
               index={idx}
@@ -151,7 +150,7 @@ export const AddFriend: React.FC = () => {
           color: theme.light.lightGrey,
         }}
       >
-        04/15/2022
+        05/08/2022
       </Text>
     </View>
   )

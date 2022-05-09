@@ -1,6 +1,6 @@
 import { theme } from "../../../constants"
-import { TDayEntry, TGetUserResponse } from "../../../services"
-import { getTileColor } from "../../../shared"
+import { TGetUserResponse } from "../../../services"
+import { getTiles } from "../../../shared"
 
 const tileColorToEmoji = {
   [theme.light.yellow]: "🟨",
@@ -9,18 +9,12 @@ const tileColorToEmoji = {
 }
 
 const getSquares = (guesses: string[], word: string) => {
-  return guesses
-    .map(
-      (guess) =>
-        `${guess
-          .split("")
-          .map(
-            (letter, index) =>
-              tileColorToEmoji[getTileColor({ index, letter, word })]
-          )
-          .join("")}`
-    )
-    .join("\r\n")
+  const getRow = (guess: string) => {
+    return getTiles(guess, word)
+      .map(({ color }) => tileColorToEmoji[color])
+      .join()
+  }
+  return guesses.map(getRow).join("\r\n")
 }
 
 export const getShareMessage = (entry?: TGetUserResponse["lastEntry"]) => {

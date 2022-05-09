@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react"
 import { Animated } from "react-native"
+import { theme } from "../constants"
 import { useAppSelector } from "../redux"
 import { Tile } from "./Tile"
 
@@ -11,15 +12,37 @@ interface IRowProps {
   isNotWord: boolean
 }
 
+export const getTiles = (
+  guess: string,
+  answer: string
+): { letter: string; color: string }[] => {
+  const tiles = new Array(5)
+    .fill(null)
+    .map((_, idx) => ({ letter: guess[idx] || "", color: theme.light.grey }))
+
+  return answer.split("").reduce((acc, answerLetter, idx) => {
+    if (acc[idx].letter === answerLetter) {
+      acc[idx].color = theme.light.green
+      return acc
+    }
+    const matchingYellow = acc.find(
+      (tile) => tile.letter === answerLetter && tile.color !== theme.light.green
+    )
+    if (matchingYellow) {
+      matchingYellow.color = theme.light.yellow
+    }
+    return acc
+  }, tiles)
+}
+
 export const Row: React.FC<IRowProps> = ({
   letters = "",
   locked,
   isNotWord,
 }) => {
-  const tileLetters = new Array(5)
-    .fill(null)
-    .map((_, idx) => letters[idx] || null)
   const word = useAppSelector((state) => state.todaysWord.word)
+
+  const tiles = getTiles(letters, word)
 
   const shakeAnim = useRef(new Animated.Value(0)).current
   useEffect(() => {
@@ -45,14 +68,14 @@ export const Row: React.FC<IRowProps> = ({
         ],
       }}
     >
-      {tileLetters.map((letter, idx) => (
+      {tiles.map(({ letter, color }, idx) => (
         <Tile
           locked={locked}
           letter={letter}
           key={idx}
           index={idx}
           hasWon={letters === word}
-          word={word}
+          lockedColor={color}
         />
       ))}
     </Animated.View>

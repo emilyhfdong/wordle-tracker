@@ -70,7 +70,7 @@ export const Signup: React.FC = () => {
             {"HELLO".split("").map((letter, index) => (
               <Tile
                 key={index}
-                word="HELLO"
+                lockedColor={theme.light.green}
                 locked
                 letter={letter}
                 index={index}

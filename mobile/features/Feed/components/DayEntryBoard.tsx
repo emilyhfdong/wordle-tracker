@@ -4,7 +4,7 @@ import { View, Text } from "react-native"
 import { theme } from "../../../constants"
 import { useAppSelector } from "../../../redux"
 import { useUser } from "../../../query"
-import { getTileColor } from "../../../shared"
+import { getTiles } from "../../../shared"
 
 type TDayEntryBoardProps = {
   attemptsDetail: string
@@ -27,12 +27,10 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
     <View>
       {attemptsDetail.split(" ").map((attemptWord, wordIdx) => (
         <View key={wordIdx} style={{ flexDirection: "row" }}>
-          {attemptWord.split("").map((letter, index) => (
+          {getTiles(attemptWord, word).map(({ letter, color }, index) => (
             <View
               style={{
-                backgroundColor: hideAnswer
-                  ? theme.light.grey
-                  : getTileColor({ letter, word, index }),
+                backgroundColor: hideAnswer ? theme.light.grey : color,
                 height: 26,
                 width: 26,
                 margin: 1.5,
@@ -45,7 +43,7 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
                 style={{
                   color: theme.light.background,
                   fontWeight: "bold",
-                  fontSize: 15,
+                  fontSize: 13,
                 }}
               >
                 {hideAnswer ? "" : letter}

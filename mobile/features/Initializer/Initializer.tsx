@@ -30,10 +30,6 @@ export const Initializer: React.FC = ({ children }) => {
   const { data, isLoading, refetch } = useTodaysWord()
 
   useEffect(() => {
-    dispatch(userActions.setUser({ id: "NPCAM", name: "Emily" }))
-  }, [])
-
-  useEffect(() => {
     const onAppStateChange = (state: AppStateStatus) => {
       if (state === "active") {
         refetch()

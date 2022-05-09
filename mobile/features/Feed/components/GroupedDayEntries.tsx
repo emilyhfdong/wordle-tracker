@@ -15,12 +15,10 @@ type TGroupedDayEntriesProps = {
 
 const getSubtitle = ({
   entries,
-  answer,
-  hideAnswer,
+  formattedDate,
 }: {
-  answer: string
+  formattedDate: string
   entries: TDayEntry[]
-  hideAnswer: boolean
 }) => {
   const averageAttempts = Number(
     (
@@ -28,8 +26,9 @@ const getSubtitle = ({
       entries.length
     ).toFixed(2)
   )
-  const avgStr = `avg: ${averageAttempts > 6 ? "X" : averageAttempts} / 6`
-  return hideAnswer ? avgStr : `${answer} - ${avgStr}`
+  return `${formattedDate} - avg: ${
+    averageAttempts > 6 ? "X" : averageAttempts
+  } / 6`
 }
 
 export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
@@ -47,11 +46,11 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
   const sortedEntries = entries.sort(
     (a, b) => a.attemptsCount - b.attemptsCount
   )
-  const subtitle = getSubtitle({ entries, answer, hideAnswer })
+  const subtitle = getSubtitle({ entries, formattedDate })
 
   return (
     <ListItem
-      title={`${formattedDate}`}
+      title={hideAnswer ? "*****" : answer}
       subtitle={subtitle}
       rightComponent={
         <View style={{ flexDirection: "row" }}>

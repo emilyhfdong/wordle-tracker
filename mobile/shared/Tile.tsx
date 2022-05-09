@@ -3,38 +3,25 @@ import { Animated, Text } from "react-native"
 import { theme } from "../constants"
 import { RH } from "../utils"
 
-interface ITileProps {
+type TTileProps = {
   letter: string | null
   locked?: boolean
   index: number
   hasWon?: boolean
-  word: string
-}
-
-interface IGetLockedColorArgs {
-  letter: string | null
-  word: string
-  index: number
-}
-
-export const getTileColor = ({ letter, word, index }: IGetLockedColorArgs) => {
-  if (word[index] === letter) return theme.light.green
-  if (letter && word.includes(letter)) return theme.light.yellow
-  return theme.light.grey
+  lockedColor?: string
 }
 
 export const FLIP_DURATION_IN_S = 0.25
 export const TOTAL_WORD_FLIP_DURATION_IN_S = FLIP_DURATION_IN_S * 6
 
-export const Tile: React.FC<ITileProps> = ({
+export const Tile: React.FC<TTileProps> = ({
   letter,
   index,
   locked = false,
   hasWon = false,
-  word,
+  lockedColor,
 }) => {
   const [currentLetter, setCurrentLetter] = useState(letter)
-  const lockedColor = getTileColor({ letter, word, index })
   const [backgroundColor, setBackgroundColor] = useState(
     locked ? lockedColor : theme.light.background
   )
