@@ -30,6 +30,7 @@ export type RootTabParamList = {
   Calendar: undefined
   Feed: undefined
   Friends: undefined
+  Chart: undefined
 }
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

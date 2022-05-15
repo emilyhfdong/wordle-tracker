@@ -20,7 +20,9 @@ export default function App() {
     //@ts-expect-error
     Text.defaultProps.allowFontScaling = false
   }, [])
+
   // persistor.purge()
+
   if (!isLoadingComplete) {
     return null
   } else {

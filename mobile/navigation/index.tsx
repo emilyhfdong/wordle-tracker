@@ -11,7 +11,14 @@ import {
   RootTabScreenProps,
 } from "../types"
 import LinkingConfiguration from "./LinkingConfiguration"
-import { AddFriend, TodaysWord, Friends, HeaderStreak, Feed } from "../features"
+import {
+  AddFriend,
+  TodaysWord,
+  Friends,
+  HeaderStreak,
+  Feed,
+  AverageChart,
+} from "../features"
 
 export default function Navigation({}: {}) {
   return (
@@ -71,6 +78,18 @@ function BottomTabNavigator() {
           title: "History",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />
+          ),
+          headerRight: () => <HeaderStreak />,
+          headerStyle: { backgroundColor: theme.light.background },
+        }}
+      />
+      <BottomTab.Screen
+        name="Chart"
+        component={AverageChart}
+        options={{
+          title: "Chart",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="line-chart" color={color} />
           ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },

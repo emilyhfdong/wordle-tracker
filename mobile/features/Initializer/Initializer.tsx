@@ -4,7 +4,12 @@ import * as Notifications from "expo-notifications"
 
 import { BackendService } from "../../services"
 import { QueryKeys, useTodaysWord, queryClient } from "../../query"
-import { todaysWordActions, useAppDispatch, useAppSelector } from "../../redux"
+import {
+  todaysWordActions,
+  useAppDispatch,
+  useAppSelector,
+  userActions,
+} from "../../redux"
 import { FullScreenLoading } from "../../shared"
 import { Signup } from "./components"
 import { AppState, AppStateStatus } from "react-native"
