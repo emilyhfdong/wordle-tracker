@@ -18,12 +18,15 @@ export const AverageChart: React.FC = () => {
   }
   const friends = Object.values(friendsData)
   const data = [
-    { data: userData.lastAverages, svg: { stroke: theme.light.grey } },
+    {
+      data: userData.lastAverages,
+      svg: { stroke: theme.light.grey, strokeWidth: 1.5 },
+    },
     ...friends
       .filter((friend) => includedFriendIds.includes(friend.userId))
       .map((friend) => ({
         data: friend.lastAverages,
-        svg: { stroke: friend.color },
+        svg: { stroke: friend.color, strokeWidth: 1.5 },
       })),
   ]
 

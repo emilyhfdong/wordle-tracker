@@ -5,7 +5,7 @@ import { theme } from "../constants"
 type TListItemProps = {
   onPress?: () => void
   style?: ViewStyle
-  title: string
+  title: string | ReactElement
   titleColor?: string
   subtitle: string
   rightComponent?: ReactElement
@@ -44,14 +44,18 @@ export const ListItem: React.FC<TListItemProps> = ({
         }}
       >
         <View>
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: titleColor || theme.light.default,
-            }}
-          >
-            {title}
-          </Text>
+          {typeof title === "string" ? (
+            <Text
+              style={{
+                fontWeight: "bold",
+                color: titleColor || theme.light.default,
+              }}
+            >
+              {title}
+            </Text>
+          ) : (
+            title
+          )}
           <Text
             style={{
               color: theme.light.grey,

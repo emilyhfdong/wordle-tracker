@@ -18,7 +18,6 @@ const GET_FEED_RESPONSE = {
         },
       ],
       avgAttemptsCount: 3.67,
-      averageChanges: { "2022-05-15": 0.03 },
     },
   ],
 }
@@ -76,6 +75,7 @@ export const GET_USER_RESPONSE = {
     },
   ],
   lastAverages: [4.4, 4.31],
+  averageChanges: { ["2022-05-15" as string]: 0.03 },
 }
 
 export type TGetUserResponse = typeof GET_USER_RESPONSE
