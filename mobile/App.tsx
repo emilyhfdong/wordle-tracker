@@ -6,13 +6,20 @@ import useCachedResources from "./hooks/useCachedResources"
 import Navigation from "./navigation"
 import { persistor, store } from "./redux/store"
 import { PersistGate } from "redux-persist/integration/react"
-import React from "react"
+import React, { useEffect } from "react"
 import { QueryClientProvider } from "react-query"
 import { queryClient } from "./query/client"
 import { ErrorBoundary, Initializer } from "./features"
+import { Text } from "react-native"
 
 export default function App() {
   const isLoadingComplete = useCachedResources()
+  useEffect(() => {
+    //@ts-expect-error
+    Text.defaultProps = Text.defaultProps || {}
+    //@ts-expect-error
+    Text.defaultProps.allowFontScaling = false
+  }, [])
   // persistor.purge()
   if (!isLoadingComplete) {
     return null
