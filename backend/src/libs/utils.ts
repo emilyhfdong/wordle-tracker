@@ -57,9 +57,7 @@ export const getAverageChange = (
     return null
   }
   const prevAvg = getAverageAtempts(dayEntries.slice(1))
-  console.log("prev avg", prevAvg)
   const currentAvg = getAverageAtempts(dayEntries)
-  console.log("current avg", currentAvg)
   return Number((currentAvg - prevAvg).toFixed(2))
 }
 
@@ -89,7 +87,7 @@ export const getGuessDistribution = (dayEntries: IDayEntryItem[]) => {
   }))
 }
 
-export const getLast30Averages = (sortedDayEntries: IDayEntryItem[]) => {
+export const getLastAverages = (sortedDayEntries: IDayEntryItem[]) => {
   return new Array(30)
     .fill(null)
     .map((_, idx) => {

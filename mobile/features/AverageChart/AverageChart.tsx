@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { ScrollView, View } from "react-native"
-import { LineChart } from "react-native-svg-charts"
+import { LineChart, Grid } from "react-native-svg-charts"
 import { useFriends, useUser } from "../../query"
 import { useAppSelector } from "../../redux"
 import { theme } from "../../constants"
@@ -18,11 +18,11 @@ export const AverageChart: React.FC = () => {
   }
   const friends = Object.values(friendsData)
   const data = [
-    { data: userData.last30Averages, svg: { stroke: theme.light.grey } },
+    { data: userData.lastAverages, svg: { stroke: theme.light.grey } },
     ...friends
       .filter((friend) => includedFriendIds.includes(friend.userId))
       .map((friend) => ({
-        data: friend.last30Averages,
+        data: friend.lastAverages,
         svg: { stroke: friend.color },
       })),
   ]
@@ -44,7 +44,7 @@ export const AverageChart: React.FC = () => {
           borderRadius: 5,
         }}
         data={data}
-        contentInset={{ top: 30, bottom: 30 }}
+        contentInset={{ top: 10, bottom: 10 }}
       ></LineChart>
       <ScrollView
         contentContainerStyle={{

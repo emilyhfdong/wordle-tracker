@@ -2,10 +2,9 @@ import { database } from "@libs/database"
 import {
   createResponse,
   getAverageAtempts,
-  getAverageChange,
   getCurrentStreak,
   getGuessDistribution,
-  getLast30Averages,
+  getLastAverages,
   getMaxStreak,
   getWinPercent,
 } from "@libs/utils"
@@ -40,6 +39,18 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const datesPlayed = sortedDayEntries.map((entry) => entry.word.date)
   const currentStreak = getCurrentStreak(sortedDayEntries, todaysDate)
 
+  const averageChanges = sortedDayEntries.reduce((acc, entry) => {
+    const entriesOnAndBefore = sortedDayEntries.filter(
+      (e) => DateTime.fromISO(e.word.date) <= DateTime.fromISO(entry.word.date)
+    )
+    const prevAvg = getAverageAtempts(entriesOnAndBefore.slice(1))
+    const currentAvg = getAverageAtempts(entriesOnAndBefore)
+    return {
+      ...acc,
+      [entry.word.date]: Number((currentAvg - prevAvg).toFixed(2)),
+    }
+  }, {} as { [date: string]: number })
+
   return createResponse({
     body: {
       userId,
@@ -51,10 +62,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       numberOfDaysPlayed: sortedDayEntries.length,
       lastPlayed: sortedDayEntries[0]?.createdAt,
       lastEntry: sortedDayEntries[0],
-      averageChange: getAverageChange(sortedDayEntries, currentStreak),
       guessDistribution: getGuessDistribution(sortedDayEntries),
       datesPlayed,
-      last30Averages: getLast30Averages(sortedDayEntries),
+      lastAverages: getLastAverages(sortedDayEntries),
+      averageChanges,
     },
   })
 }

@@ -2,9 +2,8 @@ import { IDayEntryItem, IUserMetaDataItem } from "@libs/database/types"
 import { config } from "@libs/environment"
 import {
   getAverageAtempts,
-  getAverageChange,
   getCurrentStreak,
-  getLast30Averages,
+  getLastAverages,
 } from "@libs/utils"
 import { DateTime, Settings } from "luxon"
 
@@ -16,8 +15,7 @@ interface IFriendDetails {
   averageAttemptsCount: number
   pingStatus: "notifications_disabled" | "already_pinged" | "ready"
   color: string
-  averageChange: number
-  last30Averages: number[]
+  lastAverages: number[]
 }
 
 const COLORS = ["#78CFA0", "#7DBCE8", "#C6449F", "#457AF9"]
@@ -53,7 +51,6 @@ export const getFriendDetails = ({
       ? "already_pinged"
       : "ready",
     color: COLORS[index % COLORS.length],
-    averageChange: getAverageChange(sortedDayEntries, currentStreak),
-    last30Averages: getLast30Averages(sortedDayEntries),
+    lastAverages: getLastAverages(sortedDayEntries),
   }
 }
