@@ -1,5 +1,5 @@
 import { DateTime } from "luxon"
-import { ITDayEntryItem } from "./database/types"
+import { IDayEntryItem } from "./database/types"
 
 export const createResponse = ({
   statusCode,
@@ -17,7 +17,7 @@ export const createResponse = ({
 })
 
 export const getCurrentStreak = (
-  dayEntries: ITDayEntryItem[],
+  dayEntries: IDayEntryItem[],
   todaysDate: string
 ) => {
   let streak = 0
@@ -40,7 +40,7 @@ export const getCurrentStreak = (
   return streak
 }
 
-export const getAverageAtempts = (dayEntries: ITDayEntryItem[]) =>
+export const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
   Number(
     (
       dayEntries.reduce((acc, curr) => acc + curr.attemptsCount, 0) /
@@ -49,7 +49,7 @@ export const getAverageAtempts = (dayEntries: ITDayEntryItem[]) =>
   )
 
 export const getAverageChange = (
-  dayEntries: ITDayEntryItem[],
+  dayEntries: IDayEntryItem[],
   currentStreak: number
 ) => {
   const todaysDate = DateTime.now().toISODate()
@@ -64,7 +64,7 @@ export const getAverageChange = (
 }
 
 export const getMaxStreak = (
-  dayEntries: ITDayEntryItem[],
+  dayEntries: IDayEntryItem[],
   todaysDate: string
 ) => {
   let streak = 0
@@ -76,15 +76,31 @@ export const getMaxStreak = (
   return streak
 }
 
-export const getWinPercent = (dayEntries: ITDayEntryItem[]) => {
+export const getWinPercent = (dayEntries: IDayEntryItem[]) => {
   const wonEntries = dayEntries.filter((entry) => entry.attemptsCount <= 6)
   return Math.round((wonEntries.length / dayEntries.length) * 100)
 }
 
-export const getGuessDistribution = (dayEntries: ITDayEntryItem[]) => {
+export const getGuessDistribution = (dayEntries: IDayEntryItem[]) => {
   return new Array(6).fill(0).map((_, idx) => ({
     count: idx + 1,
     occurance: dayEntries.filter((entry) => entry.attemptsCount - 1 === idx)
       .length,
   }))
+}
+
+export const getLast30Averages = (sortedDayEntries: IDayEntryItem[]) => {
+  return new Array(30)
+    .fill(null)
+    .map((_, idx) => {
+      const date = DateTime.now().minus({ days: idx }).startOf("day")
+      const entries = sortedDayEntries.filter(
+        (entry) => DateTime.fromISO(entry.word.date) <= date
+      )
+      if (!entries.length) {
+        return null
+      }
+      return getAverageAtempts(entries)
+    })
+    .reverse()
 }

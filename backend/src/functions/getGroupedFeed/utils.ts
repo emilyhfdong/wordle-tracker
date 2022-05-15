@@ -1,4 +1,4 @@
-import { ITDayEntryItem } from "@libs/database/types"
+import { IDayEntryItem } from "@libs/database/types"
 
 interface IDateGroup {
   date: string
@@ -6,14 +6,14 @@ interface IDateGroup {
     userId: string
     attemptsCount: number
     attemptsDetails: string
-    word: ITDayEntryItem["word"]
+    word: IDayEntryItem["word"]
     createdAt: string
   }[]
   avgAttemptsCount: number
 }
 
 export const getGroupedDayEntries = (
-  dayEntries: ITDayEntryItem[]
+  dayEntries: IDayEntryItem[]
 ): IDateGroup[] => {
   const groupedEntries = dayEntries.reduce(
     (acc, { pk: userId, attemptsCount, attemptsDetails, word, createdAt }) => {

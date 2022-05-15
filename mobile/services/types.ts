@@ -75,6 +75,7 @@ export const GET_USER_RESPONSE = {
       occurance: 0,
     },
   ],
+  last30Averages: [4.4, 4.31],
 }
 
 export type TGetUserResponse = typeof GET_USER_RESPONSE
@@ -89,6 +90,7 @@ export const GET_FRIENDS_RESPONSE = {
     pingStatus: "ready" as TPingStatus,
     color: "#78CFA0",
     averageChange: 0.03,
+    last30Averages: [4.4, 4.31],
   },
 }
 

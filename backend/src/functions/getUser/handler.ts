@@ -5,6 +5,7 @@ import {
   getAverageChange,
   getCurrentStreak,
   getGuessDistribution,
+  getLast30Averages,
   getMaxStreak,
   getWinPercent,
 } from "@libs/utils"
@@ -53,6 +54,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       averageChange: getAverageChange(sortedDayEntries, currentStreak),
       guessDistribution: getGuessDistribution(sortedDayEntries),
       datesPlayed,
+      last30Averages: getLast30Averages(sortedDayEntries),
     },
   })
 }

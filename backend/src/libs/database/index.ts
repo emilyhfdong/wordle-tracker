@@ -2,7 +2,7 @@ import { config } from "@libs/environment"
 import AWS from "aws-sdk"
 import { DateTime } from "luxon"
 import {
-  ITDayEntryItem,
+  IDayEntryItem,
   IInitiatedPingItem,
   IRecievedPingItem,
   IUserMetaDataItem,
@@ -50,7 +50,7 @@ const putUser = async (
 }
 
 const getUserItems = async (userId: string) => {
-  const pk: ITDayEntryItem["pk"] = userId
+  const pk: IDayEntryItem["pk"] = userId
   const response = await dynamodb
     .query({
       TableName: config.dynamoTableName,
@@ -62,7 +62,7 @@ const getUserItems = async (userId: string) => {
     .promise()
   if (response.Items) {
     return {
-      dayEntries: response.Items.filter((item): item is ITDayEntryItem =>
+      dayEntries: response.Items.filter((item): item is IDayEntryItem =>
         item.sk.includes("day_entry")
       ),
       metadata: response.Items.find(
@@ -123,9 +123,9 @@ const createRecievedPing = async (
 
 const createUserTDayEntry = async (
   userId: string,
-  fields: Omit<ITDayEntryItem, "pk" | "sk">
+  fields: Omit<IDayEntryItem, "pk" | "sk">
 ) => {
-  const item: ITDayEntryItem = {
+  const item: IDayEntryItem = {
     pk: userId,
     sk: `day_entry#${fields.word.date}`,
     ...fields,

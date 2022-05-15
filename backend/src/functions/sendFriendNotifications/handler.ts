@@ -1,5 +1,5 @@
 import { database } from "@libs/database"
-import { ITDayEntryItem } from "@libs/database/types"
+import { IDayEntryItem } from "@libs/database/types"
 import { expo } from "@libs/expo"
 import { DynamoDBStreamHandler } from "aws-lambda"
 import { Converter } from "aws-sdk/clients/dynamodb"
@@ -21,7 +21,7 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
 
       const newTDayEntry = Converter.unmarshall(
         record.dynamodb.NewImage
-      ) as ITDayEntryItem
+      ) as IDayEntryItem
 
       if (!newTDayEntry.sk.includes("day_entry")) {
         console.log("event is not a day_entry")
