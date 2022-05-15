@@ -150,7 +150,7 @@ export const AddFriend: React.FC = () => {
           color: theme.light.lightGrey,
         }}
       >
-        05/08/2022
+        05/12/2022
       </Text>
     </View>
   )

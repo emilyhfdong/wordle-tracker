@@ -10,17 +10,17 @@ type TUserIconProps = {
 }
 
 export const UserIcon: React.FC<TUserIconProps> = ({ userId }) => {
-  const { data } = useFriends(userId)
-  const user = useAppSelector((state) => state.user)
-  const isAuthUser = user.id === userId
+  const authUser = useAppSelector((state) => state.user)
+  const { data } = useFriends(authUser.id)
+  const isAuthUser = authUser.id === userId
 
   if (!data || (!data[userId] && !isAuthUser)) {
     return null
   }
 
   const { color, name } =
-    userId === user.id
-      ? { color: theme.light.lightGrey, name: user.name }
+    userId === authUser.id
+      ? { color: theme.light.lightGrey, name: authUser.name }
       : data[userId]
 
   return (

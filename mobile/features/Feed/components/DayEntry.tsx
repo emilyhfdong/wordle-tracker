@@ -20,7 +20,7 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   const isSelf = useAppSelector((state) => state.user.id === userId)
   const { data } = useFriends(authUser.id)
 
-  if (!data) {
+  if (!data || (!data[userId] && !isSelf)) {
     return null
   }
   const friend = data[userId]
