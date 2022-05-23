@@ -1,12 +1,52 @@
 import React, { useState } from "react"
 import { ScrollView, View } from "react-native"
-import { LineChart, Grid } from "react-native-svg-charts"
+import { LineChart, Grid, YAxis } from "react-native-svg-charts"
 import { useFriends, useUser } from "../../query"
 import { useAppSelector } from "../../redux"
 import { theme } from "../../constants"
 import { FullScreenLoading, ListItem } from "../../shared"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { RH } from "../../utils"
+import { Defs, LinearGradient, Stop } from "react-native-svg"
+
+const GRADIENT_ID = "gradient"
+const CONTENT_INSET = { top: 10, bottom: 10 }
+const NUMBER_OF_TICKS = 10
+const Gradient = () => (
+  <Defs key={GRADIENT_ID}>
+    <LinearGradient id={GRADIENT_ID} x1={"0"} y1={"0%"} x2={"100%"} y2={"0%"}>
+      <Stop offset="0%" stopColor={"#78CFA0"} />
+      <Stop offset="33%" stopColor={"#7DBCE8"} />
+      <Stop offset="66%" stopColor={"#457AF9"} />
+      <Stop offset="100%" stopColor={"#C6449F"} />
+    </LinearGradient>
+  </Defs>
+)
+
+const getMinMax = (
+  datasets: {
+    data: number[]
+    svg: {
+      stroke: string
+      strokeWidth: number
+    }
+  }[]
+) => {
+  const allData = datasets.reduce(
+    (acc, curr) => [...acc, ...curr.data],
+    [] as number[]
+  )
+  return {
+    max: allData.reduce(
+      (acc, curr) => Math.max(acc, curr),
+      Number.MIN_SAFE_INTEGER
+    ),
+    min: allData.reduce(
+      (acc, curr) => Math.min(acc, curr),
+      Number.MAX_SAFE_INTEGER
+    ),
+  }
+}
 
 export const AverageChart: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
@@ -20,7 +60,7 @@ export const AverageChart: React.FC = () => {
   const data = [
     {
       data: userData.lastAverages,
-      svg: { stroke: theme.light.grey, strokeWidth: 1.5 },
+      svg: { stroke: `url(#${GRADIENT_ID})`, strokeWidth: 1.5 },
     },
     ...friends
       .filter((friend) => includedFriendIds.includes(friend.userId))
@@ -29,6 +69,7 @@ export const AverageChart: React.FC = () => {
         svg: { stroke: friend.color, strokeWidth: 1.5 },
       })),
   ]
+  const { min, max } = getMinMax(data)
 
   return (
     <View
@@ -38,17 +79,35 @@ export const AverageChart: React.FC = () => {
         paddingTop: 10,
       }}
     >
-      <LineChart
-        style={{
-          height: 300,
-          backgroundColor: theme.light.background,
-          borderColor: "#E6E6E6",
-          borderWidth: 1,
-          borderRadius: 5,
-        }}
-        data={data}
-        contentInset={{ top: 10, bottom: 10 }}
-      ></LineChart>
+      <View style={{ flexDirection: "row" }}>
+        <YAxis
+          data={data}
+          style={{ marginBottom: 0, marginRight: 3 }}
+          svg={{ fontSize: 8, fill: theme.light.grey }}
+          max={max}
+          min={min}
+          contentInset={CONTENT_INSET}
+          numberOfTicks={NUMBER_OF_TICKS}
+        />
+        <LineChart
+          style={{
+            height: 300,
+            backgroundColor: theme.light.background,
+            borderColor: "#E6E6E6",
+            borderWidth: 1,
+            borderRadius: 5,
+            flex: 1,
+          }}
+          data={data}
+          contentInset={CONTENT_INSET}
+          gridMax={max}
+          gridMin={min}
+          numberOfTicks={NUMBER_OF_TICKS}
+        >
+          <Grid svg={{ stroke: "#E6E6E6", strokeWidth: 1 }} belowChart={true} />
+          <Gradient />
+        </LineChart>
+      </View>
       <ScrollView
         contentContainerStyle={{
           paddingBottom: 200,
