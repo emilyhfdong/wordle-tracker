@@ -12,7 +12,7 @@ const getSquares = (guesses: string[], word: string) => {
   const getRow = (guess: string) => {
     return getTiles(guess, word)
       .map(({ color }) => tileColorToEmoji[color])
-      .join()
+      .join("")
   }
   return guesses.map(getRow).join("\r\n")
 }
