@@ -4,7 +4,7 @@ import { View, Text } from "react-native"
 import { theme } from "../../../constants"
 import { useAppSelector } from "../../../redux"
 import { useUser } from "../../../query"
-import { getTiles } from "../../../shared"
+import { getTiles } from "../../../utils"
 
 type TDayEntryBoardProps = {
   attemptsDetail: string

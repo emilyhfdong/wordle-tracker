@@ -1,6 +1,6 @@
 import { theme } from "../../../constants"
 import { TGetUserResponse } from "../../../services"
-import { getTiles } from "../../../shared"
+import { getTiles } from "../../../utils"
 
 const tileColorToEmoji = {
   [theme.light.yellow]: "🟨",

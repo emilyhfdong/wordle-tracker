@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { View } from "react-native"
 import { theme } from "../../constants/theme"
-import { isValidWord } from "../../utils"
+import { isEasyMode, isValidWord } from "../../utils"
 import { todaysWordActions, useAppDispatch, useAppSelector } from "../../redux"
 import { DateTime } from "luxon"
 import { queryClient, QueryKeys, usecreateDayEntry, useUser } from "../../query"
@@ -26,7 +26,7 @@ export const TodaysWord: React.FC = () => {
   const [summaryModalIsOpen, setSummaryModalIsOpen] = useState(false)
   const [hasInitialized, setHasInitialized] = useState(false)
   const dispatch = useAppDispatch()
-  const [isNotWord, setIsNotWord] = useState(false)
+  const [wordWarning, setWordWarning] = useState("")
   const [toastText, setToastText] = useState("")
 
   const { mutate } = usecreateDayEntry({
@@ -52,11 +52,19 @@ export const TodaysWord: React.FC = () => {
     if (key === ENTER_KEY) {
       if (currentGuess.length === 5) {
         if (!isValidWord(currentGuess)) {
-          setIsNotWord(true)
+          setWordWarning("Not in word list")
           setTimeout(() => {
-            setIsNotWord(false)
+            setWordWarning("")
           }, SHAKE_DURATION_IN_S * 1000)
 
+          return
+        }
+
+        if (isEasyMode(currentGuess, prevGuesses, word)) {
+          setWordWarning("Must use revealed hints")
+          setTimeout(() => {
+            setWordWarning("")
+          }, SHAKE_DURATION_IN_S * 1000)
           return
         }
 
@@ -111,8 +119,8 @@ export const TodaysWord: React.FC = () => {
         isOpen={summaryModalIsOpen}
         closeModal={() => setSummaryModalIsOpen(false)}
       />
-      <Toast isVisible={isNotWord}>Not in word list</Toast>
-      <Toast isVisible={Boolean(toastText)}>{toastText}</Toast>
+      <Toast text={wordWarning} isVisible={Boolean(wordWarning)} />
+      <Toast text={toastText} isVisible={Boolean(toastText)} />
       <View style={{ flex: 1, justifyContent: "center" }}>
         {new Array(6).fill(0).map((_, idx) => (
           <Row
@@ -121,7 +129,7 @@ export const TodaysWord: React.FC = () => {
               idx === prevGuesses.length ? currentGuess : prevGuesses[idx]
             }
             locked={idx < prevGuesses.length}
-            isNotWord={isNotWord && idx === prevGuesses.length}
+            isNotWord={Boolean(wordWarning) && idx === prevGuesses.length}
           />
         ))}
       </View>

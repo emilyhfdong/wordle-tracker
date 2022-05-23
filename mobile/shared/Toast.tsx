@@ -1,15 +1,18 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Text, Animated } from "react-native"
 import { theme } from "../constants"
 
 interface IToastProps {
   isVisible: boolean
+  text: string
 }
 
-export const Toast: React.FC<IToastProps> = ({ children, isVisible }) => {
+export const Toast: React.FC<IToastProps> = ({ children, isVisible, text }) => {
   const opacity = useRef(new Animated.Value(0)).current
+  const [localText, setLocalText] = useState<string>()
   useEffect(() => {
     if (isVisible) {
+      setLocalText(text)
       Animated.timing(opacity, {
         toValue: 1,
         duration: 500,
@@ -21,7 +24,7 @@ export const Toast: React.FC<IToastProps> = ({ children, isVisible }) => {
         duration: 500,
         useNativeDriver: true,
         delay: 500,
-      }).start()
+      }).start(() => setLocalText(text))
     }
   }, [isVisible])
   return (
@@ -37,7 +40,7 @@ export const Toast: React.FC<IToastProps> = ({ children, isVisible }) => {
       }}
     >
       <Text style={{ color: theme.light.background, fontWeight: "bold" }}>
-        {children}
+        {localText}
       </Text>
     </Animated.View>
   )

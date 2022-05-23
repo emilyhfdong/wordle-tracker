@@ -21,7 +21,8 @@ export const Feed: React.FC = () => {
 
   const onRefresh = async () => {
     setIsRefetching(true)
-    await Promise.all([refetchFeed, refetchUser])
+    await refetchFeed()
+    await refetchUser()
     setIsRefetching(false)
   }
 
