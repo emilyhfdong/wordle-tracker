@@ -4,10 +4,10 @@ import { LineChart, Grid, YAxis } from "react-native-svg-charts"
 import { useFriends, useUser } from "../../query"
 import { useAppSelector } from "../../redux"
 import { theme } from "../../constants"
-import { FullScreenLoading, ListItem } from "../../shared"
-import Ionicons from "@expo/vector-icons/Ionicons"
+import { FullScreenLoading } from "../../shared"
 import { RH } from "../../utils"
 import { Defs, LinearGradient, Stop } from "react-native-svg"
+import { FriendListItem } from "./components"
 
 const GRADIENT_ID = "gradient"
 const CONTENT_INSET = { top: 10, bottom: 10 }
@@ -118,8 +118,11 @@ export const AverageChart: React.FC = () => {
         {friends.map((friend) => {
           const isSelected = includedFriendIds.includes(friend.userId)
           return (
-            <ListItem
-              onPress={() => {
+            <FriendListItem
+              key={friend.userId}
+              {...friend}
+              isSelected={isSelected}
+              onCheckboxPress={() => {
                 if (isSelected) {
                   setIncludedFriendIds(
                     includedFriendIds.filter((id) => id !== friend.userId)
@@ -128,17 +131,6 @@ export const AverageChart: React.FC = () => {
                   setIncludedFriendIds([...includedFriendIds, friend.userId])
                 }
               }}
-              key={friend.userId}
-              title={friend.name}
-              titleColor={friend.color}
-              subtitle={`current avg: ${friend.averageAttemptsCount}`}
-              rightComponent={
-                <Ionicons
-                  name={isSelected ? "checkbox" : "square-outline"}
-                  size={20}
-                  color={theme.light.grey}
-                />
-              }
             />
           )
         })}

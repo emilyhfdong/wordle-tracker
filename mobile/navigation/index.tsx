@@ -1,4 +1,4 @@
-import { FontAwesome } from "@expo/vector-icons"
+import { FontAwesome, Ionicons } from "@expo/vector-icons"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -14,11 +14,11 @@ import LinkingConfiguration from "./LinkingConfiguration"
 import {
   AddFriend,
   TodaysWord,
-  Friends,
   HeaderStreak,
   Feed,
   AverageChart,
   ResetUser,
+  AddFriendHeader,
 } from "../features"
 
 export default function Navigation({}: {}) {
@@ -99,16 +99,7 @@ function BottomTabNavigator() {
           ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
-        }}
-      />
-      <BottomTab.Screen
-        name="Friends"
-        component={Friends}
-        options={{
-          title: "Friends",
-          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
-          headerRight: () => <HeaderStreak />,
-          headerStyle: { backgroundColor: theme.light.background },
+          headerLeft: () => <AddFriendHeader />,
         }}
       />
     </BottomTab.Navigator>

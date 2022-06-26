@@ -10,6 +10,7 @@ interface IScoresProps {
   lastPlayedDate: string
   averageAttemptsCount: number | null
 }
+const HEIGHT = 12
 
 export const Scores: React.FC<IScoresProps> = ({
   currentStreak,
@@ -33,11 +34,12 @@ export const Scores: React.FC<IScoresProps> = ({
               fontWeight: "bold",
               color: theme.light.blue,
               textAlignVertical: "center",
+              fontSize: HEIGHT,
             }}
           >
             {averageAttemptsCount}
           </Text>
-          <AverageIcon fill={theme.light.blue} />
+          <AverageIcon style={{ height: HEIGHT }} fill={theme.light.blue} />
         </>
       )}
       <Text
@@ -47,12 +49,13 @@ export const Scores: React.FC<IScoresProps> = ({
           fontWeight: "bold",
           color: currentStreak ? "#e85a5a" : theme.light.grey,
           textAlignVertical: "center",
+          fontSize: HEIGHT,
         }}
       >
         {currentStreak}
       </Text>
       <FireIcon
-        style={{ marginBottom: 5 }}
+        style={{ marginBottom: 5, height: HEIGHT }}
         fill={currentStreak ? "#e85a5a" : theme.light.grey}
       />
     </View>

@@ -30,7 +30,6 @@ export type RootTabParamList = {
   Today: undefined
   Calendar: undefined
   Feed: undefined
-  Friends: undefined
   Chart: undefined
 }
 
