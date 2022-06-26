@@ -4,8 +4,8 @@ import { config } from "@libs/environment"
 import { DateTime, Settings } from "luxon"
 import { getBrowser } from "@libs/puppeteer"
 
-const CLOSE_ICON_PATH = `document.querySelector("body > game-app").shadowRoot.querySelector("#game > game-modal").shadowRoot.querySelector("div > div > div")`
-const ANSWER_TOAST_PATH = `document.querySelector("body > game-app").shadowRoot.querySelector("#game-toaster > game-toast").shadowRoot.querySelector("div")`
+const CLOSE_ICON_PATH = `document.querySelector("#wordle-app-game > div.Modal-module_modalOverlay__81ZCi > div > div > svg > path")`
+const ANSWER_TOAST_PATH = `document.querySelector("#ToastContainer-module_gameToaster__yjzPn > div")`
 
 export const handler = async () => {
   Settings.defaultZone = config.timezone
