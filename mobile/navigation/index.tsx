@@ -72,7 +72,9 @@ function BottomTabNavigator() {
         component={TodaysWord}
         options={({ navigation }: RootTabScreenProps<"Today">) => ({
           title: "Home",
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name={"home-outline"} size={20} color={color} />
+          ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
         })}
@@ -83,19 +85,19 @@ function BottomTabNavigator() {
         options={{
           title: "History",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="calendar" color={color} />
+            <Ionicons name={"calendar-outline"} size={20} color={color} />
           ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
         }}
       />
       <BottomTab.Screen
-        name="Chart"
+        name="Friends"
         component={AverageChart}
         options={{
-          title: "Chart",
+          title: "Friends",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="line-chart" color={color} />
+            <Ionicons name={"people-outline"} size={20} color={color} />
           ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
@@ -104,11 +106,4 @@ function BottomTabNavigator() {
       />
     </BottomTab.Navigator>
   )
-}
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"]
-  color: string
-}) {
-  return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />
 }
