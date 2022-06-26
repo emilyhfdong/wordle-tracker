@@ -32,6 +32,7 @@ export const todaysWordSlice = createSlice({
       _,
       action: PayloadAction<{ word: string; number: number; date: string }>
     ) => ({ ...action.payload, currentGuess: "", prevGuesses: [] }),
+    clearGuesses: (state) => ({ ...state, prevGuesses: [], currentGuess: "" }),
   },
 })
 

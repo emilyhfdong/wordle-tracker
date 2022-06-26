@@ -20,6 +20,7 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined
   NotFound: undefined
   AddFriend: undefined
+  ResetUser: undefined
 }
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

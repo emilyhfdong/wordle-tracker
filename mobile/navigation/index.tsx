@@ -18,6 +18,7 @@ import {
   HeaderStreak,
   Feed,
   AverageChart,
+  ResetUser,
 } from "../features"
 
 export default function Navigation({}: {}) {
@@ -42,6 +43,11 @@ function RootNavigator() {
         screenOptions={{ presentation: "modal", headerShown: false }}
       >
         <Stack.Screen name="AddFriend" component={AddFriend} />
+      </Stack.Group>
+      <Stack.Group
+        screenOptions={{ presentation: "modal", headerShown: false }}
+      >
+        <Stack.Screen name="ResetUser" component={ResetUser} />
       </Stack.Group>
     </Stack.Navigator>
   )
