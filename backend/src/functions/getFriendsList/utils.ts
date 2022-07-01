@@ -1,10 +1,10 @@
-import { IDayEntryItem, IUserMetaDataItem } from "@libs/database/types"
-import { config } from "@libs/environment"
 import {
-  getAverageAtempts,
-  getCurrentStreak,
-  getLastAverages,
-} from "@libs/utils"
+  IDayEntryItem,
+  IUserMetaDataItem,
+  IUserStatsItem,
+} from "@libs/database/types"
+import { config } from "@libs/environment"
+import { getCurrentStreak } from "@libs/utils"
 import { DateTime, Settings } from "luxon"
 
 interface IFriendDetails {
@@ -25,10 +25,12 @@ export const getFriendDetails = ({
   metadata,
   userPingedFriendIds,
   index,
+  stats,
 }: {
   dayEntries: IDayEntryItem[]
   metadata: IUserMetaDataItem
   userPingedFriendIds: string[]
+  stats: IUserStatsItem
   index: number
 }): IFriendDetails => {
   Settings.defaultZone = config.timezone
@@ -41,8 +43,8 @@ export const getFriendDetails = ({
   )
   return {
     currentStreak,
-    lastPlayed: sortedDayEntries[0]?.createdAt,
-    averageAttemptsCount: getAverageAtempts(sortedDayEntries),
+    lastPlayed: stats.lastPlayed,
+    averageAttemptsCount: stats.averageAttemptsCount,
     name: metadata.name,
     userId: metadata.pk,
     pingStatus: !metadata.pushToken
@@ -51,6 +53,6 @@ export const getFriendDetails = ({
       ? "already_pinged"
       : "ready",
     color: COLORS[index % COLORS.length],
-    lastAverages: getLastAverages(sortedDayEntries),
+    lastAverages: stats.seasonAverages.slice(-30),
   }
 }

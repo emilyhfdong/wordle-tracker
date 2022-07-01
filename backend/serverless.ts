@@ -10,9 +10,14 @@ const serverlessConfiguration: AWS = {
       includeModules: true,
     },
   },
-  plugins: ["serverless-webpack", "serverless-offline"],
+  plugins: [
+    "serverless-webpack",
+    "serverless-offline",
+    "serverless-prune-plugin",
+  ],
   provider: {
     name: "aws",
+    versionFunctions: false,
     runtime: "nodejs14.x",
     apiGateway: {
       minimumCompressionSize: 1024,
@@ -42,6 +47,7 @@ const serverlessConfiguration: AWS = {
           "dynamodb:GetRecords",
           "dynamodb:GetShardIterator",
           "dynamodb:ListStreams",
+          "dynamodb:Scan",
         ],
         Resource: [{ "Fn::GetAtt": ["WordzleTable", "Arn"] }],
       },

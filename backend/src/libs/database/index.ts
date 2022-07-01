@@ -5,10 +5,54 @@ import {
   IDayEntryItem,
   IInitiatedPingItem,
   IRecievedPingItem,
+  ISeasonItem,
   IUserMetaDataItem,
+  IUserStatsItem,
 } from "./types"
 
 const dynamodb = new AWS.DynamoDB.DocumentClient()
+
+const getSeasons = async () => {
+  const pk: ISeasonItem["pk"] = "season"
+  const response = await dynamodb
+    .query({
+      TableName: config.dynamoTableName,
+      KeyConditionExpression: `pk = :pk`,
+      ExpressionAttributeValues: {
+        ":pk": pk,
+      },
+    })
+    .promise()
+
+  if (response.Items) {
+    return response.Items as ISeasonItem[]
+  }
+  return null
+}
+
+const putSeason = async (
+  leaderboard: ISeasonItem["leaderboard"],
+  startDate: string,
+  endDate: string,
+  seasonNumber: string
+) => {
+  const item: ISeasonItem = {
+    pk: "season",
+    sk: seasonNumber,
+    leaderboard,
+    startDate,
+    endDate,
+  }
+
+  await dynamodb
+    .put({
+      TableName: config.dynamoTableName,
+      Item: item,
+    })
+    .promise()
+
+  return item
+}
 
 const getUser = async (id: string) => {
   const pk: IUserMetaDataItem["pk"] = id
@@ -29,6 +73,22 @@ const getUser = async (id: string) => {
   return null
 }
 
+const getAllUsers = async () => {
+  const response = await dynamodb
+    .scan({
+      TableName: config.dynamoTableName,
+      FilterExpression: "sk = :sk",
+      ExpressionAttributeValues: {
+        ":sk": "metadata",
+      },
+    })
+    .promise()
+  if (response.Items) {
+    return response.Items as IUserMetaDataItem[]
+  }
+  return null
+}
+
 const putUser = async (
   id: string,
   userFields: Omit<IUserMetaDataItem, "sk" | "pk">
@@ -37,6 +97,26 @@ const putUser = async (
     pk: id,
     sk: "metadata",
     ...userFields,
+  }
+
+  await dynamodb
+    .put({
+      TableName: config.dynamoTableName,
+      Item: item,
+    })
+    .promise()
+
+  return item
+}
+
+const putUserStats = async (
+  id: string,
+  stats: Omit<IUserStatsItem, "sk" | "pk">
+) => {
+  const item: IUserStatsItem = {
+    pk: id,
+    sk: "stats",
+    ...stats,
   }
 
   await dynamodb
@@ -73,6 +153,9 @@ const getUserItems = async (userId: string) => {
       ),
       initiatedPings: response.Items.filter((item): item is IRecievedPingItem =>
         item.sk.includes("initiated_ping")
+      ),
+      stats: response.Items.find(
+        (item): item is IUserStatsItem => item.sk === "stats"
       ),
     }
   }
@@ -148,4 +231,8 @@ export const database = {
   createUserTDayEntry,
   createInitiatedPing,
   createRecievedPing,
+  getAllUsers,
+  putSeason,
+  getSeasons,
+  putUserStats,
 }

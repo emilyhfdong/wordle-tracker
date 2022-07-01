@@ -10,6 +10,22 @@ export interface IUserMetaDataItem {
 
 type TISODate = string
 
+export interface IUserStatsItem {
+  pk: TUserId
+  sk: "stats"
+  maxStreak: number
+  currentStreak: number
+  averageAttemptsCount: number
+  winPercent: number
+  numberOfDaysPlayed: number
+  lastPlayed: string
+  lastEntry: IDayEntryItem
+  guessDistribution: { count: number; occurance: number }[]
+  datesPlayed: string[]
+  seasonAverages: number[]
+  seasonAverageChanges: { [date: string]: number }
+}
+
 export interface IDayEntryItem {
   pk: TUserId
   sk: `day_entry#${TISODate}`
@@ -33,4 +49,14 @@ export interface IRecievedPingItem {
   pk: TUserId
   sk: `recieved_ping#${TISODate}#${TFriendId}`
   createdAt: string
+}
+
+type TSeasonNumber = string
+
+export interface ISeasonItem {
+  pk: "season"
+  sk: TSeasonNumber
+  leaderboard: { name: string; average: number }[]
+  startDate: string
+  endDate: string
 }

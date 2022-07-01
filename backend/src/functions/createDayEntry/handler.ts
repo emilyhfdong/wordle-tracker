@@ -46,7 +46,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   console.log("creating day entry for user", userId)
   const attempts = attemptsDetails.split(" ")
   const failed = attempts[attempts.length - 1] !== word.answer
-  const TDayEntry = await database.createUserTDayEntry(userId, {
+  const dayEntry = await database.createUserTDayEntry(userId, {
     attemptsCount: attemptsDetails.split(" ").length + (failed ? 1 : 0),
     attemptsDetails,
     createdAt: playedAt,
@@ -54,6 +54,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   })
 
   return createResponse({
-    body: { TDayEntry },
+    body: { dayEntry },
   })
 }

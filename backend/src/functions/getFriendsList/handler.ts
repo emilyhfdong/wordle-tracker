@@ -18,10 +18,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     })
   }
 
-  console.log("getting friend entries for user", JSON.stringify(user))
+  console.log("getting friend entries for user", user.metadata.name)
   const friendItems = await Promise.all(
     user.metadata.friendIds.map((friendId) => database.getUserItems(friendId))
   )
+  console.log("got friend entries", friendItems.length)
 
   const userPingedFriendIds = user.initiatedPings
     .filter((ping) =>

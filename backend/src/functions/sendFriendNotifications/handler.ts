@@ -17,7 +17,7 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
     if (!record.dynamodb?.NewImage) continue
 
     try {
-      console.log("new entry", record.dynamodb.NewImage)
+      console.log("new entry")
 
       const newTDayEntry = Converter.unmarshall(
         record.dynamodb.NewImage

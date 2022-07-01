@@ -1,5 +1,5 @@
 import { database } from "@libs/database"
-import { createResponse } from "@libs/utils"
+import { createResponse, getStatsForUser } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
 
 const generateRandomId = () => {
@@ -30,13 +30,18 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   }
 
   const user = await database.putUser(id, { name: body.name, friendIds: [] })
-  console.log("created user", user)
+  const stats = getStatsForUser([])
+
+  await database.putUserStats(id, stats)
+
+  console.log("created user", user.name)
   return createResponse({
     body: {
       user: {
         id: user.pk,
         name: user.name,
       },
+      stats,
     },
   })
 }
