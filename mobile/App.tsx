@@ -11,6 +11,7 @@ import { QueryClientProvider } from "react-query"
 import { queryClient } from "./query/client"
 import { ErrorBoundary, Initializer } from "./features"
 import { Text } from "react-native"
+import { SeasonEndModal } from "./features/SeasonEndModal"
 
 export default function App() {
   const isLoadingComplete = useCachedResources()
@@ -33,6 +34,7 @@ export default function App() {
             <QueryClientProvider client={queryClient}>
               <Initializer>
                 <SafeAreaProvider>
+                  <SeasonEndModal />
                   <Navigation />
                   <StatusBar />
                 </SafeAreaProvider>

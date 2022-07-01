@@ -7,6 +7,7 @@ export enum QueryKeys {
   TODAYS_WORD = "todaysWord",
   USER = "user",
   FRIENDS = "friends",
+  SEASONS = "seasons",
 }
 
 export const useFeed = (userId: string) => {
@@ -21,8 +22,14 @@ export const useUser = (userId: string) => {
   return useQuery(QueryKeys.USER, () => BackendService.getUser(userId))
 }
 
+export const useSeasons = () => {
+  return useQuery(QueryKeys.SEASONS, () => BackendService.getSeasons())
+}
+
 export const useFriends = (userId: string) => {
-  return useQuery(QueryKeys.FRIENDS, () => BackendService.getFriends(userId))
+  return useQuery(QueryKeys.FRIENDS, () => BackendService.getFriends(userId), {
+    enabled: Boolean(userId),
+  })
 }
 
 export const useCreateUser = (

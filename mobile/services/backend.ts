@@ -3,6 +3,7 @@ import {
   TDayEntry,
   TGetFeedResponse,
   TGetFriendsResponse,
+  TGetSeasonsResponse,
   TGetUserResponse,
 } from "./types"
 
@@ -41,6 +42,14 @@ export const getUser = async (userId: string) => {
     baseURL: API_BASE,
   })
   console.log("DONE - getting user")
+  return response.data
+}
+
+const getSeasons = async () => {
+  const response = await axios.get<TGetSeasonsResponse>(`seasons`, {
+    baseURL: API_BASE,
+  })
+  console.log("DONE - getting seasons")
   return response.data
 }
 
@@ -130,4 +139,5 @@ export const BackendService = {
   pingFriend,
   getUser,
   getFriends,
+  getSeasons,
 }

@@ -3,10 +3,12 @@ import { todaysWordSlice, userSlice } from "./slices"
 import { persistStore, persistReducer } from "redux-persist"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import thunk from "redux-thunk"
+import { seasonsSlice } from "./slices/seasons"
 
 const rootReducer = combineReducers({
   user: userSlice.reducer,
   todaysWord: todaysWordSlice.reducer,
+  seasons: seasonsSlice.reducer,
 })
 
 const persistedRootReducer = persistReducer(

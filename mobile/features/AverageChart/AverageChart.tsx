@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ScrollView, View } from "react-native"
 import { LineChart, Grid, YAxis } from "react-native-svg-charts"
 import { useFriends, useUser } from "../../query"
@@ -8,6 +8,7 @@ import { FullScreenLoading } from "../../shared"
 import { RH } from "../../utils"
 import { Defs, LinearGradient, Stop } from "react-native-svg"
 import { FriendListItem } from "./components"
+import * as shape from "d3-shape"
 
 const GRADIENT_ID = "gradient"
 const CONTENT_INSET = { top: 10, bottom: 10 }
@@ -57,16 +58,29 @@ export const AverageChart: React.FC = () => {
     return <FullScreenLoading />
   }
   const friends = Object.values(friendsData)
+  const [userAverages, setUserAverages] = useState(new Array(30).fill(0))
+  useEffect(() => {
+    const initialize = () => {
+      if (userData) {
+        setUserAverages(userData.lastAverages)
+      }
+    }
+    const timeout = setTimeout(initialize, 200)
+    return () => clearTimeout(timeout)
+  }, [userData])
+
   const data = [
     {
-      data: userData.lastAverages,
-      svg: { stroke: `url(#${GRADIENT_ID})`, strokeWidth: 1.5 },
+      id: userData.userId,
+      data: userAverages,
+      svg: { stroke: `url(#${GRADIENT_ID})`, strokeWidth: 2 },
     },
     ...friends
       .filter((friend) => includedFriendIds.includes(friend.userId))
       .map((friend) => ({
+        id: friend.userId,
         data: friend.lastAverages,
-        svg: { stroke: friend.color, strokeWidth: 1.5 },
+        svg: { stroke: friend.color, strokeWidth: 2 },
       })),
   ]
   const { min, max } = getMinMax(data)
@@ -98,11 +112,15 @@ export const AverageChart: React.FC = () => {
             borderRadius: 5,
             flex: 1,
           }}
-          data={data}
+          curve={shape.curveNatural}
+          animate
+          svg={{ stroke: `url(#${GRADIENT_ID})`, strokeWidth: 2 }}
+          data={userAverages}
           contentInset={CONTENT_INSET}
           gridMax={max}
           gridMin={min}
           numberOfTicks={NUMBER_OF_TICKS}
+          animationDuration={300}
         >
           <Grid svg={{ stroke: "#E6E6E6", strokeWidth: 1 }} belowChart={true} />
           <Gradient />

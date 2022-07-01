@@ -94,3 +94,65 @@ export const GET_FRIENDS_RESPONSE = {
 }
 
 export type TGetFriendsResponse = typeof GET_FRIENDS_RESPONSE
+
+export const GET_SEASONS_RESPONSE = [
+  {
+    startDate: "2022-04-01",
+    endDate: "2022-06-30",
+    name: "Season 1",
+    leaderboard: [
+      {
+        name: "Emily",
+        average: 3.63,
+        userId: "NPCAM",
+      },
+      {
+        name: "Megan",
+        average: 3.71,
+        userId: "JYPTA",
+      },
+      {
+        name: "JOY",
+        average: 3.75,
+        userId: "CZVST",
+      },
+      {
+        name: "Zach",
+        average: 3.83,
+        userId: "CMRAH",
+      },
+      {
+        name: "Jerm ",
+        average: 4.04,
+        userId: "QTBNK",
+      },
+      {
+        name: "jonas",
+        average: 4.07,
+        userId: "FKRNV",
+      },
+      {
+        name: "katy",
+        average: 4.23,
+        userId: "MFFUE",
+      },
+      {
+        name: "cindy",
+        average: 4.4,
+        userId: "BHNOF",
+      },
+      {
+        name: "Cutter",
+        average: 5.66,
+        userId: "SJMKR",
+      },
+      {
+        name: "Dunc",
+        average: 6.55,
+        userId: "JRVIW",
+      },
+    ],
+  },
+]
+
+export type TGetSeasonsResponse = typeof GET_SEASONS_RESPONSE
