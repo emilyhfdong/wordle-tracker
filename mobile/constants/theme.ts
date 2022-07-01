@@ -10,5 +10,6 @@ export const theme = {
     blue: "rgb(146,169,217)",
     orange: "rgb(226,164,106)",
     red: "rgb(226,106,106)",
+    border: "#E6E6E6",
   },
 }

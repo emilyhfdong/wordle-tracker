@@ -1,7 +1,7 @@
 import React from "react"
 import { ScrollView, Text, View } from "react-native"
 import { theme } from "../../../constants"
-import { useFriends, useSeasons } from "../../../query"
+import { useFriends } from "../../../query"
 import { useAppSelector } from "../../../redux"
 import { TGetSeasonsResponse } from "../../../services"
 import { RH, RW } from "../../../utils"
@@ -22,11 +22,10 @@ export const SeasonLeaderBoard: React.FC<SeasonLeaderBoardProps> = ({
   return (
     <ScrollView
       style={{
-        borderColor: theme.light.lightGrey,
+        borderColor: theme.light.border,
         borderWidth: 1,
         borderRadius: 10,
         paddingVertical: RH(1),
-        paddingHorizontal: RW(8),
         flexDirection: "column",
         width: "100%",
       }}
@@ -34,10 +33,12 @@ export const SeasonLeaderBoard: React.FC<SeasonLeaderBoardProps> = ({
       {season.leaderboard.map((user, idx) => (
         <View
           style={{
+            paddingHorizontal: RW(8),
             flexDirection: "row",
             justifyContent: "space-between",
             paddingVertical: RH(1),
             alignItems: "center",
+            backgroundColor: user.userId === userId ? "#F9F9F9" : "transparent",
           }}
         >
           <Text
@@ -87,7 +88,7 @@ const getRankingText = (rank: number) => {
   }
 }
 
-const getMedal = (rank: number) => {
+export const getMedal = (rank: number) => {
   switch (rank) {
     case 1:
       return "🥇"

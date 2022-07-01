@@ -3,13 +3,13 @@ import { DateTime } from "luxon"
 
 import { useAppSelector } from "../../../redux"
 import { TDayEntry, TGroupedDayEntries } from "../../../services"
-import { ListItem } from "../../../shared"
 import { UserIcon } from "./UserIcon"
 import { DayEntry } from "./DayEntry"
-import { LayoutAnimation, View, Text } from "react-native"
+import { View, Text } from "react-native"
 import { useUser } from "../../../query"
 import { theme } from "../../../constants"
 import { Ionicons } from "@expo/vector-icons"
+import { ExpandableListItem } from "../../../shared"
 
 type TGroupedDayEntriesProps = {
   group: TGroupedDayEntries
@@ -59,7 +59,9 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
   const avgChange = userData?.averageChanges[date]
 
   return (
-    <ListItem
+    <ExpandableListItem
+      isExpanded={isExpanded}
+      setIsExpanded={setIsExpanded}
       title={
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
@@ -97,31 +99,25 @@ export const GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
           ))}
         </View>
       }
-      onPress={() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-        setIsExpanded(!isExpanded)
-      }}
     >
-      {isExpanded && (
-        <View
-          style={{
-            paddingTop: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
-            {evenEntries.map((entry, idx) => (
-              <DayEntry key={idx} {...entry} date={date} />
-            ))}
-          </View>
-          <View>
-            {oddEntries.map((entry, idx) => (
-              <DayEntry key={idx} {...entry} date={date} />
-            ))}
-          </View>
+      <View
+        style={{
+          paddingTop: 10,
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <View>
+          {evenEntries.map((entry, idx) => (
+            <DayEntry key={idx} {...entry} date={date} />
+          ))}
         </View>
-      )}
-    </ListItem>
+        <View>
+          {oddEntries.map((entry, idx) => (
+            <DayEntry key={idx} {...entry} date={date} />
+          ))}
+        </View>
+      </View>
+    </ExpandableListItem>
   )
 }

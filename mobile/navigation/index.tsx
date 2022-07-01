@@ -19,6 +19,7 @@ import {
   AverageChart,
   ResetUser,
   AddFriendHeader,
+  Seasons,
 } from "../features"
 
 export default function Navigation({}: {}) {
@@ -102,6 +103,18 @@ function BottomTabNavigator() {
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
           headerLeft: () => <AddFriendHeader />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Seasons"
+        component={Seasons}
+        options={{
+          title: "Seasons",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name={"trophy-outline"} size={20} color={color} />
+          ),
+          headerRight: () => <HeaderStreak />,
+          headerStyle: { backgroundColor: theme.light.background },
         }}
       />
     </BottomTab.Navigator>

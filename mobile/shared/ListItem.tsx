@@ -2,7 +2,7 @@ import React, { ReactElement } from "react"
 import { View, Text, TouchableOpacity, ViewStyle } from "react-native"
 import { theme } from "../constants"
 
-type TListItemProps = {
+export type TListItemProps = {
   onPress?: () => void
   style?: ViewStyle
   title: string | ReactElement
@@ -26,7 +26,7 @@ export const ListItem: React.FC<TListItemProps> = ({
       disabled={!onPress}
       style={{
         marginVertical: 5,
-        borderColor: "#E6E6E6",
+        borderColor: theme.light.border,
         borderWidth: 1,
         borderRadius: 5,
         paddingVertical: 15,
