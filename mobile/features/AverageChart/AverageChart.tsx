@@ -58,21 +58,11 @@ export const AverageChart: React.FC = () => {
     return <FullScreenLoading />
   }
   const friends = Object.values(friendsData)
-  const [userAverages, setUserAverages] = useState(new Array(30).fill(0))
-  useEffect(() => {
-    const initialize = () => {
-      if (userData) {
-        setUserAverages(userData.lastAverages)
-      }
-    }
-    const timeout = setTimeout(initialize, 200)
-    return () => clearTimeout(timeout)
-  }, [userData])
 
   const data = [
     {
       id: userData.userId,
-      data: userAverages,
+      data: userData.lastAverages,
       svg: { stroke: `url(#${GRADIENT_ID})`, strokeWidth: 2 },
     },
     ...friends
@@ -115,7 +105,7 @@ export const AverageChart: React.FC = () => {
           curve={shape.curveNatural}
           animate
           svg={{ stroke: `url(#${GRADIENT_ID})`, strokeWidth: 2 }}
-          data={userAverages}
+          data={data}
           contentInset={CONTENT_INSET}
           gridMax={max}
           gridMin={min}
