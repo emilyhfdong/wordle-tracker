@@ -54,7 +54,7 @@ const putSeason = async (
   return item
 }
 
-const getUser = async (id: string) => {
+const getUserMetadata = async (id: string) => {
   const pk: IUserMetaDataItem["pk"] = id
   const sk: IUserMetaDataItem["sk"] = "metadata"
   const response = await dynamodb
@@ -69,6 +69,25 @@ const getUser = async (id: string) => {
 
   if (response.Item) {
     return response.Item as IUserMetaDataItem
+  }
+  return null
+}
+
+const getUserStats = async (id: string) => {
+  const pk: IUserStatsItem["pk"] = id
+  const sk: IUserStatsItem["sk"] = "stats"
+  const response = await dynamodb
+    .get({
+      TableName: config.dynamoTableName,
+      Key: {
+        pk,
+        sk,
+      },
+    })
+    .promise()
+
+  if (response.Item) {
+    return response.Item as IUserStatsItem
   }
   return null
 }
@@ -162,6 +181,43 @@ const getUserItems = async (userId: string) => {
   return null
 }
 
+const getInitiatedPings = async (userId: string, date: string) => {
+  const response = await dynamodb
+    .query({
+      TableName: config.dynamoTableName,
+      KeyConditionExpression: `pk = :pk and begins_with(sk, :skPrefix)`,
+      ExpressionAttributeValues: {
+        ":pk": userId,
+        ":skPrefix": `initiated_ping#${date}`,
+      },
+    })
+    .promise()
+
+  if (response.Items) {
+    return response.Items as IInitiatedPingItem[]
+  }
+  return []
+}
+
+const getUserMetadataStats = async (userId: string) => {
+  const [metadata, stats] = await Promise.all([
+    getUserMetadata(userId),
+    getUserStats(userId),
+  ])
+
+  return { metadata, stats }
+}
+
+const getUserMetadataStatsPings = async (userId: string, date: string) => {
+  const [metadata, stats, initiatedPings] = await Promise.all([
+    getUserMetadata(userId),
+    getUserStats(userId),
+    getInitiatedPings(userId, date),
+  ])
+
+  return { metadata, stats, initiatedPings }
+}
+
 const createInitiatedPing = async (
   userId: string,
   friendId: string,
@@ -225,7 +281,7 @@ const createUserTDayEntry = async (
 }
 
 export const database = {
-  getUser,
+  getUser: getUserMetadata,
   putUser,
   getUserItems,
   createUserTDayEntry,
@@ -235,4 +291,7 @@ export const database = {
   putSeason,
   getSeasons,
   putUserStats,
+  getUserMetadataStats,
+  getInitiatedPings,
+  getUserMetadataStatsPings,
 }

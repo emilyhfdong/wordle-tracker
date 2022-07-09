@@ -21,28 +21,18 @@ interface IFriendDetails {
 const COLORS = ["#78CFA0", "#7DBCE8", "#C6449F", "#457AF9"]
 
 export const getFriendDetails = ({
-  dayEntries,
   metadata,
   userPingedFriendIds,
   index,
   stats,
 }: {
-  dayEntries: IDayEntryItem[]
   metadata: IUserMetaDataItem
   userPingedFriendIds: string[]
   stats: IUserStatsItem
   index: number
 }): IFriendDetails => {
-  Settings.defaultZone = config.timezone
-  const sortedDayEntries = [...dayEntries].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  )
-  const currentStreak = getCurrentStreak(
-    sortedDayEntries,
-    DateTime.now().toISODate()
-  )
   return {
-    currentStreak,
+    currentStreak: stats.currentStreak,
     lastPlayed: stats.lastPlayed,
     averageAttemptsCount: stats.averageAttemptsCount,
     name: metadata.name,

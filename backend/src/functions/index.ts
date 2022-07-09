@@ -2,7 +2,7 @@ import type { AWS } from "@serverless/typescript"
 
 export const functions: AWS["functions"] = {
   scrapeWord: {
-    handler: `src/functions/scrapeWord/handler.handler`,
+    handler: `src/functions/schedule/scrapeWord/handler.handler`,
     timeout: 900,
     events: [
       {
@@ -15,7 +15,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   getTodaysWord: {
-    handler: `src/functions/getTodaysWord/handler.handler`,
+    handler: `src/functions/api/getTodaysWord/handler.handler`,
     events: [
       {
         http: { method: "GET", path: "today" },
@@ -23,7 +23,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   createUser: {
-    handler: `src/functions/createUser/handler.handler`,
+    handler: `src/functions/api/createUser/handler.handler`,
     events: [
       {
         http: { method: "POST", path: "/users" },
@@ -31,7 +31,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   updateUser: {
-    handler: `src/functions/updateUser/handler.handler`,
+    handler: `src/functions/api/updateUser/handler.handler`,
     events: [
       {
         http: { method: "PATCH", path: "/users/{userId}" },
@@ -39,7 +39,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   getUser: {
-    handler: `src/functions/getUser/handler.handler`,
+    handler: `src/functions/api/getUser/handler.handler`,
     timeout: 10,
     events: [
       {
@@ -48,7 +48,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   createDayEntry: {
-    handler: `src/functions/createDayEntry/handler.handler`,
+    handler: `src/functions/api/createDayEntry/handler.handler`,
     events: [
       {
         http: { method: "POST", path: "/users/{userId}/day-entry" },
@@ -56,7 +56,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   addFriend: {
-    handler: `src/functions/addFriend/handler.handler`,
+    handler: `src/functions/api/addFriend/handler.handler`,
     events: [
       {
         http: { method: "POST", path: "/users/{userId}/friends" },
@@ -64,7 +64,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   getFriendsList: {
-    handler: `src/functions/getFriendsList/handler.handler`,
+    handler: `src/functions/api/getFriendsList/handler.handler`,
     timeout: 10,
     events: [
       {
@@ -73,7 +73,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   pingFriend: {
-    handler: `src/functions/pingFriend/handler.handler`,
+    handler: `src/functions/api/pingFriend/handler.handler`,
     events: [
       {
         http: {
@@ -84,15 +84,23 @@ export const functions: AWS["functions"] = {
     ],
   },
   getGroupedFeed: {
-    handler: `src/functions/getGroupedFeed/handler.handler`,
+    handler: `src/functions/api/getGroupedFeed/handler.handler`,
     events: [
       {
         http: { method: "GET", path: "/users/{userId}/grouped-feed" },
       },
     ],
   },
+  getSeasons: {
+    handler: `src/functions/api/getSeasons/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/seasons" },
+      },
+    ],
+  },
   sendFriendNotifications: {
-    handler: `src/functions/sendFriendNotifications/handler.handler`,
+    handler: `src/functions/dynamoStream/sendFriendNotifications/handler.handler`,
     events: [
       {
         stream: {
@@ -103,7 +111,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   updateStats: {
-    handler: `src/functions/updateStats/handler.handler`,
+    handler: `src/functions/dynamoStream/updateStats/handler.handler`,
     events: [
       {
         stream: {
@@ -114,7 +122,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   createSeasonStats: {
-    handler: `src/functions/createSeasonStats/handler.handler`,
+    handler: `src/functions/schedule/createSeasonStats/handler.handler`,
     events: [
       {
         schedule: {
@@ -126,7 +134,7 @@ export const functions: AWS["functions"] = {
     ],
   },
   sendSeasonEndNotifications: {
-    handler: `src/functions/sendSeasonEndNotifications/handler.handler`,
+    handler: `src/functions/schedule/sendSeasonEndNotifications/handler.handler`,
     events: [
       {
         schedule: {
@@ -137,15 +145,8 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-  getSeasons: {
-    handler: `src/functions/getSeasons/handler.handler`,
-    events: [
-      {
-        http: { method: "GET", path: "/seasons" },
-      },
-    ],
-  },
+
   backfillStats: {
-    handler: `src/functions/backfillStats/handler.handler`,
+    handler: `src/functions/backfill/backfillStats/handler.handler`,
   },
 }

@@ -9,7 +9,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const userId = event.pathParameters.userId
   console.log("finding user with id", userId)
 
-  const user = await database.getUserItems(userId)
+  const user = await database.getUserMetadataStats(userId)
   if (!user) {
     return createResponse({
       statusCode: 404,
