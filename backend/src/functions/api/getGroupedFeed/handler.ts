@@ -8,7 +8,6 @@ import { config } from "@libs/environment"
 export const handler: APIGatewayProxyHandler = async (event) => {
   Settings.defaultZone = config.timezone
   const userId = event.pathParameters.userId
-  console.log("finding user with id", userId)
 
   const user = await database.getUserItems(userId)
   if (!user) {

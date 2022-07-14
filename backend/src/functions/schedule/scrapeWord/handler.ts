@@ -42,6 +42,8 @@ export const handler = async () => {
   const page = await browser.newPage()
   await page.emulateTimezone(config.timezone)
   await page.goto("https://www.nytimes.com/games/wordle/index.html")
+  await page.waitForSelector(".Modal-module_content__s8qUZ")
+
   const closeIcon = await page.evaluateHandle(CLOSE_ICON_PATH)
   //@ts-expect-error
   await closeIcon.click()
