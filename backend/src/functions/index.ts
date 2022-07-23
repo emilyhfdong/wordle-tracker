@@ -1,49 +1,12 @@
 import type { AWS } from "@serverless/typescript"
 
 export const functions: AWS["functions"] = {
-  scrapeWord: {
-    handler: `src/functions/schedule/scrapeWord/handler.handler`,
-    timeout: 900,
+  // api
+  addFriend: {
+    handler: `src/functions/api/addFriend/handler.handler`,
     events: [
       {
-        schedule: {
-          // everyday at 4:01am UTC (12:01 EST)
-          rate: "cron(1 4 * * ? *)",
-          enabled: true,
-        },
-      },
-    ],
-  },
-  getTodaysWord: {
-    handler: `src/functions/api/getTodaysWord/handler.handler`,
-    events: [
-      {
-        http: { method: "GET", path: "today" },
-      },
-    ],
-  },
-  createUser: {
-    handler: `src/functions/api/createUser/handler.handler`,
-    events: [
-      {
-        http: { method: "POST", path: "/users" },
-      },
-    ],
-  },
-  updateUser: {
-    handler: `src/functions/api/updateUser/handler.handler`,
-    events: [
-      {
-        http: { method: "PATCH", path: "/users/{userId}" },
-      },
-    ],
-  },
-  getUser: {
-    handler: `src/functions/api/getUser/handler.handler`,
-    timeout: 10,
-    events: [
-      {
-        http: { method: "GET", path: "/users/{userId}" },
+        http: { method: "POST", path: "/users/{userId}/friends" },
       },
     ],
   },
@@ -55,11 +18,11 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-  addFriend: {
-    handler: `src/functions/api/addFriend/handler.handler`,
+  createUser: {
+    handler: `src/functions/api/createUser/handler.handler`,
     events: [
       {
-        http: { method: "POST", path: "/users/{userId}/friends" },
+        http: { method: "POST", path: "/users" },
       },
     ],
   },
@@ -69,6 +32,47 @@ export const functions: AWS["functions"] = {
     events: [
       {
         http: { method: "GET", path: "/users/{userId}/friends" },
+      },
+    ],
+  },
+  getGroupedFeed: {
+    handler: `src/functions/api/getGroupedFeed/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/grouped-feed" },
+      },
+    ],
+  },
+  getFeed: {
+    handler: `src/functions/api/getFeed/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/feed" },
+      },
+    ],
+  },
+  getSeasons: {
+    handler: `src/functions/api/getSeasons/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/seasons" },
+      },
+    ],
+  },
+  getTodaysWord: {
+    handler: `src/functions/api/getTodaysWord/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "today" },
+      },
+    ],
+  },
+  getUser: {
+    handler: `src/functions/api/getUser/handler.handler`,
+    timeout: 10,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}" },
       },
     ],
   },
@@ -83,22 +87,15 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-  getGroupedFeed: {
-    handler: `src/functions/api/getGroupedFeed/handler.handler`,
+  updateUser: {
+    handler: `src/functions/api/updateUser/handler.handler`,
     events: [
       {
-        http: { method: "GET", path: "/users/{userId}/grouped-feed" },
+        http: { method: "PATCH", path: "/users/{userId}" },
       },
     ],
   },
-  getSeasons: {
-    handler: `src/functions/api/getSeasons/handler.handler`,
-    events: [
-      {
-        http: { method: "GET", path: "/seasons" },
-      },
-    ],
-  },
+  // dynamo stream
   sendFriendNotifications: {
     handler: `src/functions/dynamoStream/sendFriendNotifications/handler.handler`,
     events: [
@@ -117,6 +114,20 @@ export const functions: AWS["functions"] = {
         stream: {
           type: "dynamodb",
           arn: { "Fn::GetAtt": ["WordzleTable", "StreamArn"] },
+        },
+      },
+    ],
+  },
+  // schedule
+  scrapeWord: {
+    handler: `src/functions/schedule/scrapeWord/handler.handler`,
+    timeout: 900,
+    events: [
+      {
+        schedule: {
+          // everyday at 4:01am UTC (12:01 EST)
+          rate: "cron(1 4 * * ? *)",
+          enabled: true,
         },
       },
     ],
@@ -145,7 +156,7 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
-
+  //backfill
   backfillStats: {
     handler: `src/functions/backfill/backfillStats/handler.handler`,
   },

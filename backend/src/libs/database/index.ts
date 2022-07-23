@@ -181,6 +181,24 @@ const getUserItems = async (userId: string) => {
   return null
 }
 
+const getUserDayEntries = async (userId: string, datePrefix?: string) => {
+  const response = await dynamodb
+    .query({
+      TableName: config.dynamoTableName,
+      KeyConditionExpression: `pk = :pk and begins_with(sk, :skPrefix)`,
+      ExpressionAttributeValues: {
+        ":pk": userId,
+        ":skPrefix": datePrefix ? `day_entry#${datePrefix}` : "day_entry",
+      },
+    })
+    .promise()
+
+  if (response.Items) {
+    return response.Items as IDayEntryItem[]
+  }
+  return []
+}
+
 const getInitiatedPings = async (userId: string, date: string) => {
   const response = await dynamodb
     .query({
@@ -294,4 +312,6 @@ export const database = {
   getUserMetadataStats,
   getInitiatedPings,
   getUserMetadataStatsPings,
+  getUserDayEntries,
+  getUserMetadata,
 }
