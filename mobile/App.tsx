@@ -22,8 +22,6 @@ export default function App() {
     Text.defaultProps.allowFontScaling = false
   }, [])
 
-  // persistor.purge()
-
   if (!isLoadingComplete) {
     return null
   } else {

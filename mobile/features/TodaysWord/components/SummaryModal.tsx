@@ -2,13 +2,15 @@ import React from "react"
 import { View, Text } from "react-native"
 import { FullScreenLoading } from "../../../shared"
 import { useAppSelector } from "../../../redux"
-import { useUser } from "../../../query"
+import { QueryKeys, useUser } from "../../../query"
 import { Modal } from "./Modal"
 import { Statistic } from "./Statistic"
 import { GuessDistribution } from "./GuessDistribution"
 import { ShareButton } from "./ShareButton"
 import { NextWordzle } from "./NextWordzle"
 import { getShareMessage } from "../utils"
+import { useQuery } from "react-query"
+import { BackendService } from "../../../services"
 
 interface ISummaryModalProps {
   isOpen: boolean
@@ -20,7 +22,16 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
   closeModal,
 }) => {
   const userId = useAppSelector((state) => state.user.id)
-  const { data } = useUser(userId)
+  const { data } = useQuery(
+    QueryKeys.USER,
+    () => BackendService.getUser(userId),
+    {
+      refetchInterval: (newData) =>
+        newData?.lastEntry && newData.lastEntry.word.date !== todaysDate
+          ? 500
+          : false,
+    }
+  )
   const lastEntry = data?.lastEntry
   const todaysDate = useAppSelector((state) => state.todaysWord.date)
   const isLoading = !lastEntry || lastEntry?.word.date !== todaysDate

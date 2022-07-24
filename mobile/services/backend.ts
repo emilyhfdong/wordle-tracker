@@ -8,6 +8,7 @@ import {
 } from "./types"
 
 const API_BASE = "https://v48qv8vkjg.execute-api.us-east-1.amazonaws.com/dev/"
+// const API_BASE = "http://localhost:3000/dev/"
 
 const getTodaysWord = async (): Promise<{
   word: string
