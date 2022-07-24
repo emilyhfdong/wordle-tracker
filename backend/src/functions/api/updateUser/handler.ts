@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   console.log("updating user", userId, "with", JSON.stringify(body))
 
   const updatedUser = await database.putUser(userId, {
-    pushToken: body.pushToken || user.pushToken,
+    pushToken: user.pushToken || body.pushToken,
     name: body.name || user.name,
     friendIds: user.friendIds,
   })
