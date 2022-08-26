@@ -123,7 +123,6 @@ export const AverageChart: React.FC = () => {
       {
         options: ["Cancel", "Date added", "Best average", "Longest streak"],
         cancelButtonIndex: 0,
-        userInterfaceStyle: "dark",
         title: "Sort by:",
       },
       (buttonIndex) => {
