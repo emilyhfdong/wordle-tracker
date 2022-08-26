@@ -2,6 +2,7 @@ import { IDayEntryItem } from "@libs/database/types"
 
 interface IDateGroup {
   date: string
+  correctAnswer: string
   entries: {
     userId: string
     attemptsCount: number
@@ -39,6 +40,7 @@ export const getGroupedDayEntries = (
   )
   return groupedEntries.map((group) => ({
     ...group,
+    correctAnswer: group.entries[0].word.answer,
     avgAttemptsCount: group.entries.length
       ? Number(
           (
