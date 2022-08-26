@@ -25,7 +25,7 @@ export const ListItem: React.FC<TListItemProps> = ({
       onPress={onPress}
       disabled={!onPress}
       style={{
-        marginVertical: 5,
+        marginTop: 5,
         borderColor: theme.light.border,
         borderWidth: 1,
         borderRadius: 5,

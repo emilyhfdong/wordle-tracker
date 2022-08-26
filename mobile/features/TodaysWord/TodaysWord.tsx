@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { View } from "react-native"
 import { theme } from "../../constants/theme"
 import { isEasyMode, isValidWord } from "../../utils"
 import { todaysWordActions, useAppDispatch, useAppSelector } from "../../redux"
 import { DateTime } from "luxon"
-import { queryClient, QueryKeys, usecreateDayEntry, useUser } from "../../query"
+import { queryClient, QueryKeys, useCreateDayEntry, useUser } from "../../query"
 import { TDayEntry } from "../../services"
 import {
   Toast,
@@ -29,7 +29,7 @@ export const TodaysWord: React.FC = () => {
   const [wordWarning, setWordWarning] = useState("")
   const [toastText, setToastText] = useState("")
 
-  const { mutate } = usecreateDayEntry({
+  const { mutate } = useCreateDayEntry({
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKeys.USER)
       queryClient.invalidateQueries(QueryKeys.FEED)
@@ -45,26 +45,25 @@ export const TodaysWord: React.FC = () => {
     }
   }, [hasAlreadyPlayed])
 
-  const handleKeyboardPress = (key: string) => {
-    if (hasAlreadyPlayed) {
-      return
-    }
-    if (key === ENTER_KEY) {
-      if (currentGuess.length === 5) {
-        if (!isValidWord(currentGuess)) {
-          setWordWarning("Not in word list")
-          setTimeout(() => {
-            setWordWarning("")
-          }, SHAKE_DURATION_IN_S * 1000)
+  const handleWarningToast = useCallback((message: string) => {
+    setWordWarning(message)
+    setTimeout(() => {
+      setWordWarning("")
+    }, SHAKE_DURATION_IN_S * 1000)
+  }, [])
 
+  const handleKeyboardPress = useCallback(
+    (key: string) => {
+      if (hasAlreadyPlayed) {
+        return
+      }
+      if (key === ENTER_KEY && currentGuess.length === 5) {
+        if (!isValidWord(currentGuess)) {
+          handleWarningToast("Not in word list")
           return
         }
-
         if (isEasyMode(currentGuess, prevGuesses, word)) {
-          setWordWarning("Must use revealed hints")
-          setTimeout(() => {
-            setWordWarning("")
-          }, SHAKE_DURATION_IN_S * 1000)
+          handleWarningToast("Must use revealed hints")
           return
         }
 
@@ -72,14 +71,14 @@ export const TodaysWord: React.FC = () => {
           const failed = prevGuesses.length === 5 && word !== currentGuess
 
           const allAttempts = [...prevGuesses, currentGuess]
-          const TDayEntry: TDayEntry = {
+          const dayEntry: TDayEntry = {
             attemptsCount: allAttempts.length,
             attemptsDetails: allAttempts.join(" "),
             word: { date, answer: word, number },
             createdAt: DateTime.now().toUTC().toISO(),
             userId,
           }
-          mutate({ TDayEntry, userId })
+          mutate({ dayEntry, userId })
           setTimeout(() => {
             setToastText(failed ? "FAIL! 🧦" : "Impressive")
             setTimeout(() => {
@@ -87,24 +86,35 @@ export const TodaysWord: React.FC = () => {
             }, 1000)
           }, TOTAL_WORD_FLIP_DURATION_IN_S * 1000)
         }
+
         dispatch(todaysWordActions.setCurrentGuess(""))
         dispatch(
           todaysWordActions.setPrevGuesses([...prevGuesses, currentGuess])
         )
+        return
       }
-      return
-    }
 
-    if (key === BACKSPACE) {
-      if (currentGuess) {
-        dispatch(todaysWordActions.setCurrentGuess(currentGuess.slice(0, -1)))
+      if (key === BACKSPACE) {
+        if (currentGuess) {
+          dispatch(todaysWordActions.setCurrentGuess(currentGuess.slice(0, -1)))
+        }
+        return
       }
-      return
-    }
-    if (currentGuess.length < 5) {
-      dispatch(todaysWordActions.setCurrentGuess(currentGuess + key))
-    }
-  }
+      if (currentGuess.length < 5) {
+        dispatch(todaysWordActions.setCurrentGuess(currentGuess + key))
+      }
+    },
+    [
+      dispatch,
+      currentGuess,
+      mutate,
+      userId,
+      prevGuesses,
+      hasAlreadyPlayed,
+      word,
+    ]
+  )
+
   return (
     <View
       style={{
