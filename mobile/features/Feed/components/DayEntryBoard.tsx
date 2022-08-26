@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { View, Text } from "react-native"
 
 import { theme } from "../../../constants"
@@ -20,36 +20,58 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
   const userId = useAppSelector((state) => state.user.id)
   const { data } = useUser(userId)
   const todaysDate = useAppSelector((state) => state.todaysWord.date)
-  const hasPlayedThisDay = data?.datesPlayed.includes(date)
+  const hasPlayedThisDay = useMemo(
+    () => data?.datesPlayed.includes(date),
+    [data, date]
+  )
   const hideAnswer = !hasPlayedThisDay && todaysDate === date
+
+  const words = useMemo(() => attemptsDetail.split(" "), [attemptsDetail])
 
   return (
     <View>
-      {attemptsDetail.split(" ").map((attemptWord, wordIdx) => (
-        <View key={wordIdx} style={{ flexDirection: "row" }}>
-          {getTiles(attemptWord, word).map(({ letter, color }, index) => (
-            <View
-              style={{
-                backgroundColor: hideAnswer ? theme.light.grey : color,
-                height: 26,
-                width: 26,
-                margin: 1.5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              key={index}
-            >
-              <Text
-                style={{
-                  color: theme.light.background,
-                  fontWeight: "bold",
-                  fontSize: 13,
-                }}
-              >
-                {hideAnswer ? "" : letter}
-              </Text>
-            </View>
-          ))}
+      {words.map((attemptWord, wordIdx) => (
+        <EntryRow
+          key={wordIdx}
+          attemptWord={attemptWord}
+          word={word}
+          hideAnswer={hideAnswer}
+        />
+      ))}
+    </View>
+  )
+}
+
+export const EntryRow: React.FC<{
+  attemptWord: string
+  word: string
+  hideAnswer: boolean
+}> = ({ attemptWord, word, hideAnswer }) => {
+  const tiles = useMemo(() => getTiles(attemptWord, word), [attemptWord, word])
+
+  return (
+    <View style={{ flexDirection: "row" }}>
+      {tiles.map(({ letter, color }, index) => (
+        <View
+          style={{
+            backgroundColor: hideAnswer ? theme.light.grey : color,
+            height: 26,
+            width: 26,
+            margin: 1.5,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          key={index}
+        >
+          <Text
+            style={{
+              color: theme.light.background,
+              fontWeight: "bold",
+              fontSize: 13,
+            }}
+          >
+            {hideAnswer ? "" : letter}
+          </Text>
         </View>
       ))}
     </View>

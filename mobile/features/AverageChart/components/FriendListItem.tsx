@@ -68,16 +68,17 @@ export const FriendListItem: React.FC<IFriendListItemProps> = ({
     },
   })
 
-  const onPress = () => {
+  const titleOnPress = () => {
     Alert.alert(alertArgs.title, alertArgs.message, alertArgs.buttons)
   }
   return (
     <ListItem
-      onPress={onPress}
+      onPress={onCheckboxPress}
+      titleOnPress={userId !== selfUserId ? titleOnPress : undefined}
       titleColor={color}
       title={name}
       subtitle={`Last played: ${getLastPlayedText(lastPlayed)}`}
-      rightComponent={
+      renderRightComponent={() => (
         <View style={{ flexDirection: "row" }}>
           <Scores
             currentStreak={currentStreak}
@@ -98,7 +99,7 @@ export const FriendListItem: React.FC<IFriendListItemProps> = ({
             />
           </TouchableOpacity>
         </View>
-      }
+      )}
     ></ListItem>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 
 import { LayoutAnimation } from "react-native"
 import { ListItem, TListItemProps } from "./ListItem"
@@ -8,6 +8,8 @@ type TExpandableListItemProps = {
   setIsExpanded: (isExpanded: boolean) => void
 }
 
+const layoutAnimation = LayoutAnimation.create(200, "easeInEaseOut", "opacity")
+
 export const ExpandableListItem: React.FC<
   Omit<TListItemProps, "onPress"> & TExpandableListItemProps
 > = ({ isExpanded, setIsExpanded, children, ...props }) => {
@@ -15,7 +17,7 @@ export const ExpandableListItem: React.FC<
     <ListItem
       {...props}
       onPress={() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        LayoutAnimation.configureNext(layoutAnimation)
         setIsExpanded(!isExpanded)
       }}
     >

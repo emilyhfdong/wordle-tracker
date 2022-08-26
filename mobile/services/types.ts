@@ -4,6 +4,7 @@ const GET_FEED_RESPONSE = {
   dayEntriesByDate: [
     {
       date: "2022-05-08",
+      correctAnswer: "CANNY",
       entries: [
         {
           userId: "FKRNV",
@@ -94,6 +95,7 @@ export const GET_FRIENDS_RESPONSE = {
 }
 
 export type TGetFriendsResponse = typeof GET_FRIENDS_RESPONSE
+export type TFriend = TGetFriendsResponse["id"]
 
 export const GET_SEASONS_RESPONSE = [
   {

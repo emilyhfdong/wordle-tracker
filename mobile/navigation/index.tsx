@@ -64,6 +64,7 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Today"
+      detachInactiveScreens
       screenOptions={{
         tabBarActiveTintColor: theme.light.green,
       }}

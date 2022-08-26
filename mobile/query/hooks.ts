@@ -10,25 +10,46 @@ export enum QueryKeys {
   SEASONS = "seasons",
 }
 
+const DEFAULT_OPTIONS = {
+  refetchOnMount: false,
+  refetchOnWindowFocus: false,
+  staleTime: 5 * 60 * 1000,
+}
+
 export const useFeed = (userId: string) => {
-  return useQuery(QueryKeys.FEED, () => BackendService.getFeed(userId))
+  return useQuery(QueryKeys.FEED, () => BackendService.getFeed(userId), {
+    ...DEFAULT_OPTIONS,
+  })
 }
 
 export const useTodaysWord = () => {
-  return useQuery(QueryKeys.TODAYS_WORD, BackendService.getTodaysWord)
+  return useQuery(
+    QueryKeys.TODAYS_WORD,
+    BackendService.getTodaysWord,
+    DEFAULT_OPTIONS
+  )
 }
 
 export const useUser = (userId: string) => {
-  return useQuery(QueryKeys.USER, () => BackendService.getUser(userId))
+  return useQuery(
+    QueryKeys.USER,
+    () => BackendService.getUser(userId),
+    DEFAULT_OPTIONS
+  )
 }
 
 export const useSeasons = () => {
-  return useQuery(QueryKeys.SEASONS, () => BackendService.getSeasons())
+  return useQuery(
+    QueryKeys.SEASONS,
+    () => BackendService.getSeasons(),
+    DEFAULT_OPTIONS
+  )
 }
 
 export const useFriends = (userId: string) => {
   return useQuery(QueryKeys.FRIENDS, () => BackendService.getFriends(userId), {
     enabled: Boolean(userId),
+    ...DEFAULT_OPTIONS,
   })
 }
 

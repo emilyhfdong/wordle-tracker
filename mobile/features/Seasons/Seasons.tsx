@@ -87,7 +87,7 @@ export const SeasonListItem: React.FC<SeasonListItemProps> = ({
       )} - ${DateTime.fromISO(endDate).toFormat("MMM dd yyyy")}`}
       isExpanded={isExpanded}
       setIsExpanded={setIsExpanded}
-      rightComponent={
+      renderRightComponent={() => (
         <View style={{ flexDirection: "row" }}>
           {leaderboard.slice(0, 3).map(({ userId, name }) => (
             <InitialIcon
@@ -97,7 +97,7 @@ export const SeasonListItem: React.FC<SeasonListItemProps> = ({
             />
           ))}
         </View>
-      }
+      )}
     >
       <View style={{ paddingTop: 15 }}>
         <SeasonLeaderBoard season={season} />

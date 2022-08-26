@@ -8,7 +8,8 @@ export type TListItemProps = {
   title: string | ReactElement
   titleColor?: string
   subtitle: string
-  rightComponent?: ReactElement
+  renderRightComponent: () => ReactElement
+  titleOnPress?: () => void
 }
 
 export const ListItem: React.FC<TListItemProps> = ({
@@ -18,7 +19,8 @@ export const ListItem: React.FC<TListItemProps> = ({
   style,
   titleColor,
   children,
-  rightComponent,
+  renderRightComponent,
+  titleOnPress,
 }) => {
   return (
     <TouchableOpacity
@@ -34,7 +36,7 @@ export const ListItem: React.FC<TListItemProps> = ({
         backgroundColor: theme.light.background,
         ...style,
       }}
-      activeOpacity={0.8}
+      activeOpacity={0.5}
     >
       <View
         style={{
@@ -45,14 +47,16 @@ export const ListItem: React.FC<TListItemProps> = ({
       >
         <View>
           {typeof title === "string" ? (
-            <Text
-              style={{
-                fontWeight: "bold",
-                color: titleColor || theme.light.default,
-              }}
-            >
-              {title}
-            </Text>
+            <TouchableOpacity disabled={!titleOnPress} onPress={titleOnPress}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: titleColor || theme.light.default,
+                }}
+              >
+                {title}
+              </Text>
+            </TouchableOpacity>
           ) : (
             title
           )}
@@ -68,7 +72,7 @@ export const ListItem: React.FC<TListItemProps> = ({
             {subtitle}
           </Text>
         </View>
-        {rightComponent}
+        {renderRightComponent()}
       </View>
       {children}
     </TouchableOpacity>
