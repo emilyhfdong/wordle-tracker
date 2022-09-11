@@ -40,7 +40,9 @@ export const FriendListItem: React.FC<IFriendListItemProps> = ({
 
   const { mutate } = usePingFriend({
     onSuccess: () => {
-      queryClient.invalidateQueries(QueryKeys.FRIENDS)
+      queryClient.invalidateQueries(QueryKeys.FRIENDS, {
+        refetchInactive: true,
+      })
     },
     onMutate: () => {
       queryClient.setQueryData(

@@ -21,8 +21,10 @@ export const AddFriend: React.FC = () => {
 
   const { mutate, isLoading, error } = useAddFriend({
     onSuccess: () => {
-      queryClient.invalidateQueries(QueryKeys.FRIENDS)
-      queryClient.invalidateQueries(QueryKeys.FEED)
+      queryClient.invalidateQueries(QueryKeys.FRIENDS, {
+        refetchInactive: true,
+      })
+      queryClient.invalidateQueries(QueryKeys.FEED, { refetchInactive: true })
       goBack()
     },
   })

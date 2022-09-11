@@ -31,8 +31,8 @@ export const TodaysWord: React.FC = () => {
 
   const { mutate } = useCreateDayEntry({
     onSuccess: () => {
-      queryClient.invalidateQueries(QueryKeys.USER)
-      queryClient.invalidateQueries(QueryKeys.FEED)
+      queryClient.invalidateQueries(QueryKeys.USER, { refetchInactive: true })
+      queryClient.invalidateQueries(QueryKeys.FEED, { refetchInactive: true })
     },
   })
 
