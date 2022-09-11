@@ -53,7 +53,7 @@ export const AddFriend: React.FC = () => {
   }
 
   return (
-    <KeyboardModal onKeyPress={handleKeyboardPress} note="09/11a/2022">
+    <KeyboardModal onKeyPress={handleKeyboardPress} note="09/11b/2022">
       <Title text="Share your code with your friends:" />
       <TouchableWithoutFeedback onLongPress={() => navigate("ResetUser")}>
         <View style={{ flexDirection: "row" }}>
