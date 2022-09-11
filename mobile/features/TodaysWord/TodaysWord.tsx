@@ -60,7 +60,7 @@ export const TodaysWord: React.FC = () => {
       if (hasAlreadyPlayed) {
         return
       }
-      if (key === ENTER_KEY && currentGuess.length === 5) {
+      if (key === ENTER_KEY) {
         if (currentGuess.length !== 5) {
           return
         }
