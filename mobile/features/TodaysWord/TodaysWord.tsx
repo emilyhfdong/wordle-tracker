@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { View } from "react-native"
 import { theme } from "../../constants/theme"
 import { isEasyMode, isValidWord } from "../../utils"
@@ -36,7 +36,10 @@ export const TodaysWord: React.FC = () => {
     },
   })
 
-  const hasAlreadyPlayed = data?.datesPlayed.includes(date)
+  const hasAlreadyPlayed = useMemo(
+    () => data?.datesPlayed.includes(date),
+    [data]
+  )
 
   useEffect(() => {
     if (data && !hasInitialized) {
@@ -58,6 +61,9 @@ export const TodaysWord: React.FC = () => {
         return
       }
       if (key === ENTER_KEY && currentGuess.length === 5) {
+        if (currentGuess.length !== 5) {
+          return
+        }
         if (!isValidWord(currentGuess)) {
           handleWarningToast("Not in word list")
           return
@@ -125,10 +131,12 @@ export const TodaysWord: React.FC = () => {
         position: "relative",
       }}
     >
-      <SummaryModal
-        isOpen={summaryModalIsOpen}
-        closeModal={() => setSummaryModalIsOpen(false)}
-      />
+      {summaryModalIsOpen && (
+        <SummaryModal
+          isOpen={summaryModalIsOpen}
+          closeModal={() => setSummaryModalIsOpen(false)}
+        />
+      )}
       <Toast text={wordWarning} isVisible={Boolean(wordWarning)} />
       <Toast text={toastText} isVisible={Boolean(toastText)} />
       <View style={{ flex: 1, justifyContent: "center" }}>

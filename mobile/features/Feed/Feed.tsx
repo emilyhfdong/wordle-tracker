@@ -27,12 +27,12 @@ const keyExtractor = (item: TGroupedDayEntries) => item.date
 export const Feed: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
   const { data, isLoading, refetch: refetchFeed } = useFeed(userId)
-  const { refetch: refetchUser } = useUser(userId)
+  const { refetch: refetchUser, data: userData } = useUser(userId)
   const { isLoading: friendsIsLoading } = useFriends(userId)
   const [interationsIsLoading, setInteractionsIsLoading] = useState(true)
   const [isRefetching, setIsRefetching] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
-
+  const todaysDate = useAppSelector((state) => state.todaysWord.date)
   const onRefresh = useCallback(async () => {
     setIsRefetching(true)
     await Promise.all([refetchFeed(), refetchUser()])
@@ -50,6 +50,21 @@ export const Feed: React.FC = () => {
     [data?.dayEntriesByDate]
   )
 
+  const flatlistData = useMemo(
+    () =>
+      searchTerm
+        ? fuse
+            .search(searchTerm)
+            .map(({ item }) => item)
+            .filter(
+              (item) =>
+                item.date !== todaysDate ||
+                userData?.lastEntry.word.date === todaysDate
+            )
+        : data?.dayEntriesByDate,
+    [searchTerm, data?.dayEntriesByDate]
+  )
+
   if (isLoading || friendsIsLoading || interationsIsLoading) {
     return <FullScreenLoading />
   }
@@ -60,11 +75,7 @@ export const Feed: React.FC = () => {
 
   return (
     <FlatList
-      data={
-        searchTerm
-          ? fuse.search(searchTerm).map(({ item }) => item)
-          : data.dayEntriesByDate
-      }
+      data={flatlistData}
       style={{
         flex: 1,
         backgroundColor: "#F9F9F9",
