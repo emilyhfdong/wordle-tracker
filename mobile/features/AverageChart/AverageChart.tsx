@@ -47,11 +47,11 @@ const getMinMax = (
   )
   return {
     max: allData.reduce(
-      (acc, curr) => Math.max(acc, curr),
+      (acc, curr) => (typeof curr === "number" ? Math.max(acc, curr) : acc),
       Number.MIN_SAFE_INTEGER
     ),
     min: allData.reduce(
-      (acc, curr) => Math.min(acc, curr),
+      (acc, curr) => (typeof curr === "number" ? Math.min(acc, curr) : acc),
       Number.MAX_SAFE_INTEGER
     ),
   }
@@ -139,6 +139,8 @@ export const AverageChart: React.FC = () => {
         }
       }
     )
+
+  console.log("hii min", min)
 
   return (
     <View
