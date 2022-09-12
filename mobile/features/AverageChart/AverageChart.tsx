@@ -84,7 +84,7 @@ export const AverageChart: React.FC = () => {
   const { data: userData } = useUser(userId)
   const { data: friendsData } = useFriends(userId)
   const [includedFriendIds, setIncludedFriendIds] = useState<string[]>([userId])
-  const [sortBy, setSortBy] = useState<TSortBy>("dateAdded")
+  const [sortBy, setSortBy] = useState<TSortBy>("bestAverage")
 
   if (!friendsData || !userData) {
     return <FullScreenLoading />
