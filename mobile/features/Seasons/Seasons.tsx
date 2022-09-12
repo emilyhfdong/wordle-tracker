@@ -43,7 +43,7 @@ export const Seasons: React.FC<SeasonsProps> = () => {
           color: theme.light.grey,
         }}
       >
-        Next season ends in{" "}
+        Current season ends in{" "}
         {Math.floor(endOfNextSeason.diff(DateTime.now()).as("days"))} days (
         {endOfNextSeason.toFormat("MMM dd")})
       </Text>
