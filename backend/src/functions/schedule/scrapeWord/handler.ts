@@ -4,7 +4,7 @@ import { config } from "@libs/environment"
 import { DateTime, Settings } from "luxon"
 import { getBrowser } from "@libs/puppeteer"
 
-const CLOSE_ICON_PATH = `document.querySelector("body > div.Modal-module_modalOverlay__81ZCi > div > div > svg")`
+const CLOSE_ICON_PATH = `document.querySelector("body > dialog.Modal-module_modalOverlay__81ZCi > div > button")`
 const ANSWER_TOAST_PATH = `document.querySelector("#ToastContainer-module_gameToaster__yjzPn > div")`
 
 export const handler = async () => {
@@ -47,6 +47,7 @@ export const handler = async () => {
   const closeIcon = await page.evaluateHandle(CLOSE_ICON_PATH)
   //@ts-expect-error
   await closeIcon.click()
+  await page.waitForTimeout(3000)
 
   console.log("entering 6 nonsense words")
   for (let i = 0; i < 6; i++) {
