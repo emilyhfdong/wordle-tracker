@@ -12,8 +12,8 @@ export const handler = async () => {
   if (!currentSeason) {
     console.log("oops! no current season?")
   }
-  const usersWithValidTokens = users.filter(
-    (user) => Expo.isExpoPushToken(user.pushToken) && user.pk === "NPCAM"
+  const usersWithValidTokens = users.filter((user) =>
+    Expo.isExpoPushToken(user.pushToken)
   )
   console.log(
     "Sending notifications to",

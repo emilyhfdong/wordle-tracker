@@ -10,11 +10,15 @@ export const handler: APIGatewayProxyHandler = async () => {
   const seasons = await database.getSeasons()
 
   return createResponse({
-    body: seasons.map(({ leaderboard, startDate, endDate, sk }) => ({
-      startDate,
-      endDate,
-      name: `Season ${sk}`,
-      leaderboard,
-    })),
+    body: seasons
+      .map(({ leaderboard, startDate, endDate, sk }) => ({
+        startDate,
+        endDate,
+        name: `Season ${sk}`,
+        leaderboard,
+      }))
+      .sort(
+        (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
+      ),
   })
 }

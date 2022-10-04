@@ -149,8 +149,8 @@ export const functions: AWS["functions"] = {
     events: [
       {
         schedule: {
-          // every 3 months on the 1st at 4:01pm UTC (12:01pm EST)
-          rate: "cron(1 16 1 1/3 ? *)",
+          // every 3 months on the 1st at 1:01pm UTC (9:01am EST)
+          rate: "cron(1 13 1 1/3 ? *)",
           enabled: true,
         },
       },
@@ -159,5 +159,6 @@ export const functions: AWS["functions"] = {
   //backfill
   backfillStats: {
     handler: `src/functions/backfill/backfillStats/handler.handler`,
+    timeout: 900,
   },
 }
