@@ -43,6 +43,7 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
           body: `Wordzle ${newTDayEntry.word.number} ${
             newTDayEntry.attemptsCount <= 6 ? newTDayEntry.attemptsCount : "X"
           }/6`,
+          sound: "default",
         }))
 
       const chunks = expo.chunkPushNotifications(messages)

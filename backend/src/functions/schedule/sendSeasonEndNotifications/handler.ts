@@ -24,6 +24,7 @@ export const handler = async () => {
     to: user.pushToken,
     title: `Happy WORDZLE season ${Number(currentSeason.sk) + 1}!!`,
     body: `Season ${currentSeason.sk} has ended! Go see who won!`,
+    sound: "default",
   }))
 
   const chunks = expo.chunkPushNotifications(messages)
