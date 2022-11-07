@@ -6,6 +6,12 @@ import { DateTime, Settings } from "luxon"
 
 export const handler = async () => {
   Settings.defaultZone = config.timezone
+  const hour = DateTime.now().hour
+
+  if (hour !== 0) {
+    console.log("its not midnight, returning early")
+    return
+  }
 
   const pastSeasons = await database.getSeasons()
   const lastSeason = pastSeasons?.[0] || null

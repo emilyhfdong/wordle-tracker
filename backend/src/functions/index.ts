@@ -125,8 +125,15 @@ export const functions: AWS["functions"] = {
     events: [
       {
         schedule: {
-          // everyday at 4:01am UTC (12:01 EST)
+          // everyday at 4:01am UTC (12:01am EDT (summer) / 11:01pm EST (winter))
           rate: "cron(1 4 * * ? *)",
+          enabled: true,
+        },
+      },
+      {
+        schedule: {
+          // everyday at 5:01am UTC (1:01am EDT (summer) / 12:01am EST (winter))
+          rate: "cron(1 5 * * ? *)",
           enabled: true,
         },
       },
@@ -137,8 +144,15 @@ export const functions: AWS["functions"] = {
     events: [
       {
         schedule: {
-          // every 3 months on the 1st at 4:01am UTC (12:01am EST)
+          // every 3 months on the 1st at 4:01am UTC (12:01am EDT / 11:01pm EST)
           rate: "cron(1 4 1 1/3 ? *)",
+          enabled: true,
+        },
+      },
+      {
+        schedule: {
+          // every 3 months on the 1st at 5:01am UTC (1:01am EDT / 12:01am EST)
+          rate: "cron(1 5 1 1/3 ? *)",
           enabled: true,
         },
       },
@@ -149,7 +163,7 @@ export const functions: AWS["functions"] = {
     events: [
       {
         schedule: {
-          // every 3 months on the 1st at 1:01pm UTC (9:01am EST)
+          // every 3 months on the 1st at 1:01pm UTC (9:01am EDT / 8:01 EST)
           rate: "cron(1 13 1 1/3 ? *)",
           enabled: true,
         },

@@ -9,7 +9,16 @@ const ANSWER_TOAST_PATH = `document.querySelector("#ToastContainer-module_gameTo
 
 export const handler = async () => {
   Settings.defaultZone = config.timezone
+
+  const hour = DateTime.now().hour
+
+  if (hour !== 0) {
+    console.log("its not midnight, returning early")
+    return
+  }
+
   const todaysDate = DateTime.now().toISODate()
+
   console.log("finding entry for", todaysDate)
   const todaysWord = await dynamodb
     .get({
@@ -22,6 +31,7 @@ export const handler = async () => {
     console.log(`today's word "${todaysWord.Item.word}" already exists"`)
     return
   }
+
   const yesterdaysDate = DateTime.now().minus({ day: 1 }).toISODate()
   console.log(`getting yesterdays (${yesterdaysDate}) number`)
   const yesterdaysWord = await dynamodb
