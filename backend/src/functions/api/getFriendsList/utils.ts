@@ -1,11 +1,4 @@
-import {
-  IDayEntryItem,
-  IUserMetaDataItem,
-  IUserStatsItem,
-} from "@libs/database/types"
-import { config } from "@libs/environment"
-import { getCurrentStreak } from "@libs/utils"
-import { DateTime, Settings } from "luxon"
+import { IUserMetaDataItem, IUserStatsItem } from "@libs/database/types"
 
 interface IFriendDetails {
   userId: string
@@ -16,6 +9,7 @@ interface IFriendDetails {
   pingStatus: "notifications_disabled" | "already_pinged" | "ready"
   color: string
   lastAverages: number[]
+  averageChanges: IUserStatsItem["seasonAverageChanges"]
 }
 
 const COLORS = ["#78CFA0", "#7DBCE8", "#C6449F", "#457AF9"]
@@ -44,5 +38,6 @@ export const getFriendDetails = ({
       : "ready",
     color: COLORS[index % COLORS.length],
     lastAverages: stats.seasonAverages.slice(-30),
+    averageChanges: stats.seasonAverageChanges,
   }
 }
