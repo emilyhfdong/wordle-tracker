@@ -7,10 +7,10 @@ import { UserIcon } from "./UserIcon"
 import { View, Text } from "react-native"
 import { useUser } from "../../../query"
 import { theme } from "../../../constants"
-import { Ionicons } from "@expo/vector-icons"
 import { ExpandableListItem } from "../../../shared"
 import { DayEntryBoards } from "./DayEntryBoards"
 import { getScoreDisplay } from "./utils"
+import { AverageChange } from "./AverageChange"
 
 type TGroupedDayEntriesProps = {
   group: TGroupedDayEntries
@@ -87,23 +87,7 @@ export const _GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
           >
             {hideAnswer ? "*****" : answer}
           </Text>
-          {avgChange ? (
-            <View style={{ marginLeft: 5, flexDirection: "row" }}>
-              <Ionicons
-                color={avgChange >= 0 ? theme.light.red : theme.light.green}
-                name={avgChange >= 0 ? "caret-up" : "caret-down"}
-              />
-              <Text
-                style={{
-                  color: avgChange >= 0 ? theme.light.red : theme.light.green,
-                  fontSize: 10,
-                  fontWeight: "bold",
-                }}
-              >
-                {Math.abs(avgChange)}
-              </Text>
-            </View>
-          ) : null}
+          <AverageChange change={avgChange} />
         </View>
       }
       subtitle={subtitle}

@@ -8,6 +8,7 @@ import { useFriends, useUser } from "../../../query"
 import { TDayEntry } from "../../../services"
 import { DayEntryBoard } from "./DayEntryBoard"
 import { getScoreDisplay } from "./utils"
+import { AverageChange } from "./AverageChange"
 
 export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   userId,
@@ -51,6 +52,7 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
             flexDirection: "row",
             justifyContent: "space-between",
             marginBottom: 5,
+            alignItems: "center",
           }}
         >
           <Text
@@ -61,9 +63,19 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
           >
             {isSelf ? authUser.name : friend.name}
           </Text>
-          <Text style={{ color: theme.light.grey, fontSize: 12 }}>
-            {getScoreDisplay({ hasPlayedThisDay, attemptsCount })}
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <AverageChange change={friend?.averageChanges[date]} />
+            <Text
+              style={{ color: theme.light.grey, fontSize: 12, marginLeft: 8 }}
+            >
+              {getScoreDisplay({ hasPlayedThisDay, attemptsCount })}
+            </Text>
+          </View>
         </View>
         <DayEntryBoard
           word={word.answer}
