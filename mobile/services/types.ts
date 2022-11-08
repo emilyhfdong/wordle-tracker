@@ -158,3 +158,9 @@ export const GET_SEASONS_RESPONSE = [
 ]
 
 export type TGetSeasonsResponse = typeof GET_SEASONS_RESPONSE
+
+export type TTodaysWordResponse = {
+  word: string | null
+  number: number | null
+  date: string
+}

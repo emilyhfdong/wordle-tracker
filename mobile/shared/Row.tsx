@@ -19,6 +19,10 @@ export const Row: React.FC<IRowProps> = ({
 }) => {
   const word = useAppSelector((state) => state.todaysWord.word)
 
+  if (!word) {
+    return <></>
+  }
+
   const tiles = getTiles(letters, word)
 
   const shakeAnim = useRef(new Animated.Value(0)).current

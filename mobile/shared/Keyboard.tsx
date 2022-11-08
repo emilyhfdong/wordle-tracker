@@ -47,6 +47,10 @@ export const Keyboard: React.FC<IKeyboardProps> = ({
   )
   const word = useAppSelector((state) => state.todaysWord.word)
 
+  if (!word) {
+    return <></>
+  }
+
   useEffect(() => {
     setTimeout(() => {
       const newMap = prevGuesses.reduce(

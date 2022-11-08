@@ -14,6 +14,7 @@ import {
   BACKSPACE,
   ENTER_KEY,
   Keyboard,
+  FullScreenMessage,
 } from "../../shared"
 import { SummaryModal } from "./components"
 
@@ -57,9 +58,10 @@ export const TodaysWord: React.FC = () => {
 
   const handleKeyboardPress = useCallback(
     (key: string) => {
-      if (hasAlreadyPlayed) {
+      if (hasAlreadyPlayed || !word || !number) {
         return
       }
+
       if (key === ENTER_KEY) {
         if (currentGuess.length !== 5) {
           return
@@ -120,6 +122,16 @@ export const TodaysWord: React.FC = () => {
       word,
     ]
   )
+
+  if (!word) {
+    return (
+      <FullScreenMessage
+        title="Whoops, something went wrong!"
+        subtitle="Don't worry! Our dev devs are working on it!"
+        emoji="🚧"
+      />
+    )
+  }
 
   return (
     <View
