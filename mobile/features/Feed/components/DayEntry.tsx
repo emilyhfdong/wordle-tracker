@@ -69,7 +69,9 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
               alignItems: "center",
             }}
           >
-            <AverageChange change={friend?.averageChanges[date]} />
+            {hasPlayedThisDay && (
+              <AverageChange change={friend?.averageChanges[date]} />
+            )}
             <Text
               style={{ color: theme.light.grey, fontSize: 12, marginLeft: 8 }}
             >
