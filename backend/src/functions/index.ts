@@ -170,6 +170,25 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
+  sendStreakWarningNotification: {
+    handler: `src/functions/schedule/sendStreakWarningNotification/handler.handler`,
+    events: [
+      {
+        schedule: {
+          // everyday at 3:01am UTC (11:01am EDT / 10:01pm EST)
+          rate: "cron(1 3 * * ? *)",
+          enabled: true,
+        },
+      },
+      {
+        schedule: {
+          // everyday at 4:01am UTC (12:01am EDT / 11:01pm EST)
+          rate: "cron(1 4 * * ? *)",
+          enabled: true,
+        },
+      },
+    ],
+  },
   //backfill
   backfillStats: {
     handler: `src/functions/backfill/backfillStats/handler.handler`,
