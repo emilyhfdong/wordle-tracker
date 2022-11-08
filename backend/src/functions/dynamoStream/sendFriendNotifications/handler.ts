@@ -5,6 +5,19 @@ import { DynamoDBStreamHandler } from "aws-lambda"
 import { Converter } from "aws-sdk/clients/dynamodb"
 import { Expo, ExpoPushMessage } from "expo-server-sdk"
 
+export const getScoreDisplay = ({
+  attemptsCount,
+  hasPlayedThisDay,
+}: {
+  attemptsCount: number
+  hasPlayedThisDay: boolean
+}) => {
+  if (!hasPlayedThisDay) {
+    return "? / 6"
+  }
+  return attemptsCount <= 6 ? `${attemptsCount} / 6` : "X / 6"
+}
+
 export const handler: DynamoDBStreamHandler = async (streamEvent) => {
   const { Records } = streamEvent
 
@@ -19,16 +32,16 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
     try {
       console.log("new entry")
 
-      const newTDayEntry = Converter.unmarshall(
+      const newDayEntry = Converter.unmarshall(
         record.dynamodb.NewImage
       ) as IDayEntryItem
 
-      if (!newTDayEntry.sk.includes("day_entry")) {
+      if (!newDayEntry.sk.includes("day_entry")) {
         console.log("event is not a day_entry")
         continue
       }
 
-      const user = await database.getUserItems(newTDayEntry.pk)
+      const user = await database.getUserItems(newDayEntry.pk)
       const { friendIds } = user.metadata
       console.log("found user with friends", user.metadata.friendIds)
 
@@ -37,14 +50,23 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
       )
       const messages: ExpoPushMessage[] = friendItems
         .filter((friend) => Expo.isExpoPushToken(friend.metadata.pushToken))
-        .map((friend) => ({
-          to: friend.metadata.pushToken,
-          title: `${user.metadata.name} played today's wordzle`,
-          body: `Wordzle ${newTDayEntry.word.number} ${
-            newTDayEntry.attemptsCount <= 6 ? newTDayEntry.attemptsCount : "X"
-          }/6`,
-          sound: "default",
-        }))
+        .map((friend) => {
+          const hasPlayedThisDay = friend.stats.datesPlayed.includes(
+            newDayEntry.word.date
+          )
+          const score = getScoreDisplay({
+            attemptsCount: newDayEntry.attemptsCount,
+            hasPlayedThisDay,
+          })
+          return {
+            to: friend.metadata.pushToken,
+            title: `${user.metadata.name} played today's wordzle`,
+            body: hasPlayedThisDay
+              ? `Wordzle ${newDayEntry.word.number} ${score}`
+              : "? / 6 – Go play to see how they scored!",
+            sound: "default",
+          }
+        })
 
       const chunks = expo.chunkPushNotifications(messages)
 
