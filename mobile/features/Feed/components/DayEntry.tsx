@@ -1,12 +1,13 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { View, Text } from "react-native"
 import { DateTime } from "luxon"
 
 import { theme } from "../../../constants"
 import { useAppSelector } from "../../../redux"
-import { useFriends } from "../../../query"
+import { useFriends, useUser } from "../../../query"
 import { TDayEntry } from "../../../services"
 import { DayEntryBoard } from "./DayEntryBoard"
+import { getScoreDisplay } from "./utils"
 
 export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   userId,
@@ -19,6 +20,11 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   const authUser = useAppSelector((state) => state.user)
   const isSelf = useAppSelector((state) => state.user.id === userId)
   const { data } = useFriends(authUser.id)
+  const { data: userData } = useUser(authUser.id)
+  const hasPlayedThisDay = useMemo(
+    () => Boolean(userData?.datesPlayed.includes(date)),
+    [data, date]
+  )
 
   if (!data || (!data[userId] && !isSelf)) {
     return null
@@ -56,7 +62,7 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
             {isSelf ? authUser.name : friend.name}
           </Text>
           <Text style={{ color: theme.light.grey, fontSize: 12 }}>
-            {attemptsCount <= 6 ? attemptsCount : "X"} / 6
+            {getScoreDisplay({ hasPlayedThisDay, attemptsCount })}
           </Text>
         </View>
         <DayEntryBoard

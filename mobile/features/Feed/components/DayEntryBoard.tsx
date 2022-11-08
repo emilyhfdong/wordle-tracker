@@ -30,7 +30,7 @@ export const DayEntryBoard: React.FC<TDayEntryBoardProps> = ({
 
   return (
     <View>
-      {words.map((attemptWord, wordIdx) => (
+      {(hideAnswer ? ["?????"] : words).map((attemptWord, wordIdx) => (
         <EntryRow
           key={wordIdx}
           attemptWord={attemptWord}
@@ -70,7 +70,7 @@ export const EntryRow: React.FC<{
               fontSize: 13,
             }}
           >
-            {hideAnswer ? "" : letter}
+            {hideAnswer ? "?" : letter}
           </Text>
         </View>
       ))}

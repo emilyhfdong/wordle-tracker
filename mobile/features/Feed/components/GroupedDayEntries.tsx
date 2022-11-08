@@ -10,6 +10,7 @@ import { theme } from "../../../constants"
 import { Ionicons } from "@expo/vector-icons"
 import { ExpandableListItem } from "../../../shared"
 import { DayEntryBoards } from "./DayEntryBoards"
+import { getScoreDisplay } from "./utils"
 
 type TGroupedDayEntriesProps = {
   group: TGroupedDayEntries
@@ -19,9 +20,11 @@ type TGroupedDayEntriesProps = {
 const getSubtitle = ({
   entries,
   formattedDate,
+  hasPlayedThisDay,
 }: {
   formattedDate: string
   entries: TDayEntry[]
+  hasPlayedThisDay: boolean
 }) => {
   const averageAttempts = Number(
     (
@@ -29,9 +32,10 @@ const getSubtitle = ({
       entries.length
     ).toFixed(2)
   )
-  return `${formattedDate} - avg: ${
-    averageAttempts > 6 ? "X" : averageAttempts
-  } / 6`
+  return `${formattedDate} - avg: ${getScoreDisplay({
+    attemptsCount: averageAttempts,
+    hasPlayedThisDay,
+  })}`
 }
 
 export const _GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
@@ -51,7 +55,11 @@ export const _GroupedDayEntries: React.FC<TGroupedDayEntriesProps> = ({
     () => [...entries].sort((a, b) => a.attemptsCount - b.attemptsCount),
     [entries]
   )
-  const subtitle = getSubtitle({ entries, formattedDate })
+  const subtitle = getSubtitle({
+    entries,
+    formattedDate,
+    hasPlayedThisDay: !hideAnswer,
+  })
 
   const avgChange = userData?.averageChanges[date]
   const renderRightComponent = useCallback(
