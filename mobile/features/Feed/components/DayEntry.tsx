@@ -24,7 +24,7 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   const { data: userData } = useUser(authUser.id)
   const hasPlayedThisDay = useMemo(
     () => Boolean(userData?.datesPlayed.includes(date)),
-    [data, date]
+    [data, userData]
   )
 
   if (!data || (!data[userId] && !isSelf)) {
