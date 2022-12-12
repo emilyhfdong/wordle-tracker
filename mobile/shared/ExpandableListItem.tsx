@@ -1,4 +1,4 @@
-import React from "react"
+import React, { PropsWithChildren } from "react"
 
 import { LayoutAnimation } from "react-native"
 import { ListItem, TListItemProps } from "./ListItem"
@@ -11,7 +11,7 @@ type TExpandableListItemProps = {
 const layoutAnimation = LayoutAnimation.create(200, "easeInEaseOut", "opacity")
 
 export const ExpandableListItem: React.FC<
-  Omit<TListItemProps, "onPress"> & TExpandableListItemProps
+  Omit<TListItemProps, "onPress"> & PropsWithChildren<TExpandableListItemProps>
 > = ({ isExpanded, setIsExpanded, children, ...props }) => {
   return (
     <ListItem

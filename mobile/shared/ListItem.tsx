@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react"
+import React, { PropsWithChildren, ReactElement } from "react"
 import { View, Text, TouchableOpacity, ViewStyle } from "react-native"
 import { theme } from "../constants"
 
@@ -12,7 +12,7 @@ export type TListItemProps = {
   titleOnPress?: () => void
 }
 
-export const ListItem: React.FC<TListItemProps> = ({
+export const ListItem: React.FC<PropsWithChildren<TListItemProps>> = ({
   onPress,
   subtitle,
   title,

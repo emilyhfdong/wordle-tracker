@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import React from "react"
+import React, { PropsWithChildren } from "react"
 import { View, Text, TouchableOpacity } from "react-native"
 import CloseIcon from "../assets/images/close-icon.svg"
 import { theme } from "../constants"
@@ -10,7 +10,7 @@ type KeyboardModalProps = {
   note?: string
 }
 
-export const KeyboardModal: React.FC<KeyboardModalProps> = ({
+export const KeyboardModal: React.FC<PropsWithChildren<KeyboardModalProps>> = ({
   children,
   onKeyPress,
   note,

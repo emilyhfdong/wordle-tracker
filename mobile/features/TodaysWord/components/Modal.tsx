@@ -1,4 +1,4 @@
-import React from "react"
+import React, { PropsWithChildren } from "react"
 import { View, TouchableWithoutFeedback } from "react-native"
 import { theme } from "../../../constants"
 import { RH } from "../../../utils"
@@ -8,7 +8,7 @@ type TModalProps = {
   closeModal: () => void
 }
 
-export const Modal: React.FC<TModalProps> = ({
+export const Modal: React.FC<PropsWithChildren<TModalProps>> = ({
   isOpen,
   closeModal,
   children,

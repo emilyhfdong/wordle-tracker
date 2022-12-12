@@ -1,4 +1,4 @@
-import { FontAwesome, Ionicons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -10,7 +10,6 @@ import {
   RootTabParamList,
   RootTabScreenProps,
 } from "../types"
-import LinkingConfiguration from "./LinkingConfiguration"
 import {
   AddFriend,
   TodaysWord,
@@ -24,7 +23,7 @@ import {
 
 export default function Navigation({}: {}) {
   return (
-    <NavigationContainer linking={LinkingConfiguration}>
+    <NavigationContainer>
       <RootNavigator />
     </NavigationContainer>
   )

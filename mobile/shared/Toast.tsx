@@ -7,7 +7,7 @@ interface IToastProps {
   text: string
 }
 
-export const Toast: React.FC<IToastProps> = ({ children, isVisible, text }) => {
+export const Toast: React.FC<IToastProps> = ({ isVisible, text }) => {
   const opacity = useRef(new Animated.Value(0)).current
   const [localText, setLocalText] = useState<string>()
   useEffect(() => {

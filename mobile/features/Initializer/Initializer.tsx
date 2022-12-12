@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { PropsWithChildren, useEffect, useState } from "react"
 import * as Device from "expo-device"
 import * as Notifications from "expo-notifications"
 
 import { BackendService } from "../../services"
 import { QueryKeys, useTodaysWord, queryClient } from "../../query"
-import {
-  todaysWordActions,
-  useAppDispatch,
-  useAppSelector,
-  userActions,
-} from "../../redux"
+import { todaysWordActions, useAppDispatch, useAppSelector } from "../../redux"
 import { FullScreenLoading } from "../../shared"
 import { Signup } from "./components"
 import { AppState, AppStateStatus } from "react-native"
@@ -22,7 +17,7 @@ Notifications.setNotificationHandler({
   }),
 })
 
-export const Initializer: React.FC = ({ children }) => {
+export const Initializer: React.FC<PropsWithChildren> = ({ children }) => {
   const userId = useAppSelector((state) => state.user.id)
   const currentWordNumber = useAppSelector((state) => state.todaysWord.number)
   const dispatch = useAppDispatch()
@@ -37,8 +32,8 @@ export const Initializer: React.FC = ({ children }) => {
       }
       setAppState(state)
     }
-    AppState.addEventListener("change", onAppStateChange)
-    return () => AppState.removeEventListener("change", onAppStateChange)
+    const eventListener = AppState.addEventListener("change", onAppStateChange)
+    return () => eventListener.remove()
   }, [])
 
   useEffect(() => {

@@ -54,74 +54,76 @@ export const AddFriend: React.FC = () => {
 
   return (
     <KeyboardModal onKeyPress={handleKeyboardPress} note="12/12/2022">
-      <Title text="Share your code with your friends:" />
-      <TouchableWithoutFeedback onLongPress={() => navigate("ResetUser")}>
+      <>
+        <Title text="Share your code with your friends:" />
+        <TouchableWithoutFeedback onLongPress={() => navigate("ResetUser")}>
+          <View style={{ flexDirection: "row" }}>
+            {id.split("").map((letter, idx) => (
+              <Tile
+                lockedColor={theme.light.green}
+                key={idx}
+                hasWon={false}
+                index={idx}
+                locked
+                letter={letter}
+              />
+            ))}
+          </View>
+        </TouchableWithoutFeedback>
+        <View
+          style={{
+            flexDirection: "row",
+            height: 50,
+            width: "70%",
+            marginVertical: 40,
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              height: 25,
+              borderBottomColor: theme.light.lightGrey,
+              borderBottomWidth: 1,
+            }}
+          />
+          <View style={{ height: "100%", justifyContent: "center" }}>
+            <Text
+              style={{
+                paddingHorizontal: 20,
+                fontWeight: "bold",
+                color: theme.light.grey,
+              }}
+            >
+              or
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              height: 25,
+              borderBottomColor: theme.light.lightGrey,
+              borderBottomWidth: 1,
+            }}
+          />
+        </View>
+        <Title text="Enter your friend's code:" />
         <View style={{ flexDirection: "row" }}>
-          {id.split("").map((letter, idx) => (
+          {new Array(5).fill(null).map((_, idx) => (
             <Tile
-              lockedColor={theme.light.green}
               key={idx}
               hasWon={false}
               index={idx}
-              locked
-              letter={letter}
+              locked={false}
+              letter={friendCode[idx] || null}
             />
           ))}
         </View>
-      </TouchableWithoutFeedback>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 50,
-          width: "70%",
-          marginVertical: 40,
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            height: 25,
-            borderBottomColor: theme.light.lightGrey,
-            borderBottomWidth: 1,
-          }}
-        />
-        <View style={{ height: "100%", justifyContent: "center" }}>
-          <Text
-            style={{
-              paddingHorizontal: 20,
-              fontWeight: "bold",
-              color: theme.light.grey,
-            }}
-          >
-            or
+        {error && (
+          <Text style={{ marginTop: 30, color: "#e85a5a" }}>
+            Something went wrong!
           </Text>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            height: 25,
-            borderBottomColor: theme.light.lightGrey,
-            borderBottomWidth: 1,
-          }}
-        />
-      </View>
-      <Title text="Enter your friend's code:" />
-      <View style={{ flexDirection: "row" }}>
-        {new Array(5).fill(null).map((_, idx) => (
-          <Tile
-            key={idx}
-            hasWon={false}
-            index={idx}
-            locked={false}
-            letter={friendCode[idx] || null}
-          />
-        ))}
-      </View>
-      {error && (
-        <Text style={{ marginTop: 30, color: "#e85a5a" }}>
-          Something went wrong!
-        </Text>
-      )}
+        )}
+      </>
     </KeyboardModal>
   )
 }
