@@ -11,8 +11,8 @@ export enum QueryKeys {
 }
 
 const DEFAULT_OPTIONS = {
-  refetchOnMount: false,
-  refetchOnWindowFocus: false,
+  refetchOnMount: true,
+  refetchOnWindowFocus: true,
   staleTime: 5 * 60 * 1000,
 }
 

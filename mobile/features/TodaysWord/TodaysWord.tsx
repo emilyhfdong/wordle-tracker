@@ -34,6 +34,9 @@ export const TodaysWord: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKeys.USER, { refetchInactive: true })
       queryClient.invalidateQueries(QueryKeys.FEED, { refetchInactive: true })
+      queryClient.invalidateQueries(QueryKeys.FRIENDS, {
+        refetchInactive: true,
+      })
     },
   })
 

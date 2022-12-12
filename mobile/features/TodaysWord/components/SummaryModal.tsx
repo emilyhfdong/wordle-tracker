@@ -28,7 +28,7 @@ export const SummaryModal: React.FC<ISummaryModalProps> = ({
     {
       refetchInterval: (newData) =>
         newData?.lastEntry && newData.lastEntry.word.date !== todaysDate
-          ? 500
+          ? 200
           : false,
     }
   )

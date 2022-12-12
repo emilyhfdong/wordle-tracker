@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import {
   ScrollView,
   View,
   Text,
   TouchableOpacity,
   ActionSheetIOS,
+  FlatList,
+  RefreshControl,
 } from "react-native"
 import { LineChart, Grid, YAxis } from "react-native-svg-charts"
 import { useFriends, useUser } from "../../query"
@@ -81,10 +83,17 @@ const SORT_BY: {
 
 export const AverageChart: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
-  const { data: userData } = useUser(userId)
-  const { data: friendsData } = useFriends(userId)
+  const { data: userData, refetch: refetchUser } = useUser(userId)
+  const { data: friendsData, refetch: refetchFriends } = useFriends(userId)
   const [includedFriendIds, setIncludedFriendIds] = useState<string[]>([userId])
   const [sortBy, setSortBy] = useState<TSortBy>("bestAverage")
+  const [isRefetching, setIsRefetching] = useState(false)
+
+  const onRefresh = useCallback(async () => {
+    setIsRefetching(true)
+    await Promise.all([refetchFriends(), refetchUser()])
+    setIsRefetching(false)
+  }, [refetchFriends, refetchUser])
 
   if (!friendsData || !userData) {
     return <FullScreenLoading />
@@ -100,6 +109,7 @@ export const AverageChart: React.FC = () => {
       lastPlayed: userData.lastPlayed,
       name: `⭐️  ${userData.name}  ⭐️`,
       pingStatus: "notifications_disabled",
+      averageChanges: userData.averageChanges,
     },
     ...Object.values(friendsData),
   ]
@@ -139,8 +149,6 @@ export const AverageChart: React.FC = () => {
         }
       }
     )
-
-  console.log("hii min", min)
 
   return (
     <View
@@ -214,14 +222,18 @@ export const AverageChart: React.FC = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <ScrollView
+
+      <FlatList
+        data={friends.sort(SORT_BY[sortBy].sortFn)}
         contentContainerStyle={{
           paddingBottom: 200,
           paddingVertical: 5,
         }}
+        refreshControl={
+          <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
+        }
         style={{ height: RH(100) - 300 }}
-      >
-        {friends.sort(SORT_BY[sortBy].sortFn).map((friend) => {
+        renderItem={({ item: friend }) => {
           const isSelected = includedFriendIds.includes(friend.userId)
           return (
             <FriendListItem
@@ -239,8 +251,8 @@ export const AverageChart: React.FC = () => {
               }}
             />
           )
-        })}
-      </ScrollView>
+        }}
+      />
     </View>
   )
 }

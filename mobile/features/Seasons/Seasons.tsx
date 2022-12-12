@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 import React, { useState } from "react"
-import { View, Text } from "react-native"
+import { View, Text, FlatList } from "react-native"
 import { theme } from "../../constants"
 import { useFriends, useSeasons } from "../../query"
 import { useAppSelector } from "../../redux"
@@ -47,13 +47,16 @@ export const Seasons: React.FC<SeasonsProps> = () => {
         {Math.floor(endOfNextSeason.diff(DateTime.now()).as("days"))} days (
         {endOfNextSeason.toFormat("MMM dd")})
       </Text>
-      {data?.map((season, idx) => (
-        <SeasonListItem
-          key={season.endDate}
-          season={season}
-          isInitiallyExpanded={idx === 0}
-        />
-      ))}
+      <FlatList
+        data={data}
+        renderItem={({ item: season, index }) => (
+          <SeasonListItem
+            key={season.endDate}
+            season={season}
+            isInitiallyExpanded={index === 0}
+          />
+        )}
+      />
     </View>
   )
 }

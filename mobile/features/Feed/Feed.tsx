@@ -28,14 +28,15 @@ export const Feed: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
   const { data, isLoading, refetch: refetchFeed } = useFeed(userId)
   const { refetch: refetchUser, data: userData } = useUser(userId)
-  const { isLoading: friendsIsLoading } = useFriends(userId)
+  const { isLoading: friendsIsLoading, refetch: refetchFriends } =
+    useFriends(userId)
   const [interationsIsLoading, setInteractionsIsLoading] = useState(true)
   const [isRefetching, setIsRefetching] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const todaysDate = useAppSelector((state) => state.todaysWord.date)
   const onRefresh = useCallback(async () => {
     setIsRefetching(true)
-    await Promise.all([refetchFeed(), refetchUser()])
+    await Promise.all([refetchFeed(), refetchUser(), refetchFriends()])
     setIsRefetching(false)
   }, [refetchFeed, refetchUser])
 
@@ -122,6 +123,8 @@ export const Feed: React.FC = () => {
             onChangeText={(text) => setSearchTerm(text)}
             returnKeyType="go"
             placeholder="Search"
+            autoCorrect={false}
+            autoCapitalize="none"
           />
           {!!searchTerm && (
             <TouchableOpacity onPress={() => setSearchTerm("")}>
