@@ -60,3 +60,27 @@ export interface ISeasonItem {
   startDate: string
   endDate: string
 }
+
+export interface IWrappedStats {
+  totalNumberOfGuesses: number
+  top5Guesses: { guess: string; count: number }[]
+  top5Letters: { guess: string; count: number }[]
+  hourOccuranceMap: { [hour: number]: number }
+  sameYellowPositionMistakes: IDayEntryItem[]
+  existingWordMistake: IDayEntryItem[]
+  socks: IDayEntryItem[]
+  traps: IDayEntryItem[]
+  initiatedPingFriendOccuranceMap: { [userId: string]: number }
+  recievedPingFriendOccuranceMap: { [userId: string]: number }
+  rankingByDay: number[]
+  longestGreenStreak: number
+  longestGreenStart: string
+  longestRedStreak: number
+  longestRedStart: string
+}
+
+export interface IWrappedStatsItem {
+  pk: TUserId
+  sk: `wrapped_stats#${TSeasonNumber}`
+  stats: IWrappedStats
+}

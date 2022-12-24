@@ -76,6 +76,15 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
+  getWrappedStats: {
+    handler: `src/functions/api/getWrappedStats/handler.handler`,
+    timeout: 10,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/wrapped" },
+      },
+    ],
+  },
   pingFriend: {
     handler: `src/functions/api/pingFriend/handler.handler`,
     events: [
@@ -167,14 +176,14 @@ export const functions: AWS["functions"] = {
         schedule: {
           // every 3 months on the 1st at 4:01am UTC (12:01am EDT / 11:01pm EST)
           rate: "cron(1 4 1 1/3 ? *)",
-          enabled: false,
+          enabled: true,
         },
       },
       {
         schedule: {
           // every 3 months on the 1st at 5:01am UTC (1:01am EDT / 12:01am EST)
           rate: "cron(1 5 1 1/3 ? *)",
-          enabled: false,
+          enabled: true,
         },
       },
     ],

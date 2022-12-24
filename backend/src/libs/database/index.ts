@@ -8,6 +8,8 @@ import {
   ISeasonItem,
   IUserMetaDataItem,
   IUserStatsItem,
+  IWrappedStats,
+  IWrappedStatsItem,
 } from "./types"
 
 const dynamodb = new AWS.DynamoDB.DocumentClient()
@@ -202,6 +204,24 @@ const getUserDayEntries = async (userId: string, datePrefix?: string) => {
   return []
 }
 
+const getUserWrappedStats = async (userId: string) => {
+  const response = await dynamodb
+    .query({
+      TableName: config.dynamoTableName,
+      KeyConditionExpression: `pk = :pk and begins_with(sk, :skPrefix)`,
+      ExpressionAttributeValues: {
+        ":pk": userId,
+        ":skPrefix": "wrapped_stats",
+      },
+    })
+    .promise()
+
+  if (response.Items) {
+    return response.Items as IWrappedStatsItem[]
+  }
+  return []
+}
+
 const getInitiatedPings = async (userId: string, date: string) => {
   const response = await dynamodb
     .query({
@@ -314,6 +334,31 @@ const getAllWords = async (): Promise<{ [word: string]: string }> => {
   )
 }
 
+const putWrappedStats = async ({
+  userId,
+  seasonNumber,
+  stats,
+}: {
+  seasonNumber: string
+  userId: string
+  stats: IWrappedStats
+}) => {
+  const item: IWrappedStatsItem = {
+    pk: userId,
+    sk: `wrapped_stats#${seasonNumber}`,
+    stats,
+  }
+
+  await dynamodb
+    .put({
+      TableName: config.dynamoTableName,
+      Item: item,
+    })
+    .promise()
+
+  return item
+}
+
 export const database = {
   getUser: getUserMetadata,
   putUser,
@@ -331,4 +376,6 @@ export const database = {
   getUserDayEntries,
   getUserMetadata,
   getAllWords,
+  putWrappedStats,
+  getUserWrappedStats,
 }
