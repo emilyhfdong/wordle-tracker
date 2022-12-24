@@ -1,11 +1,5 @@
-import { DateTime, Settings } from "luxon"
-import { database } from "./database"
-import {
-  IDayEntryItem,
-  IRecievedPingItem,
-  IUserMetaDataItem,
-} from "./database/types"
-import { config } from "./environment"
+import { DateTime } from "luxon"
+import { IDayEntryItem } from "./database/types"
 
 export const createResponse = ({
   statusCode,
