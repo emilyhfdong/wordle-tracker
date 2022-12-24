@@ -26,7 +26,10 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
       continue
     }
 
+    console.log("getting user items")
     const { dayEntries } = await database.getUserItems(newDayEntry.pk)
+
+    console.log("creating stats for user")
     const stats = getStatsForUser(dayEntries)
     await database.putUserStats(newDayEntry.pk, stats)
   }

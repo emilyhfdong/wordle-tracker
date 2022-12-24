@@ -103,7 +103,10 @@ const getAllUsers = async () => {
     })
     .promise()
   if (response.Items) {
-    return response.Items as IUserMetaDataItem[]
+    return (response.Items as IUserMetaDataItem[]).filter(
+      (user) =>
+        !user.name.toLowerCase().includes("dev") && user.friendIds.length
+    )
   }
   return null
 }
@@ -298,6 +301,19 @@ const createUserTDayEntry = async (
   return item
 }
 
+const getAllWords = async (): Promise<{ [word: string]: string }> => {
+  const allWords = await dynamodb
+    .scan({
+      TableName: config.wordHistoryTableName,
+    })
+    .promise()
+
+  return allWords.Items.reduce(
+    (acc, curr) => ({ ...acc, [curr.word]: curr.date }),
+    {}
+  )
+}
+
 export const database = {
   getUser: getUserMetadata,
   putUser,
@@ -314,4 +330,5 @@ export const database = {
   getUserMetadataStatsPings,
   getUserDayEntries,
   getUserMetadata,
+  getAllWords,
 }

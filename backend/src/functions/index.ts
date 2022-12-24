@@ -109,11 +109,13 @@ export const functions: AWS["functions"] = {
   },
   updateStats: {
     handler: `src/functions/dynamoStream/updateStats/handler.handler`,
+    timeout: 900,
     events: [
       {
         stream: {
           type: "dynamodb",
           arn: { "Fn::GetAtt": ["WordzleTable", "StreamArn"] },
+          maximumRetryAttempts: 3,
         },
       },
     ],
@@ -154,6 +156,25 @@ export const functions: AWS["functions"] = {
           // every 3 months on the 1st at 5:01am UTC (1:01am EDT / 12:01am EST)
           rate: "cron(1 5 1 1/3 ? *)",
           enabled: true,
+        },
+      },
+    ],
+  },
+  createWrappedStats: {
+    handler: `src/functions/schedule/createWrappedStats/handler.handler`,
+    events: [
+      {
+        schedule: {
+          // every 3 months on the 1st at 4:01am UTC (12:01am EDT / 11:01pm EST)
+          rate: "cron(1 4 1 1/3 ? *)",
+          enabled: false,
+        },
+      },
+      {
+        schedule: {
+          // every 3 months on the 1st at 5:01am UTC (1:01am EDT / 12:01am EST)
+          rate: "cron(1 5 1 1/3 ? *)",
+          enabled: false,
         },
       },
     ],
