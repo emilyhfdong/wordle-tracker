@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { useEffect } from "react"
 import { View, Text, ScrollView } from "react-native"
 import { BarChart, XAxis } from "react-native-svg-charts"
 import { theme } from "../../constants"
@@ -10,12 +10,24 @@ import * as scale from "d3-scale"
 import { getMostCommonTimeOfDay } from "./utils"
 import { DayEntryBoard } from "../Feed/components/DayEntryBoard"
 import { DateTime } from "luxon"
+import { useDispatch } from "react-redux"
+import { seasonsActions } from "../../redux/slices/seasons"
 
 type WrappedProps = {}
 
 export const Wrapped: React.FC<WrappedProps> = () => {
   const userId = useAppSelector((state) => state.user.id)
   const { data } = useWrappedStats(userId)
+  const seenWrappedSeasonNames = useAppSelector(
+    (state) => state.seasons.seenWrappedSeasonNames
+  )
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (data && !seenWrappedSeasonNames?.includes(data.sk)) {
+      dispatch(seasonsActions.addWrappedSeasonName(data?.sk))
+    }
+  }, [data])
 
   if (!data) {
     return null
@@ -23,6 +35,7 @@ export const Wrapped: React.FC<WrappedProps> = () => {
 
   return (
     <WrappedLayout
+      noBack
       fullTitle={`Your Season ${
         data.sk.split("#").slice(-1)[0]
       } Wordzle Wrapped has arrived!!`}
@@ -106,7 +119,7 @@ export const MostCommonTime: React.FC = () => {
           <BarChart
             style={{ flex: 1 }}
             data={hours.map((hour) => data.stats.hourOccuranceMap[hour])}
-            svg={{ fill: theme.light.green }}
+            svg={{ fill: theme.light.yellow }}
             yMin={0}
           />
           <XAxis
@@ -140,7 +153,7 @@ export const YellowMistakes: React.FC = () => {
   if (!yellowMistakes.length) {
     return (
       <WrappedLayout
-        fullTitle="Congrats! you never ignored the yellow tile hint!"
+        fullTitle="Congrats! you've never ignored the yellow tile hint!"
         nextScreen="ExistingWordMistakes"
       />
     )
@@ -421,7 +434,7 @@ export const RecievedPings: React.FC = () => {
   if (!pingFriends.length) {
     return (
       <WrappedLayout
-        nextScreen="Landing"
+        nextScreen="Closing"
         fullTitle="Don't forget to play! No one pinged you this season!"
       />
     )
@@ -430,8 +443,8 @@ export const RecievedPings: React.FC = () => {
   return (
     <WrappedLayout
       fullTitle={`Don't forget to play!!\n\nYour friends reminded you to play ${totalNumberOfPings} times!`}
-      title={`Here are the people that kee pinging you`}
-      nextScreen="Landing"
+      title={`Here are the people that keep pinging you`}
+      nextScreen="Closing"
     >
       <View style={{ marginTop: 40, alignItems: "center" }}>
         {pingFriends.map((friendId) => (
@@ -458,5 +471,18 @@ export const RecievedPings: React.FC = () => {
         ))}
       </View>
     </WrappedLayout>
+  )
+}
+
+export const WrappedClosing: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useWrappedStats(userId)
+  const seasonNumber = data?.sk.split("#").slice(-1)[0]
+
+  return (
+    <WrappedLayout
+      fullTitle={`That's a wrap on season ${seasonNumber}!!\n\nYou can get back here by tapping the gift icon in the header!`}
+      nextScreen="Root"
+    ></WrappedLayout>
   )
 }

@@ -29,6 +29,9 @@ import {
   Traps,
   InitiatedPings,
   RecievedPings,
+  WrappedIcon,
+  WrappedClosing,
+  WrappedHeader,
 } from "../features"
 
 export default function Navigation({}: {}) {
@@ -60,7 +63,10 @@ function RootNavigator() {
         <Stack.Screen name="ResetUser" component={ResetUser} />
       </Stack.Group>
       <Stack.Group
-        screenOptions={{ presentation: "modal", headerShown: false }}
+        screenOptions={{
+          presentation: "modal",
+          headerShown: false,
+        }}
       >
         <Stack.Screen name="Wrapped" component={WrappedStackNavigator} />
       </Stack.Group>
@@ -88,6 +94,7 @@ const WrappedStackNavigator = () => {
       <WrappedStack.Screen name="Traps" component={Traps} />
       <WrappedStack.Screen name="InitiatedPings" component={InitiatedPings} />
       <WrappedStack.Screen name="RecievedPings" component={RecievedPings} />
+      <WrappedStack.Screen name="Closing" component={WrappedClosing} />
     </WrappedStack.Navigator>
   )
 }
@@ -117,19 +124,21 @@ function BottomTabNavigator() {
           ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
+          headerLeft: () => <WrappedIcon />,
         })}
       />
       <BottomTab.Screen
         name="Feed"
         component={Feed}
-        options={{
+        options={({ navigation }) => ({
           title: "History",
           tabBarIcon: ({ color }) => (
             <Ionicons name={"calendar-outline"} size={20} color={color} />
           ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
-        }}
+          headerLeft: () => <WrappedIcon />,
+        })}
       />
       <BottomTab.Screen
         name="Friends"
@@ -147,14 +156,15 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Seasons"
         component={Seasons}
-        options={{
+        options={({ navigation }) => ({
           title: "Seasons",
           tabBarIcon: ({ color }) => (
             <Ionicons name={"trophy-outline"} size={20} color={color} />
           ),
           headerRight: () => <HeaderStreak />,
           headerStyle: { backgroundColor: theme.light.background },
-        }}
+          headerLeft: () => <WrappedIcon />,
+        })}
       />
     </BottomTab.Navigator>
   )

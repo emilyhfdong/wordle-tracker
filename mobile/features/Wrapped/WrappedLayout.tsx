@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native"
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
 import { Animated, Button, View } from "react-native"
+import { WrappedHeader } from ".."
 import { theme } from "../../constants"
 import { useWrappedStats } from "../../query"
 import { useAppSelector } from "../../redux"
@@ -12,7 +13,8 @@ import { RH, RW } from "../../utils"
 type WrappedLayoutProps = {
   fullTitle: string
   title?: string
-  nextScreen?: keyof WrappedStackParamList
+  nextScreen?: keyof WrappedStackParamList | "Root"
+  noBack?: boolean
 }
 
 export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
@@ -20,6 +22,7 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
   children,
   nextScreen,
   fullTitle,
+  noBack,
 }) => {
   const userId = useAppSelector((state) => state.user.id)
   const { data } = useWrappedStats(userId)
@@ -31,7 +34,7 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
 
   useEffect(() => {
     const INITIAL_DELAY = 500
-    const TITLE_DELAY = 3000
+    const TITLE_DELAY = 2000
     Animated.spring(opacity, {
       toValue: 1,
       useNativeDriver: true,
@@ -61,18 +64,25 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
   }
 
   return (
-    <ModalContainer>
+    <ModalContainer
+      header={<WrappedHeader />}
+      noBack={noBack}
+      onClose={() => navigate("Root")}
+    >
       <View
         style={{
           flex: 1,
-          paddingTop: RH(5),
           paddingHorizontal: RW(2),
           justifyContent: "space-between",
         }}
       >
         {isShowingFullTitle || !title ? (
           <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
             <Animated.Text
               style={{
@@ -86,7 +96,7 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
             </Animated.Text>
           </View>
         ) : (
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingTop: 20 }}>
             <AnimatedTitle text={title} />
             {children}
           </View>

@@ -20,7 +20,9 @@ export const seasonsSlice = createSlice({
     }),
     addWrappedSeasonName: (state, action: PayloadAction<string>) => ({
       ...state,
-      seenWrappedSeasonNames: [...state.seenWrappedSeasonNames, action.payload],
+      seenWrappedSeasonNames: state.seenWrappedSeasonNames
+        ? [...state.seenWrappedSeasonNames, action.payload]
+        : [action.payload],
     }),
   },
 })

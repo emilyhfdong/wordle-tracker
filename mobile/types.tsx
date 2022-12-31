@@ -51,4 +51,5 @@ export type WrappedStackParamList = {
   Traps: undefined
   InitiatedPings: undefined
   RecievedPings: undefined
+  Closing: undefined
 }
