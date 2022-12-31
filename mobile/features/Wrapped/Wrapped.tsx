@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { View, Text, ScrollView } from "react-native"
-import { BarChart, XAxis } from "react-native-svg-charts"
+import { BarChart, YAxis } from "react-native-svg-charts"
 import { theme } from "../../constants"
 import { useFriends, useWrappedStats } from "../../query"
 import { useAppSelector } from "../../redux"
@@ -118,24 +118,25 @@ export const MostCommonTime: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <View style={{ height: 250, width: "100%" }}>
-          <BarChart
-            style={{ flex: 1 }}
-            data={hours.map((hour) => data.stats.hourOccuranceMap[hour])}
-            svg={{ fill: theme.light.orange }}
-            yMin={0}
-          />
-          <XAxis
-            style={{ marginTop: 10 }}
+        <View style={{ height: 300, width: "100%", flexDirection: "row" }}>
+          <YAxis
+            style={{ marginRight: 5 }}
             data={hours}
             scale={scale.scaleBand}
             formatLabel={(_value, index) => {
               const hour: number = Number(hours[index])
               return `${hour % 12 === 0 ? "12" : hour % 12}${
-                hour < 12 ? "am" : "pm"
+                hour < 12 ? " am" : " pm"
               }`
             }}
-            svg={{ fontSize: 8, fill: theme.light.grey }}
+            svg={{ fontSize: 10, fill: theme.light.grey }}
+          />
+          <BarChart
+            style={{ flex: 1 }}
+            data={hours.map((hour) => data.stats.hourOccuranceMap[hour])}
+            svg={{ fill: theme.light.orange }}
+            yMin={0}
+            horizontal
           />
         </View>
       </View>
@@ -240,6 +241,7 @@ export const ExistingWordMistakes: React.FC = () => {
                 />
                 <Text
                   style={{
+                    marginTop: 2,
                     color: theme.light.red,
                     fontSize: 10,
                     fontWeight: "bold",
@@ -308,6 +310,17 @@ export const Socks: React.FC = () => {
               attemptsDetail={dayEntry.attemptsDetails}
               date={dayEntry.word.date}
             />
+            <Text
+              style={{
+                marginTop: 2,
+                color: theme.light.red,
+                fontSize: 10,
+                fontWeight: "bold",
+                flexWrap: "wrap",
+              }}
+            >
+              {`Answer: ${dayEntry.word.answer}`}
+            </Text>
           </View>
         )}
       />
@@ -385,7 +398,7 @@ export const InitiatedPings: React.FC = () => {
     return (
       <WrappedLayout
         nextScreen="RecievedPings"
-        fullTitle="Don't forget about your friends! You didn't **ping** anyone to play this season!"
+        fullTitle={`Don't forget about your friends!\n\nYou didn't **ping** anyone to play this season!`}
         accentColor="red"
       />
     )

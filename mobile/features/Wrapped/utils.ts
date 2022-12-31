@@ -17,11 +17,12 @@ export const getMostCommonTimeOfDay = (
 
   for (let hour in hourOccuranceMap) {
     const occurance = hourOccuranceMap[hour]
-    if (occurance < 6) {
+    const hourNumber = Number(hour)
+    if (hourNumber < 6) {
       timesOfDay["early morning"] += occurance
-    } else if (occurance < 12) {
+    } else if (hourNumber < 12) {
       timesOfDay.morning += occurance
-    } else if (occurance < 18) {
+    } else if (hourNumber < 18) {
       timesOfDay.afternoon += occurance
     } else {
       timesOfDay.night += occurance
