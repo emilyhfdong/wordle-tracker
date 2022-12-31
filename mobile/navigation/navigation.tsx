@@ -23,6 +23,7 @@ import {
   Wrapped,
   MostCommonWords,
   MostCommonTime,
+  YellowMistakes,
 } from "../features"
 
 export default function Navigation({}: {}) {
@@ -73,6 +74,7 @@ const WrappedStackNavigator = () => {
       <WrappedStack.Screen name="Landing" component={Wrapped} />
       <WrappedStack.Screen name="MostCommonWords" component={MostCommonWords} />
       <WrappedStack.Screen name="MostCommonTime" component={MostCommonTime} />
+      <WrappedStack.Screen name="YellowMistakes" component={YellowMistakes} />
     </WrappedStack.Navigator>
   )
 }

@@ -7,6 +7,9 @@ import { useAppSelector } from "../../redux"
 import { Row } from "../../shared"
 import { WrappedLayout } from "./WrappedLayout"
 import * as scale from "d3-scale"
+import { getMostCommonTimeOfDay } from "./utils"
+import { DayEntryBoard } from "../Feed/components/DayEntryBoard"
+import { DateTime } from "luxon"
 
 type WrappedProps = {}
 
@@ -72,42 +75,6 @@ export const MostCommonWords: React.FC = () => {
   )
 }
 
-const getMostCommonTimeOfDay = (
-  hourOccuranceMap:
-    | {
-        [hour: string]: number
-      }
-    | undefined
-) => {
-  if (!hourOccuranceMap) {
-    return ""
-  }
-  const timesOfDay = {
-    "early morning": 0,
-    morning: 0,
-    afternoon: 0,
-    night: 0,
-  }
-
-  for (let hour in hourOccuranceMap) {
-    const occurance = hourOccuranceMap[hour]
-    if (occurance < 6) {
-      timesOfDay["early morning"] += occurance
-    } else if (occurance < 12) {
-      timesOfDay.morning += occurance
-    } else if (occurance < 18) {
-      timesOfDay.afternoon += occurance
-    } else {
-      timesOfDay.night += occurance
-    }
-  }
-
-  return (Object.keys(timesOfDay) as (keyof typeof timesOfDay)[]).reduce(
-    (acc, curr) => (timesOfDay[acc] > timesOfDay[curr] ? acc : curr),
-    "early morning" as keyof typeof timesOfDay
-  )
-}
-
 export const MostCommonTime: React.FC = () => {
   const userId = useAppSelector((state) => state.user.id)
   const { data } = useWrappedStats(userId)
@@ -126,7 +93,7 @@ export const MostCommonTime: React.FC = () => {
         data?.stats.hourOccuranceMap
       )} wordzle person!`}
       title={`You've been playing wordzle at these times:`}
-      nextScreen="Landing"
+      nextScreen="YellowMistakes"
     >
       <View
         style={{
@@ -147,8 +114,8 @@ export const MostCommonTime: React.FC = () => {
             style={{ marginTop: 10 }}
             data={hours}
             scale={scale.scaleBand}
-            formatLabel={(value, index) => {
-              const hour = Number(hours[index])
+            formatLabel={(_value, index) => {
+              const hour: number = Number(hours[index])
               return `${hour % 12 === 0 ? "12" : hour % 12}${
                 hour < 12 ? "am" : "pm"
               }`
@@ -156,6 +123,52 @@ export const MostCommonTime: React.FC = () => {
             svg={{ fontSize: 8, fill: theme.light.grey }}
           />
         </View>
+      </View>
+    </WrappedLayout>
+  )
+}
+
+export const YellowMistakes: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useWrappedStats(userId)
+
+  if (!data) {
+    return <></>
+  }
+
+  const yellowMistakes = data.stats.sameYellowPositionMistakes
+
+  return (
+    <WrappedLayout
+      fullTitle={`You've ignored the yellow tile hint ${
+        yellowMistakes.length
+      } time${yellowMistakes.length ? "s" : ""}!`}
+      title={`Missed yellow tile opportunities:`}
+      nextScreen="Landing"
+    >
+      <View
+        style={{
+          marginTop: 30,
+          alignItems: "center",
+          flex: 1,
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "space-around",
+        }}
+      >
+        {yellowMistakes.map((dayEntry, idx) => (
+          <View style={{ marginBottom: 5 }}>
+            <Text style={{ color: theme.light.grey, fontSize: 10 }}>
+              {DateTime.fromISO(dayEntry.word.date).toFormat("EEE, MMM d")}
+            </Text>
+            <DayEntryBoard
+              key={idx}
+              word={dayEntry.word.answer}
+              attemptsDetail={dayEntry.attemptsDetails}
+              date={dayEntry.word.date}
+            />
+          </View>
+        ))}
       </View>
     </WrappedLayout>
   )
