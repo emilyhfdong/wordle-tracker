@@ -48,4 +48,7 @@ export type WrappedStackParamList = {
   YellowMistakes: undefined
   ExistingWordMistakes: undefined
   Socks: undefined
+  Traps: undefined
+  InitiatedPings: undefined
+  RecievedPings: undefined
 }

@@ -446,7 +446,7 @@ export const GET_USER_WRAPPED_RESPONSE = {
     initiatedPingFriendOccuranceMap: {
       NPCAM: 1,
       CZVST: 2,
-    },
+    } as { [friendId: string]: number },
     traps: [
       {
         sk: "day_entry#2022-10-04",
@@ -563,7 +563,7 @@ export const GET_USER_WRAPPED_RESPONSE = {
       NPCAM: 4,
       JYPTA: 11,
       CZVST: 1,
-    },
+    } as { [key: string]: number },
     rankingByDay: [
       7, 10, 9, 9, 9, 10, 9, 9, 9, 9, 6, 6, 6, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
       9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10,

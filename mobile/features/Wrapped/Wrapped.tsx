@@ -2,7 +2,7 @@ import React, { useMemo } from "react"
 import { View, Text, ScrollView } from "react-native"
 import { BarChart, XAxis } from "react-native-svg-charts"
 import { theme } from "../../constants"
-import { useWrappedStats } from "../../query"
+import { useFriends, useWrappedStats } from "../../query"
 import { useAppSelector } from "../../redux"
 import { Row, TwoColumnLayout } from "../../shared"
 import { WrappedLayout } from "./WrappedLayout"
@@ -23,9 +23,9 @@ export const Wrapped: React.FC<WrappedProps> = () => {
 
   return (
     <WrappedLayout
-      fullTitle={` Your Season ${
+      fullTitle={`Your Season ${
         data.sk.split("#").slice(-1)[0]
-      } Wordzle Wrapped has arrived`}
+      } Wordzle Wrapped has arrived!!`}
       nextScreen="MostCommonWords"
     ></WrappedLayout>
   )
@@ -263,7 +263,7 @@ export const Socks: React.FC = () => {
     return (
       <WrappedLayout
         fullTitle="Congrats! you had no 🧦s this season!!"
-        nextScreen="ExistingWordMistakes"
+        nextScreen="Traps"
       />
     )
   }
@@ -274,7 +274,7 @@ export const Socks: React.FC = () => {
         socks.length !== 1 ? "s" : ""
       } this season!`}
       title={`Your sad 🧦${socks.length !== 1 ? "s" : ""}:`}
-      nextScreen="ExistingWordMistakes"
+      nextScreen="Traps"
     >
       <TwoColumnLayout
         data={socks}
@@ -291,6 +291,172 @@ export const Socks: React.FC = () => {
           </View>
         )}
       />
+    </WrappedLayout>
+  )
+}
+
+export const Traps: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useWrappedStats(userId)
+
+  if (!data) {
+    return <></>
+  }
+
+  const traps = data.stats.traps
+
+  if (!traps.length) {
+    return (
+      <WrappedLayout
+        fullTitle="Congrats! You didnt' fall into any traps this season!"
+        nextScreen="InitiatedPings"
+      />
+    )
+  }
+
+  return (
+    <WrappedLayout
+      fullTitle={`Throwback to the ${traps.length} time${
+        traps.length === 1 ? "" : "s"
+      } you got trapped this season!`}
+      title={`Some very sad traps:`}
+      nextScreen="InitiatedPings"
+    >
+      <ScrollView>
+        <TwoColumnLayout
+          data={traps}
+          renderItem={(dayEntry) => (
+            <View style={{ marginBottom: 10 }}>
+              <Text style={{ color: theme.light.grey, fontSize: 10 }}>
+                {DateTime.fromISO(dayEntry.word.date).toFormat("EEE, MMM d")}
+              </Text>
+              <DayEntryBoard
+                word={dayEntry.word.answer}
+                attemptsDetail={dayEntry.attemptsDetails}
+                date={dayEntry.word.date}
+              />
+            </View>
+          )}
+        />
+      </ScrollView>
+    </WrappedLayout>
+  )
+}
+
+export const InitiatedPings: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useWrappedStats(userId)
+  const { data: friendsData } = useFriends(userId)
+
+  if (!data || !friendsData) {
+    return <></>
+  }
+
+  const pings = data.stats.initiatedPingFriendOccuranceMap
+  const pingedFriends = Object.keys(pings).sort((a, b) => pings[b] - pings[a])
+  const totalNumberOfPings = pingedFriends.reduce(
+    (acc, curr) => acc + pings[curr],
+    0
+  )
+
+  if (!pingedFriends.length) {
+    return (
+      <WrappedLayout
+        nextScreen="RecievedPings"
+        fullTitle="Don't forget about your friends! You didn't ping anyone to play this season!"
+      />
+    )
+  }
+
+  return (
+    <WrappedLayout
+      fullTitle={`Don't forget about your friends!!\n\nYou pinged people to play ${totalNumberOfPings} times`}
+      title={`Here are the people you keep pinging:`}
+      nextScreen="RecievedPings"
+    >
+      <View style={{ marginTop: 40, alignItems: "center" }}>
+        {pingedFriends.map((friendId) => (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              width: "70%",
+            }}
+          >
+            <Text
+              style={{
+                color: friendsData[friendId].color,
+                fontWeight: "bold",
+                fontSize: 30,
+              }}
+            >
+              {friendsData[friendId].name}
+            </Text>
+            <Text style={{ fontSize: 20 }}>{pings[friendId]}x</Text>
+          </View>
+        ))}
+      </View>
+    </WrappedLayout>
+  )
+}
+
+export const RecievedPings: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useWrappedStats(userId)
+  const { data: friendsData } = useFriends(userId)
+
+  if (!data || !friendsData) {
+    return <></>
+  }
+
+  const pings = data.stats.recievedPingFriendOccuranceMap
+  const pingFriends = Object.keys(pings).sort((a, b) => pings[b] - pings[a])
+  const totalNumberOfPings = pingFriends.reduce(
+    (acc, curr) => acc + pings[curr],
+    0
+  )
+
+  if (!pingFriends.length) {
+    return (
+      <WrappedLayout
+        nextScreen="Landing"
+        fullTitle="Don't forget to play! No one pinged you this season!"
+      />
+    )
+  }
+
+  return (
+    <WrappedLayout
+      fullTitle={`Don't forget to play!!\n\nYour friends reminded you to play ${totalNumberOfPings} times!`}
+      title={`Here are the people that kee pinging you`}
+      nextScreen="Landing"
+    >
+      <View style={{ marginTop: 40, alignItems: "center" }}>
+        {pingFriends.map((friendId) => (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              width: "70%",
+            }}
+          >
+            <Text
+              style={{
+                color: friendsData[friendId].color,
+                fontWeight: "bold",
+                fontSize: 30,
+              }}
+            >
+              {friendsData[friendId].name}
+            </Text>
+            <Text style={{ fontSize: 20 }}>{pings[friendId]}x</Text>
+          </View>
+        ))}
+      </View>
     </WrappedLayout>
   )
 }
