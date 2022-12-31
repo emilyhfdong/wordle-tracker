@@ -25,8 +25,7 @@ export const Wrapped: React.FC<WrappedProps> = () => {
     <WrappedLayout
       fullTitle={` Your Season ${
         data.sk.split("#").slice(-1)[0]
-      } Wordzle Recap!!`}
-      title={` Your Season ${data.sk.split("#").slice(-1)[0]} Wordzle Recap!!`}
+      } Wordzle Wrapped has arrived`}
       nextScreen="MostCommonWords"
     ></WrappedLayout>
   )
@@ -138,6 +137,15 @@ export const YellowMistakes: React.FC = () => {
 
   const yellowMistakes = data.stats.sameYellowPositionMistakes
 
+  if (!yellowMistakes.length) {
+    return (
+      <WrappedLayout
+        fullTitle="Congrats! you never ignored the yellow tile hint!"
+        nextScreen="ExistingWordMistakes"
+      />
+    )
+  }
+
   return (
     <WrappedLayout
       fullTitle={`You've ignored the yellow tile hint ${
@@ -175,13 +183,22 @@ export const ExistingWordMistakes: React.FC = () => {
 
   const existingWordMistakes = data.stats.existingWordMistake
 
+  if (!existingWordMistakes.length) {
+    return (
+      <WrappedLayout
+        fullTitle="Congrats! you never guessed an existing word!"
+        nextScreen="Socks"
+      />
+    )
+  }
+
   return (
     <WrappedLayout
       fullTitle={`Don't forget to use this search feature!\n\nYou guessed an existing word ${
         existingWordMistakes.length
       } time${existingWordMistakes.length > 1 ? "s" : ""}`}
       title={`Times you guessed an existing word:`}
-      nextScreen="Landing"
+      nextScreen="Socks"
     >
       <ScrollView>
         <TwoColumnLayout
@@ -228,6 +245,52 @@ export const ExistingWordMistakes: React.FC = () => {
           }}
         />
       </ScrollView>
+    </WrappedLayout>
+  )
+}
+
+export const Socks: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useWrappedStats(userId)
+
+  if (!data) {
+    return <></>
+  }
+
+  const socks = data.stats.socks
+
+  if (!socks.length) {
+    return (
+      <WrappedLayout
+        fullTitle="Congrats! you had no 🧦s this season!!"
+        nextScreen="ExistingWordMistakes"
+      />
+    )
+  }
+
+  return (
+    <WrappedLayout
+      fullTitle={`You've made ${socks.length} 🧦${
+        socks.length !== 1 ? "s" : ""
+      } this season!`}
+      title={`Your sad 🧦${socks.length !== 1 ? "s" : ""}:`}
+      nextScreen="ExistingWordMistakes"
+    >
+      <TwoColumnLayout
+        data={socks}
+        renderItem={(dayEntry) => (
+          <View style={{ marginBottom: 5 }}>
+            <Text style={{ color: theme.light.grey, fontSize: 10 }}>
+              {DateTime.fromISO(dayEntry.word.date).toFormat("EEE, MMM d")}
+            </Text>
+            <DayEntryBoard
+              word={dayEntry.word.answer}
+              attemptsDetail={dayEntry.attemptsDetails}
+              date={dayEntry.word.date}
+            />
+          </View>
+        )}
+      />
     </WrappedLayout>
   )
 }

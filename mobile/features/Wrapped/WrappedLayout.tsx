@@ -11,7 +11,7 @@ import { RH, RW } from "../../utils"
 
 type WrappedLayoutProps = {
   fullTitle: string
-  title: string
+  title?: string
   nextScreen?: keyof WrappedStackParamList
 }
 
@@ -42,17 +42,18 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
       useNativeDriver: true,
       delay: INITIAL_DELAY,
     }).start()
-
-    setTimeout(() => {
-      Animated.spring(opacity, {
-        toValue: 0,
-        useNativeDriver: true,
-      }).start()
-      Animated.spring(translateY, {
-        toValue: 1,
-        useNativeDriver: true,
-      }).start(() => setIsShowingFullTitle(false))
-    }, INITIAL_DELAY + TITLE_DELAY)
+    if (title) {
+      setTimeout(() => {
+        Animated.spring(opacity, {
+          toValue: 0,
+          useNativeDriver: true,
+        }).start()
+        Animated.spring(translateY, {
+          toValue: 1,
+          useNativeDriver: true,
+        }).start(() => setIsShowingFullTitle(false))
+      }, INITIAL_DELAY + TITLE_DELAY)
+    }
   }, [])
 
   if (!data) {
@@ -69,7 +70,7 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
           justifyContent: "space-between",
         }}
       >
-        {isShowingFullTitle ? (
+        {isShowingFullTitle || !title ? (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
@@ -91,7 +92,7 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
           </View>
         )}
 
-        {nextScreen && !isShowingFullTitle && (
+        {nextScreen && (!isShowingFullTitle || !title) && (
           <Button
             onPress={() => navigate(nextScreen as any)}
             color={theme.light.green}

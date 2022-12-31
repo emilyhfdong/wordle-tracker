@@ -25,6 +25,7 @@ import {
   MostCommonTime,
   YellowMistakes,
   ExistingWordMistakes,
+  Socks,
 } from "../features"
 
 export default function Navigation({}: {}) {
@@ -80,6 +81,7 @@ const WrappedStackNavigator = () => {
         name="ExistingWordMistakes"
         component={ExistingWordMistakes}
       />
+      <WrappedStack.Screen name="Socks" component={Socks} />
     </WrappedStack.Navigator>
   )
 }
