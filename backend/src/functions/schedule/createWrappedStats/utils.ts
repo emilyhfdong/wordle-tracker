@@ -88,9 +88,9 @@ export const getWrappedStats = ({
     {}
   )
 
-  const top5Guesses: { guess: string; count: number }[] = [
-    ...new Set(allGuesses),
-  ]
+  const uniqueGuesses = [...new Set(allGuesses)]
+
+  const top5Guesses: { guess: string; count: number }[] = uniqueGuesses
     .sort((a, b) => guessOccuranceMap[b] - guessOccuranceMap[a])
     .slice(0, 5)
     .reduce(
@@ -300,5 +300,6 @@ export const getWrappedStats = ({
     longestGreenStart: longestGreenStart.toISODate(),
     longestRedStreak,
     longestRedStart: longestRedStart.toISODate(),
+    uniqueGuessesCount: uniqueGuesses.length,
   }
 }
