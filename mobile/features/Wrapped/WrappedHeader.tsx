@@ -3,9 +3,11 @@ import React from "react"
 import { View } from "react-native"
 import { theme } from "../../constants"
 
-type WrappedHeaderProps = {}
+type WrappedHeaderProps = {
+  color: string
+}
 
-export const WrappedHeader: React.FC<WrappedHeaderProps> = () => {
+export const WrappedHeader: React.FC<WrappedHeaderProps> = ({ color }) => {
   const {} = useNavigation()
   const totalNumberOfRoutes = useNavigationState(
     (state) => state.routeNames.length
@@ -30,9 +32,7 @@ export const WrappedHeader: React.FC<WrappedHeaderProps> = () => {
             borderRadius: 2.5,
             marginHorizontal: 5,
             backgroundColor:
-              idx + 1 === currentRouteNumber
-                ? theme.light.green
-                : theme.light.lightGrey,
+              idx + 1 === currentRouteNumber ? color : theme.light.lightGrey,
           }}
         />
       ))}

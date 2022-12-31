@@ -38,7 +38,8 @@ export const Wrapped: React.FC<WrappedProps> = () => {
       noBack
       fullTitle={`Your Season ${
         data.sk.split("#").slice(-1)[0]
-      } Wordzle Wrapped has arrived!!`}
+      } **Wordzle Wrapped** has arrived!!`}
+      accentColor="green"
       nextScreen="MostCommonWords"
     ></WrappedLayout>
   )
@@ -50,7 +51,8 @@ export const MostCommonWords: React.FC = () => {
 
   return (
     <WrappedLayout
-      fullTitle={`You made ${data?.stats.uniqueGuessesCount} different guesses this season!\n\nThese are the ones you keep coming back to:`}
+      fullTitle={`You made **${data?.stats.uniqueGuessesCount} different guesses** this season!\n\nThese are the ones you keep coming back to:`}
+      accentColor="green"
       title={`Your most common guesses:`}
       nextScreen="MostCommonTime"
     >
@@ -101,9 +103,10 @@ export const MostCommonTime: React.FC = () => {
 
   return (
     <WrappedLayout
-      fullTitle={`You are a ${getMostCommonTimeOfDay(
+      fullTitle={`You are a **${getMostCommonTimeOfDay(
         data?.stats.hourOccuranceMap
-      )} wordzle person!`}
+      )}** wordzle person!`}
+      accentColor="orange"
       title={`You've been playing wordzle at these times:`}
       nextScreen="YellowMistakes"
     >
@@ -119,7 +122,7 @@ export const MostCommonTime: React.FC = () => {
           <BarChart
             style={{ flex: 1 }}
             data={hours.map((hour) => data.stats.hourOccuranceMap[hour])}
-            svg={{ fill: theme.light.yellow }}
+            svg={{ fill: theme.light.orange }}
             yMin={0}
           />
           <XAxis
@@ -153,7 +156,8 @@ export const YellowMistakes: React.FC = () => {
   if (!yellowMistakes.length) {
     return (
       <WrappedLayout
-        fullTitle="Congrats! you've never ignored the yellow tile hint!"
+        fullTitle="Congrats! you've never ignored the **yellow** tile hint!"
+        accentColor="yellow"
         nextScreen="ExistingWordMistakes"
       />
     )
@@ -161,9 +165,10 @@ export const YellowMistakes: React.FC = () => {
 
   return (
     <WrappedLayout
-      fullTitle={`You've ignored the yellow tile hint ${
+      fullTitle={`You've ignored the **yellow** tile hint ${
         yellowMistakes.length
       } time${yellowMistakes.length > 1 ? "s" : ""}!`}
+      accentColor="yellow"
       title={`Missed yellow tile opportunities:`}
       nextScreen="ExistingWordMistakes"
     >
@@ -199,7 +204,8 @@ export const ExistingWordMistakes: React.FC = () => {
   if (!existingWordMistakes.length) {
     return (
       <WrappedLayout
-        fullTitle="Congrats! you never guessed an existing word!"
+        fullTitle="Congrats! you never guessed an **existing word!**"
+        accentColor="pink"
         nextScreen="Socks"
       />
     )
@@ -207,9 +213,10 @@ export const ExistingWordMistakes: React.FC = () => {
 
   return (
     <WrappedLayout
-      fullTitle={`Don't forget to use this search feature!\n\nYou guessed an existing word ${
+      fullTitle={`Don't forget to use the **search** feature!\n\nYou guessed an **existing word** ${
         existingWordMistakes.length
       } time${existingWordMistakes.length > 1 ? "s" : ""}`}
+      accentColor="pink"
       title={`Times you guessed an existing word:`}
       nextScreen="Socks"
     >
@@ -321,7 +328,8 @@ export const Traps: React.FC = () => {
   if (!traps.length) {
     return (
       <WrappedLayout
-        fullTitle="Congrats! You didnt' fall into any traps this season!"
+        fullTitle="Congrats! You didnt' fall into any **traps** this season!"
+        accentColor="blue"
         nextScreen="InitiatedPings"
       />
     )
@@ -331,7 +339,8 @@ export const Traps: React.FC = () => {
     <WrappedLayout
       fullTitle={`Throwback to the ${traps.length} time${
         traps.length === 1 ? "" : "s"
-      } you got trapped this season!`}
+      } you got **trapped** this season!`}
+      accentColor="blue"
       title={`Some very sad traps:`}
       nextScreen="InitiatedPings"
     >
@@ -376,16 +385,18 @@ export const InitiatedPings: React.FC = () => {
     return (
       <WrappedLayout
         nextScreen="RecievedPings"
-        fullTitle="Don't forget about your friends! You didn't ping anyone to play this season!"
+        fullTitle="Don't forget about your friends! You didn't **ping** anyone to play this season!"
+        accentColor="red"
       />
     )
   }
 
   return (
     <WrappedLayout
-      fullTitle={`Don't forget about your friends!!\n\nYou pinged people to play ${totalNumberOfPings} times`}
+      fullTitle={`Don't forget about your friends!!\n\nYou **pinged** people to play ${totalNumberOfPings} times`}
       title={`Here are the people you keep pinging:`}
       nextScreen="RecievedPings"
+      accentColor="red"
     >
       <View style={{ marginTop: 40, alignItems: "center" }}>
         {pingedFriends.map((friendId) => (
@@ -435,14 +446,16 @@ export const RecievedPings: React.FC = () => {
     return (
       <WrappedLayout
         nextScreen="Closing"
-        fullTitle="Don't forget to play! No one pinged you this season!"
+        fullTitle="Don't forget to play! No one reminded you to play this season!"
+        accentColor="yellow"
       />
     )
   }
 
   return (
     <WrappedLayout
-      fullTitle={`Don't forget to play!!\n\nYour friends reminded you to play ${totalNumberOfPings} times!`}
+      fullTitle={`Don't forget to play!!\n\nYour friends **reminded** you to play ${totalNumberOfPings} times!`}
+      accentColor="yellow"
       title={`Here are the people that keep pinging you`}
       nextScreen="Closing"
     >
@@ -481,7 +494,8 @@ export const WrappedClosing: React.FC = () => {
 
   return (
     <WrappedLayout
-      fullTitle={`That's a wrap on season ${seasonNumber}!!\n\nYou can get back here by tapping the gift icon in the header!`}
+      fullTitle={`That's a **wrap** on season ${seasonNumber}!!\n\nYou can get back here by tapping the **gift icon** in the header!`}
+      accentColor="green"
       nextScreen="Root"
     ></WrappedLayout>
   )

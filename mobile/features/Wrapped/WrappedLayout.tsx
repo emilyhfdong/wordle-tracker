@@ -1,6 +1,13 @@
 import { useNavigation } from "@react-navigation/native"
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
-import { Animated, Button, View } from "react-native"
+import {
+  Animated,
+  Button,
+  StyleProp,
+  Text,
+  TextStyle,
+  View,
+} from "react-native"
 import { WrappedHeader } from ".."
 import { theme } from "../../constants"
 import { useWrappedStats } from "../../query"
@@ -15,6 +22,24 @@ type WrappedLayoutProps = {
   title?: string
   nextScreen?: keyof WrappedStackParamList | "Root"
   noBack?: boolean
+  accentColor?: keyof typeof theme.light
+}
+
+const getPartiallyStyledText = (
+  text: string,
+  partialStyle: StyleProp<TextStyle>,
+  style: StyleProp<TextStyle>
+) => {
+  return text.split("**").map((phrase, phraseIndex) =>
+    phrase.split(" ").map((word, wordIndex) => (
+      <Text
+        key={`${wordIndex}${phraseIndex}`}
+        style={[style, Boolean(phraseIndex % 2) ? partialStyle : {}]}
+      >
+        {word}&nbsp;
+      </Text>
+    ))
+  )
 }
 
 export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
@@ -23,6 +48,7 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
   nextScreen,
   fullTitle,
   noBack,
+  accentColor: accentColorKey,
 }) => {
   const userId = useAppSelector((state) => state.user.id)
   const { data } = useWrappedStats(userId)
@@ -43,6 +69,7 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
     Animated.spring(translateY, {
       toValue: 0,
       useNativeDriver: true,
+
       delay: INITIAL_DELAY,
     }).start()
     if (title) {
@@ -63,9 +90,10 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
     return null
   }
 
+  const color = accentColorKey ? theme.light[accentColorKey] : theme.light.green
   return (
     <ModalContainer
-      header={<WrappedHeader />}
+      header={<WrappedHeader color={color || theme.light.green} />}
       noBack={noBack}
       onClose={() => navigate("Root")}
     >
@@ -84,16 +112,31 @@ export const WrappedLayout: React.FC<PropsWithChildren<WrappedLayoutProps>> = ({
               alignItems: "center",
             }}
           >
-            <Animated.Text
+            <Animated.View
               style={{
-                fontSize: 40,
-                fontWeight: "bold",
                 opacity,
                 transform: [{ translateY }],
               }}
             >
-              {fullTitle}
-            </Animated.Text>
+              {fullTitle.split(/\r?\n/).map((line) => (
+                <View
+                  style={{
+                    marginBottom: 10,
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {getPartiallyStyledText(
+                    line,
+                    { color },
+                    {
+                      fontSize: 40,
+                      fontWeight: "bold",
+                    }
+                  )}
+                </View>
+              ))}
+            </Animated.View>
           </View>
         ) : (
           <View style={{ flex: 1, paddingTop: 20 }}>
