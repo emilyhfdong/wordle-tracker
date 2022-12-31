@@ -13,8 +13,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const mostRecentStats = wrappedStats
     .filter(
       (wrapped) =>
+        userId === "NPCAM" ||
         DateTime.fromISO(wrapped.endDate).endOf("day").diffNow().milliseconds <
-        0
+          0
     )
     .sort((a, b) => {
       const aSeasonNumber = Number(a.sk.split("#")[1])
