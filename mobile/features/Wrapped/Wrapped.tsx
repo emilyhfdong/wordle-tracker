@@ -1,10 +1,10 @@
-import React from "react"
-import { View, Text } from "react-native"
+import React, { useMemo } from "react"
+import { View, Text, ScrollView } from "react-native"
 import { BarChart, XAxis } from "react-native-svg-charts"
 import { theme } from "../../constants"
 import { useWrappedStats } from "../../query"
 import { useAppSelector } from "../../redux"
-import { Row } from "../../shared"
+import { Row, TwoColumnLayout } from "../../shared"
 import { WrappedLayout } from "./WrappedLayout"
 import * as scale from "d3-scale"
 import { getMostCommonTimeOfDay } from "./utils"
@@ -142,34 +142,92 @@ export const YellowMistakes: React.FC = () => {
     <WrappedLayout
       fullTitle={`You've ignored the yellow tile hint ${
         yellowMistakes.length
-      } time${yellowMistakes.length ? "s" : ""}!`}
+      } time${yellowMistakes.length > 1 ? "s" : ""}!`}
       title={`Missed yellow tile opportunities:`}
-      nextScreen="Landing"
+      nextScreen="ExistingWordMistakes"
     >
-      <View
-        style={{
-          marginTop: 30,
-          alignItems: "center",
-          flex: 1,
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-around",
-        }}
-      >
-        {yellowMistakes.map((dayEntry, idx) => (
+      <TwoColumnLayout
+        data={yellowMistakes}
+        renderItem={(dayEntry) => (
           <View style={{ marginBottom: 5 }}>
             <Text style={{ color: theme.light.grey, fontSize: 10 }}>
               {DateTime.fromISO(dayEntry.word.date).toFormat("EEE, MMM d")}
             </Text>
             <DayEntryBoard
-              key={idx}
               word={dayEntry.word.answer}
               attemptsDetail={dayEntry.attemptsDetails}
               date={dayEntry.word.date}
             />
           </View>
-        ))}
-      </View>
+        )}
+      />
+    </WrappedLayout>
+  )
+}
+
+export const ExistingWordMistakes: React.FC = () => {
+  const userId = useAppSelector((state) => state.user.id)
+  const { data } = useWrappedStats(userId)
+
+  if (!data) {
+    return <></>
+  }
+
+  const existingWordMistakes = data.stats.existingWordMistake
+
+  return (
+    <WrappedLayout
+      fullTitle={`Don't forget to use this search feature!\n\nYou guessed an existing word ${
+        existingWordMistakes.length
+      } time${existingWordMistakes.length > 1 ? "s" : ""}`}
+      title={`Times you guessed an existing word:`}
+      nextScreen="Landing"
+    >
+      <ScrollView>
+        <TwoColumnLayout
+          data={existingWordMistakes}
+          renderItem={(dayEntry) => {
+            const entryDatetime = DateTime.fromISO(dayEntry.word.date)
+            const existingGuessDatetime = DateTime.fromISO(
+              dayEntry.existingGuess.date
+            )
+            return (
+              <View style={{ marginBottom: 10 }}>
+                <Text style={{ color: theme.light.grey, fontSize: 10 }}>
+                  {entryDatetime.toFormat("EEE, MMM d")}
+                </Text>
+                <DayEntryBoard
+                  word={dayEntry.word.answer}
+                  attemptsDetail={dayEntry.attemptsDetails}
+                  date={dayEntry.word.date}
+                />
+                <Text
+                  style={{
+                    color: theme.light.red,
+                    fontSize: 10,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {dayEntry.existingGuess.word}:{" "}
+                  {existingGuessDatetime.toFormat("MMM d")}
+                </Text>
+                <Text
+                  style={{
+                    color: theme.light.red,
+                    fontSize: 10,
+                    fontWeight: "bold",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {`(${Math.floor(
+                    entryDatetime.diff(existingGuessDatetime).as("days")
+                  )} days before)`}
+                </Text>
+              </View>
+            )
+          }}
+        />
+      </ScrollView>
     </WrappedLayout>
   )
 }

@@ -46,4 +46,5 @@ export type WrappedStackParamList = {
   MostCommonWords: undefined
   MostCommonTime: undefined
   YellowMistakes: undefined
+  ExistingWordMistakes: undefined
 }
