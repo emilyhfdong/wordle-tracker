@@ -3,7 +3,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context"
 import { Provider } from "react-redux"
 
 import useCachedResources from "./hooks/useCachedResources"
-import Navigation from "./navigation"
+import Navigation from "./navigation/navigation"
 import { persistor, store } from "./redux/store"
 import { PersistGate } from "redux-persist/integration/react"
 import React, { useEffect } from "react"

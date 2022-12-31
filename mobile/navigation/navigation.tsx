@@ -9,6 +9,7 @@ import {
   RootStackParamList,
   RootTabParamList,
   RootTabScreenProps,
+  WrappedStackParamList,
 } from "../types"
 import {
   AddFriend,
@@ -19,6 +20,9 @@ import {
   ResetUser,
   AddFriendHeader,
   Seasons,
+  Wrapped,
+  MostCommonWords,
+  MostCommonTime,
 } from "../features"
 
 export default function Navigation({}: {}) {
@@ -49,7 +53,27 @@ function RootNavigator() {
       >
         <Stack.Screen name="ResetUser" component={ResetUser} />
       </Stack.Group>
+      <Stack.Group
+        screenOptions={{ presentation: "modal", headerShown: false }}
+      >
+        <Stack.Screen name="Wrapped" component={WrappedStackNavigator} />
+      </Stack.Group>
     </Stack.Navigator>
+  )
+}
+
+const WrappedStack = createNativeStackNavigator<WrappedStackParamList>()
+
+const WrappedStackNavigator = () => {
+  return (
+    <WrappedStack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Landing"
+    >
+      <WrappedStack.Screen name="Landing" component={Wrapped} />
+      <WrappedStack.Screen name="MostCommonWords" component={MostCommonWords} />
+      <WrappedStack.Screen name="MostCommonTime" component={MostCommonTime} />
+    </WrappedStack.Navigator>
   )
 }
 

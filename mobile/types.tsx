@@ -21,6 +21,7 @@ export type RootStackParamList = {
   NotFound: undefined
   AddFriend: undefined
   ResetUser: undefined
+  Wrapped: undefined
 }
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
@@ -39,3 +40,9 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
     BottomTabScreenProps<RootTabParamList, Screen>,
     NativeStackScreenProps<RootStackParamList>
   >
+
+export type WrappedStackParamList = {
+  Landing: undefined
+  MostCommonWords: undefined
+  MostCommonTime: undefined
+}

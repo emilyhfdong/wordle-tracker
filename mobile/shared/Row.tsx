@@ -10,20 +10,20 @@ interface IRowProps {
   letters?: string
   locked: boolean
   isNotWord: boolean
+  correctWord: string
 }
 
 export const Row: React.FC<IRowProps> = ({
   letters = "",
   locked,
   isNotWord,
+  correctWord,
 }) => {
-  const word = useAppSelector((state) => state.todaysWord.word)
-
-  if (!word) {
+  if (!correctWord) {
     return <></>
   }
 
-  const tiles = getTiles(letters, word)
+  const tiles = getTiles(letters, correctWord)
 
   const shakeAnim = useRef(new Animated.Value(0)).current
   useEffect(() => {
@@ -55,7 +55,7 @@ export const Row: React.FC<IRowProps> = ({
           letter={letter}
           key={idx}
           index={idx}
-          hasWon={letters === word}
+          hasWon={letters === correctWord}
           lockedColor={color}
         />
       ))}

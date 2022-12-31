@@ -8,6 +8,7 @@ export enum QueryKeys {
   USER = "user",
   FRIENDS = "friends",
   SEASONS = "seasons",
+  WRAPPED_STATS = "wrappedStats",
 }
 
 const DEFAULT_OPTIONS = {
@@ -34,6 +35,14 @@ export const useUser = (userId: string) => {
   return useQuery(
     QueryKeys.USER,
     () => BackendService.getUser(userId),
+    DEFAULT_OPTIONS
+  )
+}
+
+export const useWrappedStats = (userId: string) => {
+  return useQuery(
+    QueryKeys.WRAPPED_STATS,
+    () => BackendService.getWrappedStats(userId),
     DEFAULT_OPTIONS
   )
 }

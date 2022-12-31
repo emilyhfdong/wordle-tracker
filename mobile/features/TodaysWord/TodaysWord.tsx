@@ -4,7 +4,13 @@ import { theme } from "../../constants/theme"
 import { isEasyMode, isValidWord } from "../../utils"
 import { todaysWordActions, useAppDispatch, useAppSelector } from "../../redux"
 import { DateTime } from "luxon"
-import { queryClient, QueryKeys, useCreateDayEntry, useUser } from "../../query"
+import {
+  queryClient,
+  QueryKeys,
+  useCreateDayEntry,
+  useUser,
+  useWrappedStats,
+} from "../../query"
 import { TDayEntry } from "../../services"
 import {
   Toast,
@@ -17,6 +23,7 @@ import {
   FullScreenMessage,
 } from "../../shared"
 import { SummaryModal } from "./components"
+import { useNavigation } from "@react-navigation/native"
 
 export const TodaysWord: React.FC = () => {
   const { currentGuess, prevGuesses, word, date, number } = useAppSelector(
@@ -29,6 +36,22 @@ export const TodaysWord: React.FC = () => {
   const dispatch = useAppDispatch()
   const [wordWarning, setWordWarning] = useState("")
   const [toastText, setToastText] = useState("")
+
+  const seenWrappedSeasonNames = useAppSelector(
+    (state) => state.seasons.seenWrappedSeasonNames
+  )
+  const { data: wrappedData } = useWrappedStats(userId)
+  const { navigate, isFocused } = useNavigation()
+
+  useEffect(() => {
+    if (
+      wrappedData?.sk &&
+      !seenWrappedSeasonNames?.includes(wrappedData?.sk) &&
+      isFocused()
+    ) {
+      navigate("Wrapped")
+    }
+  }, [wrappedData, seenWrappedSeasonNames])
 
   const { mutate } = useCreateDayEntry({
     onSuccess: () => {
@@ -157,6 +180,7 @@ export const TodaysWord: React.FC = () => {
       <View style={{ flex: 1, justifyContent: "center" }}>
         {new Array(6).fill(0).map((_, idx) => (
           <Row
+            correctWord={word}
             key={idx}
             letters={
               idx === prevGuesses.length ? currentGuess : prevGuesses[idx]
