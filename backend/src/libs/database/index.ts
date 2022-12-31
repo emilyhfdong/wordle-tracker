@@ -338,15 +338,21 @@ const putWrappedStats = async ({
   userId,
   seasonNumber,
   stats,
+  startDate,
+  endDate,
 }: {
   seasonNumber: string
   userId: string
   stats: IWrappedStats
+  startDate: string
+  endDate: string
 }) => {
   const item: IWrappedStatsItem = {
     pk: userId,
     sk: `wrapped_stats#${seasonNumber}`,
     stats,
+    startDate,
+    endDate,
   }
 
   await dynamodb

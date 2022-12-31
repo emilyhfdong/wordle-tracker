@@ -83,4 +83,6 @@ export interface IWrappedStatsItem {
   pk: TUserId
   sk: `wrapped_stats#${TSeasonNumber}`
   stats: IWrappedStats
+  startDate: string
+  endDate: string
 }

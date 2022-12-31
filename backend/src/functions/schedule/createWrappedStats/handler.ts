@@ -15,14 +15,7 @@ export const handler = async () => {
   const userItems = await Promise.all(
     users.map((user) => database.getUserItems(user.pk))
   )
-  const firstDayOfSeason = DateTime.fromObject({
-    year: 2023,
-    month: 1,
-    day: 1,
-    hour: 4,
-  })
-    .minus({ day: 1 })
-    .startOf("quarter")
+  const firstDayOfSeason = DateTime.now().minus({ day: 1 }).startOf("quarter")
   const lastDayOfSeason = firstDayOfSeason.endOf("quarter")
   const daysInSeason = Math.floor(
     lastDayOfSeason.diff(firstDayOfSeason).as("days")
@@ -56,6 +49,8 @@ export const handler = async () => {
       userId: user.metadata.pk,
       stats: wrappedStats,
       seasonNumber,
+      startDate: firstDayOfSeason.toISODate(),
+      endDate: lastDayOfSeason.toISODate(),
     })
   }
 

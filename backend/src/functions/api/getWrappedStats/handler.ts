@@ -1,7 +1,7 @@
 import { database } from "@libs/database"
 import { createResponse } from "@libs/utils"
 import { APIGatewayProxyHandler } from "aws-lambda"
-import { Settings } from "luxon"
+import { DateTime, Settings } from "luxon"
 import { config } from "@libs/environment"
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -10,14 +10,20 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const userId = event.pathParameters.userId
   const wrappedStats = await database.getUserWrappedStats(userId)
 
-  const mostRecentStats = wrappedStats.sort((a, b) => {
-    const aSeasonNumber = Number(a.sk.split("#")[1])
-    const bSeasonNumber = Number(b.sk.split("#")[1])
+  const mostRecentStats = wrappedStats
+    .filter(
+      (wrapped) =>
+        DateTime.fromISO(wrapped.endDate).endOf("day").diffNow().milliseconds <
+        0
+    )
+    .sort((a, b) => {
+      const aSeasonNumber = Number(a.sk.split("#")[1])
+      const bSeasonNumber = Number(b.sk.split("#")[1])
 
-    return bSeasonNumber - aSeasonNumber
-  })[0]
+      return bSeasonNumber - aSeasonNumber
+    })[0]
 
   return createResponse({
-    body: mostRecentStats,
+    body: mostRecentStats || null,
   })
 }
