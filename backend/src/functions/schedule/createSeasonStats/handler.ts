@@ -13,7 +13,10 @@ export const handler = async () => {
     return
   }
 
-  const pastSeasons = await database.getSeasons()
+  const pastSeasons = (await database.getSeasons()).sort(
+    (a, b) => Number(b.sk) - Number(a.sk)
+  )
+
   const lastSeason = pastSeasons?.[0] || null
 
   const seasonNumber = lastSeason ? Number(lastSeason.sk) + 1 : 1
