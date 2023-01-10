@@ -4,8 +4,8 @@ import { config } from "@libs/environment"
 import { DateTime, Settings } from "luxon"
 import { getBrowser } from "@libs/puppeteer"
 
-const CLOSE_ICON_PATH = `document.querySelector("dialog.Modal-module_modalOverlay__81ZCi > div > button")`
-const ANSWER_TOAST_PATH = `document.querySelector("#ToastContainer-module_gameToaster__yjzPn > div")`
+const CLOSE_ICON_PATH = `document.querySelector("dialog > div > button")`
+const ANSWER_TOAST_PATH = `document.querySelector("#ToastContainer-module_gameToaster__HPkaC > div")`
 
 export const handler = async () => {
   Settings.defaultZone = config.timezone
@@ -52,7 +52,7 @@ export const handler = async () => {
   const page = await browser.newPage()
   await page.emulateTimezone(config.timezone)
   await page.goto("https://www.nytimes.com/games/wordle/index.html")
-  await page.waitForSelector(".Modal-module_content__s8qUZ")
+  await page.waitForSelector("dialog")
 
   const closeIcon = await page.evaluateHandle(CLOSE_ICON_PATH)
   //@ts-expect-error
