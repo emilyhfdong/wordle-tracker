@@ -2,7 +2,7 @@
   "expo": {
     "name": "Wordzle",
     "slug": "wordzle-with-friends",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -19,7 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.emilydong.wordzlewithfriends",
-      "buildNumber": "5"
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,6 +29,11 @@
     },
     "web": {
       "favicon": "./assets/images/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fa09d4a3-65b2-45d9-b4c0-33a65545e05d"
+      }
     }
   }
 }
