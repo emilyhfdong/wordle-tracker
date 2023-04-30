@@ -22,8 +22,8 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
   const { Records } = streamEvent
 
   for (const record of Records) {
-    if (record.eventName !== "INSERT") {
-      console.log("DynamoDB event not an INSERT, skipping")
+    if (record.eventName !== "INSERT" && record.eventName !== "MODIFY") {
+      console.log("DynamoDB event not an INSERT or MODIFY, skipping")
       continue
     }
 
@@ -38,6 +38,11 @@ export const handler: DynamoDBStreamHandler = async (streamEvent) => {
 
       if (!newDayEntry.sk.includes("day_entry")) {
         console.log("event is not a day_entry")
+        continue
+      }
+
+      if (newDayEntry.isPartiallyCompleted) {
+        console.log("day entry is not completed")
         continue
       }
 

@@ -10,9 +10,9 @@ export const handler = async () => {
   for (let i = 0; i < users.length; i++) {
     const userId = users[i].pk
     console.log("building stats for user", users[i].name)
-    const { dayEntries } = await database.getUserItems(userId)
+    const { completedDayEntries } = await database.getUserItems(userId)
 
-    const stats = getStatsForUser(dayEntries)
+    const stats = getStatsForUser(completedDayEntries)
     await database.putUserStats(userId, stats)
   }
 

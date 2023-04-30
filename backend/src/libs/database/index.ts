@@ -166,8 +166,9 @@ const getUserItems = async (userId: string) => {
     .promise()
   if (response.Items) {
     return {
-      dayEntries: response.Items.filter((item): item is IDayEntryItem =>
-        item.sk.includes("day_entry")
+      completedDayEntries: response.Items.filter(
+        (item): item is IDayEntryItem =>
+          item.sk.includes("day_entry") && item.isPartiallyCompleted !== true
       ),
       metadata: response.Items.find(
         (item): item is IUserMetaDataItem => item.sk === "metadata"
@@ -186,7 +187,30 @@ const getUserItems = async (userId: string) => {
   return null
 }
 
-const getUserDayEntries = async (userId: string, datePrefix?: string) => {
+const getCompletedUserDayEntries = async (
+  userId: string,
+  datePrefix?: string
+) => {
+  const response = await dynamodb
+    .query({
+      TableName: config.dynamoTableName,
+      KeyConditionExpression: `pk = :pk and begins_with(sk, :skPrefix)`,
+      ExpressionAttributeValues: {
+        ":pk": userId,
+        ":skPrefix": datePrefix ? `day_entry#${datePrefix}` : "day_entry",
+        ":isPartiallyCompleted": true,
+      },
+      FilterExpression: "isPartiallyCompleted  <> :isPartiallyCompleted",
+    })
+    .promise()
+
+  if (response.Items) {
+    return response.Items as IDayEntryItem[]
+  }
+  return []
+}
+
+const getAllUserDayEntries = async (userId: string, datePrefix?: string) => {
   const response = await dynamodb
     .query({
       TableName: config.dynamoTableName,
@@ -301,7 +325,7 @@ const createRecievedPing = async (
   return item
 }
 
-const createUserTDayEntry = async (
+const putUserDayEntry = async (
   userId: string,
   fields: Omit<IDayEntryItem, "pk" | "sk">
 ) => {
@@ -319,6 +343,20 @@ const createUserTDayEntry = async (
     .promise()
 
   return item
+}
+
+const getUserDayEntry = async (userId: string, date: string) => {
+  const response = await dynamodb
+    .get({
+      TableName: config.dynamoTableName,
+      Key: { pk: userId, sk: `day_entry#${date}` },
+    })
+    .promise()
+
+  if (response.Item) {
+    return response.Item as IDayEntryItem
+  }
+  return null
 }
 
 const getAllWords = async (): Promise<{ [word: string]: string }> => {
@@ -369,7 +407,7 @@ export const database = {
   getUser: getUserMetadata,
   putUser,
   getUserItems,
-  createUserTDayEntry,
+  putUserDayEntry,
   createInitiatedPing,
   createRecievedPing,
   getAllUsers,
@@ -379,9 +417,11 @@ export const database = {
   getUserMetadataStats,
   getInitiatedPings,
   getUserMetadataStatsPings,
-  getUserDayEntries,
+  getCompletedUserDayEntries,
   getUserMetadata,
   getAllWords,
   putWrappedStats,
   getUserWrappedStats,
+  getAllUserDayEntries,
+  getUserDayEntry,
 }

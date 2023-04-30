@@ -37,6 +37,8 @@ export interface IDayEntryItem {
   attemptsCount: number
   attemptsDetails: string
   createdAt: string
+  isPartiallyCompleted?: boolean // old entries do not have this field
+  updatedAt?: string
 }
 
 export interface IInitiatedPingItem {

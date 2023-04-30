@@ -16,22 +16,22 @@ export const createResponse = ({
   },
 })
 
-export const getCurrentStreak = (
-  dayEntries: IDayEntryItem[],
+const getCurrentStreak = (
+  sortedCompletedDayEntries: IDayEntryItem[],
   todaysDate: string
 ) => {
   let streak = 0
-  if (!dayEntries.length) {
+  if (!sortedCompletedDayEntries.length) {
     return streak
   }
 
   let date =
-    dayEntries[0].word.date === todaysDate
+    sortedCompletedDayEntries[0].word.date === todaysDate
       ? todaysDate
       : DateTime.fromISO(todaysDate).minus({ days: 1 }).toISODate()
 
-  for (let i = 0; i < dayEntries.length; i++) {
-    if (dayEntries[i].word.date !== date) {
+  for (let i = 0; i < sortedCompletedDayEntries.length; i++) {
+    if (sortedCompletedDayEntries[i].word.date !== date) {
       return streak
     }
     streak += 1
@@ -40,27 +40,19 @@ export const getCurrentStreak = (
   return streak
 }
 
-export const getAverageAtempts = (dayEntries: IDayEntryItem[]) =>
-  Number(
-    (
-      dayEntries.reduce((acc, curr) => acc + curr.attemptsCount, 0) /
-      dayEntries.length
-    ).toFixed(2)
-  )
-
 export const getAverageAttemptsForSeason = (
-  dayEntries: IDayEntryItem[],
+  completedDayEntries: IDayEntryItem[],
   todaysDate: string
 ) => {
-  if (!dayEntries.length) {
+  if (!completedDayEntries.length) {
     return 0
   }
 
-  const scoreMap = dayEntries.reduce(
+  const scoreMap = completedDayEntries.reduce(
     (acc, curr) => ({ ...acc, [curr.word.date]: curr.attemptsCount }),
     {} as { [date: string]: number }
   )
-  const sortedDayEntries = getSortedDayEntries(dayEntries)
+  const sortedDayEntries = getSortedDayEntries(completedDayEntries)
 
   const firstEntryDate = sortedDayEntries[sortedDayEntries.length - 1].word.date
 
@@ -89,65 +81,41 @@ export const getAverageAttemptsForSeason = (
   return Number((totalScore / totalDays).toFixed(2))
 }
 
-export const getAverageChange = (
-  dayEntries: IDayEntryItem[],
-  currentStreak: number
-) => {
-  const todaysDate = DateTime.now().toISODate()
-  if (dayEntries[0]?.word?.date !== todaysDate || currentStreak < 2) {
-    return null
-  }
-  const prevAvg = getAverageAtempts(dayEntries.slice(1))
-  const currentAvg = getAverageAtempts(dayEntries)
-  return Number((currentAvg - prevAvg).toFixed(2))
-}
-
-export const getMaxStreak = (
-  dayEntries: IDayEntryItem[],
+const getMaxStreak = (
+  sortedCompletedDayEntries: IDayEntryItem[],
   todaysDate: string
 ) => {
   let streak = 0
   let date = todaysDate
-  for (let i = 0; i < dayEntries.length; i++) {
-    streak += dayEntries[i].word.date === date ? 1 : 0
+  for (let i = 0; i < sortedCompletedDayEntries.length; i++) {
+    streak += sortedCompletedDayEntries[i].word.date === date ? 1 : 0
     date = DateTime.fromISO(date).minus({ days: 1 }).toISODate()
   }
   return streak
 }
 
-export const getWinPercent = (dayEntries: IDayEntryItem[]) => {
-  if (!dayEntries.length) {
+const getWinPercent = (sortedCompletedDayEntries: IDayEntryItem[]) => {
+  if (!sortedCompletedDayEntries.length) {
     return 0
   }
-  const wonEntries = dayEntries.filter((entry) => entry.attemptsCount <= 6)
-  return Math.round((wonEntries.length / dayEntries.length) * 100)
+  const wonEntries = sortedCompletedDayEntries.filter(
+    (entry) => entry.attemptsCount <= 6
+  )
+  return Math.round(
+    (wonEntries.length / sortedCompletedDayEntries.length) * 100
+  )
 }
 
-export const getGuessDistribution = (dayEntries: IDayEntryItem[]) => {
+const getGuessDistribution = (sortedCompletedDayEntries: IDayEntryItem[]) => {
   return new Array(6).fill(0).map((_, idx) => ({
     count: idx + 1,
-    occurance: dayEntries.filter((entry) => entry.attemptsCount - 1 === idx)
-      .length,
+    occurance: sortedCompletedDayEntries.filter(
+      (entry) => entry.attemptsCount - 1 === idx
+    ).length,
   }))
 }
 
-export const getLastAverages = (sortedDayEntries: IDayEntryItem[]) => {
-  return new Array(30)
-    .fill(null)
-    .map((_, idx) => {
-      const date = DateTime.now().minus({ days: idx }).startOf("day")
-      const entries = sortedDayEntries.filter(
-        (entry) => DateTime.fromISO(entry.word.date) <= date
-      )
-      if (!entries.length) {
-        return null
-      }
-      return getAverageAtempts(entries)
-    })
-    .reverse()
-}
-
-export const getSeasonAverages = (sortedDayEntries: IDayEntryItem[]) => {
+const getSeasonAverages = (sortedCompletedDayEntries: IDayEntryItem[]) => {
   try {
     const seasonStart = DateTime.now().startOf("quarter")
     const days = Math.ceil(DateTime.now().diff(seasonStart).as("days"))
@@ -157,7 +125,7 @@ export const getSeasonAverages = (sortedDayEntries: IDayEntryItem[]) => {
       .map((_, idx) => {
         const date = DateTime.now().minus({ days: idx }).startOf("day")
 
-        const entries = sortedDayEntries.filter(
+        const entries = sortedCompletedDayEntries.filter(
           (entry) => DateTime.fromISO(entry.word.date) <= date
         )
         if (!entries.length) {
@@ -173,49 +141,52 @@ export const getSeasonAverages = (sortedDayEntries: IDayEntryItem[]) => {
   }
 }
 
-export const getSortedDayEntries = (dayEntries: IDayEntryItem[]) => {
+const getSortedDayEntries = (dayEntries: IDayEntryItem[]) => {
   return [...dayEntries].sort(
     (a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
   )
 }
 
-export const getStatsForUser = (dayEntries: IDayEntryItem[]) => {
+export const getStatsForUser = (completedDayEntries: IDayEntryItem[]) => {
   const todaysDate = DateTime.now().toISODate()
-
-  const sortedDayEntries = [...dayEntries].sort(
+  const sortedCompletedDayEntries = [...completedDayEntries].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )
-  const datesPlayed = sortedDayEntries.map((entry) => entry.word.date)
-  const currentStreak = getCurrentStreak(sortedDayEntries, todaysDate)
-  const seasonAverages = getSeasonAverages(sortedDayEntries)
+  const datesPlayed = sortedCompletedDayEntries.map((entry) => entry.word.date)
+  const currentStreak = getCurrentStreak(sortedCompletedDayEntries, todaysDate)
+  const seasonAverages = getSeasonAverages(sortedCompletedDayEntries)
 
-  const seasonAverageChanges = sortedDayEntries.reduce((acc, entry) => {
-    const entriesOnAndBefore = sortedDayEntries.filter(
-      (e) => DateTime.fromISO(e.word.date) <= DateTime.fromISO(entry.word.date)
-    )
-    const prevAvg = getAverageAttemptsForSeason(
-      entriesOnAndBefore.slice(1),
-      DateTime.fromISO(entry.word.date).minus({ days: 1 }).toISODate()
-    )
-    const currentAvg = getAverageAttemptsForSeason(
-      entriesOnAndBefore,
-      DateTime.fromISO(entry.word.date).toISODate()
-    )
-    return {
-      ...acc,
-      [entry.word.date]: Number((currentAvg - prevAvg).toFixed(2)),
-    }
-  }, {} as { [date: string]: number })
+  const seasonAverageChanges = sortedCompletedDayEntries.reduce(
+    (acc, entry) => {
+      const entriesOnAndBefore = sortedCompletedDayEntries.filter(
+        (e) =>
+          DateTime.fromISO(e.word.date) <= DateTime.fromISO(entry.word.date)
+      )
+      const prevAvg = getAverageAttemptsForSeason(
+        entriesOnAndBefore.slice(1),
+        DateTime.fromISO(entry.word.date).minus({ days: 1 }).toISODate()
+      )
+      const currentAvg = getAverageAttemptsForSeason(
+        entriesOnAndBefore,
+        DateTime.fromISO(entry.word.date).toISODate()
+      )
+      return {
+        ...acc,
+        [entry.word.date]: Number((currentAvg - prevAvg).toFixed(2)),
+      }
+    },
+    {} as { [date: string]: number }
+  )
 
   const stats = {
-    maxStreak: getMaxStreak(sortedDayEntries, todaysDate),
+    maxStreak: getMaxStreak(sortedCompletedDayEntries, todaysDate),
     currentStreak,
     averageAttemptsCount: seasonAverages[seasonAverages.length - 1],
-    winPercent: getWinPercent(sortedDayEntries),
-    numberOfDaysPlayed: sortedDayEntries.length,
-    lastPlayed: sortedDayEntries[0]?.createdAt,
-    lastEntry: sortedDayEntries[0],
-    guessDistribution: getGuessDistribution(sortedDayEntries),
+    winPercent: getWinPercent(sortedCompletedDayEntries),
+    numberOfDaysPlayed: sortedCompletedDayEntries.length,
+    lastPlayed: sortedCompletedDayEntries[0]?.createdAt,
+    lastEntry: sortedCompletedDayEntries[0],
+    guessDistribution: getGuessDistribution(sortedCompletedDayEntries),
     datesPlayed,
     seasonAverages,
     seasonAverageChanges,

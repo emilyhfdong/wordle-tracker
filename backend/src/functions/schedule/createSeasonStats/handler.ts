@@ -30,11 +30,12 @@ export const handler = async () => {
   const leaderboard: ISeasonItem["leaderboard"] = userItems
     .filter(
       (user) =>
-        user.dayEntries.length > 0 && !user.metadata.name.includes("dev")
+        user.completedDayEntries.length > 0 &&
+        !user.metadata.name.includes("dev")
     )
     .map((user) => ({
       average: getAverageAttemptsForSeason(
-        user.dayEntries,
+        user.completedDayEntries,
         DateTime.now().minus({ day: 1 }).toISODate()
       ),
       name: user.metadata.name,

@@ -18,6 +18,14 @@ export const functions: AWS["functions"] = {
       },
     ],
   },
+  createDayEntryAttempt: {
+    handler: `src/functions/api/createDayEntryAttempt/handler.handler`,
+    events: [
+      {
+        http: { method: "POST", path: "/users/{userId}/day-entry-attempt" },
+      },
+    ],
+  },
   createUser: {
     handler: `src/functions/api/createUser/handler.handler`,
     events: [
@@ -40,6 +48,14 @@ export const functions: AWS["functions"] = {
     events: [
       {
         http: { method: "GET", path: "/users/{userId}/grouped-feed" },
+      },
+    ],
+  },
+  getGroupedFeedV2: {
+    handler: `src/functions/api/getGroupedFeedV2/handler.handler`,
+    events: [
+      {
+        http: { method: "GET", path: "/users/{userId}/v2/grouped-feed" },
       },
     ],
   },

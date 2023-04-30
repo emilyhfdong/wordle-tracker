@@ -7,7 +7,7 @@ import {
 import { DateTime } from "luxon"
 
 type UserItems = {
-  dayEntries: IDayEntryItem[]
+  completedDayEntries: IDayEntryItem[]
   metadata: IUserMetaDataItem
   recievedPings: IRecievedPingItem[]
   initiatedPings: IRecievedPingItem[]
@@ -74,7 +74,7 @@ export const getWrappedStats = ({
     .minus({ day: 1 })
     .startOf("quarter")
 
-  const entries = user.dayEntries.filter((entry) =>
+  const entries = user.completedDayEntries.filter((entry) =>
     DateTime.fromISO(entry.word.date).hasSame(firstDayOfSeason, "quarter")
   )
 

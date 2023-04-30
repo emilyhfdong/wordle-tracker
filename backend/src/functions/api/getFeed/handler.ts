@@ -16,7 +16,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   const [userMeta, userDayEntries] = await Promise.all([
     database.getUserMetadata(userId),
-    database.getUserDayEntries(userId, datePrefix),
+    database.getCompletedUserDayEntries(userId, datePrefix),
   ])
 
   if (!userMeta) {
@@ -28,7 +28,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   const friendItems = await Promise.all(
     userMeta.friendIds.map((friendId) =>
-      database.getUserDayEntries(friendId, datePrefix)
+      database.getCompletedUserDayEntries(friendId, datePrefix)
     )
   )
 
