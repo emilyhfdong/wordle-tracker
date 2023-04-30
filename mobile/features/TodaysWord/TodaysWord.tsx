@@ -54,12 +54,14 @@ export const TodaysWord: React.FC = () => {
   }, [wrappedData, seenWrappedSeasonNames])
 
   const { mutate } = useCreateDayEntry({
-    onSuccess: () => {
-      queryClient.invalidateQueries(QueryKeys.USER, { refetchInactive: true })
-      queryClient.invalidateQueries(QueryKeys.FEED, { refetchInactive: true })
-      queryClient.invalidateQueries(QueryKeys.FRIENDS, {
-        refetchInactive: true,
-      })
+    onSuccess: (data) => {
+      if (data.isPartiallyCompleted === false) {
+        queryClient.invalidateQueries(QueryKeys.USER, { refetchInactive: true })
+        queryClient.invalidateQueries(QueryKeys.FEED, { refetchInactive: true })
+        queryClient.invalidateQueries(QueryKeys.FRIENDS, {
+          refetchInactive: true,
+        })
+      }
     },
   })
 
@@ -101,18 +103,19 @@ export const TodaysWord: React.FC = () => {
           return
         }
 
+        const allAttempts = [...prevGuesses, currentGuess]
+        const dayEntry: TDayEntry = {
+          attemptsCount: allAttempts.length,
+          attemptsDetails: allAttempts.join(" "),
+          word: { date, answer: word, number },
+          createdAt: DateTime.now().toUTC().toISO(),
+          userId,
+          isPartiallyCompleted: false, //calculated on backend
+        }
+        mutate({ dayEntry, userId })
+
         if (word === currentGuess || prevGuesses.length === 5) {
           const failed = prevGuesses.length === 5 && word !== currentGuess
-
-          const allAttempts = [...prevGuesses, currentGuess]
-          const dayEntry: TDayEntry = {
-            attemptsCount: allAttempts.length,
-            attemptsDetails: allAttempts.join(" "),
-            word: { date, answer: word, number },
-            createdAt: DateTime.now().toUTC().toISO(),
-            userId,
-          }
-          mutate({ dayEntry, userId })
           setTimeout(() => {
             setToastText(failed ? "FAIL! 🧦" : "Impressive")
             setTimeout(() => {

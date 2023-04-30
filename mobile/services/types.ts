@@ -16,6 +16,7 @@ const GET_FEED_RESPONSE = {
             number: 323,
           },
           createdAt: "2022-05-08T11:57:23.753Z",
+          isPartiallyCompleted: false,
         },
       ],
       avgAttemptsCount: 3.67,

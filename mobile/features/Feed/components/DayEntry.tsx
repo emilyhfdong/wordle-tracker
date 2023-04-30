@@ -17,6 +17,7 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
   createdAt,
   date,
   attemptsCount,
+  isPartiallyCompleted,
 }) => {
   const authUser = useAppSelector((state) => state.user)
   const isSelf = useAppSelector((state) => state.user.id === userId)
@@ -34,8 +35,12 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
 
   const color = isSelf ? theme.light.grey : friend.color
 
+  if (isSelf && isPartiallyCompleted) {
+    return null
+  }
+
   return (
-    <View>
+    <View style={{ opacity: isPartiallyCompleted ? 0.5 : 1 }}>
       <View
         style={{
           marginTop: 10,
@@ -75,7 +80,11 @@ export const DayEntry: React.FC<TDayEntry & { date: string }> = ({
             <Text
               style={{ color: theme.light.grey, fontSize: 12, marginLeft: 8 }}
             >
-              {getScoreDisplay({ hasPlayedThisDay, attemptsCount })}
+              {getScoreDisplay({
+                hasPlayedThisDay,
+                attemptsCount,
+                isPartiallyCompleted,
+              })}
             </Text>
           </View>
         </View>

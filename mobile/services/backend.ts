@@ -79,9 +79,9 @@ const updateUserWithPushToken = async (userId: string, pushToken: string) => {
 const createDayEntry = async (
   userId: string,
   { attemptsDetails, word }: TDayEntry
-) => {
+): Promise<TDayEntry> => {
   const response = await axios.post(
-    `users/${userId}/day-entry`,
+    `users/${userId}/day-entry-attempt`,
     {
       attemptsDetails,
       word,
@@ -91,12 +91,12 @@ const createDayEntry = async (
     }
   )
   console.log("DONE - creating day entry")
-  return response.data?.TDayEntry
+  return response.data?.dayEntry
 }
 
 const getFeed = async (userId: string) => {
   const response = await axios.get<TGetFeedResponse>(
-    `users/${userId}/grouped-feed`,
+    `users/${userId}/v2/grouped-feed`,
     {
       baseURL: API_BASE,
     }
