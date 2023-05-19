@@ -6,6 +6,7 @@ import { getBrowser } from "@libs/puppeteer"
 
 const CLOSE_ICON_PATH = `document.querySelector("dialog > div > button")`
 const ANSWER_TOAST_PATH = `document.querySelector("#ToastContainer-module_gameToaster__HPkaC > div")`
+const PLAY_BUTTON_PATH = `document.querySelector("div.Welcome-module_buttonContainer__K4GEw > button:nth-child(3)")`
 
 export const handler = async () => {
   Settings.defaultZone = config.timezone
@@ -52,6 +53,10 @@ export const handler = async () => {
   const page = await browser.newPage()
   await page.emulateTimezone(config.timezone)
   await page.goto("https://www.nytimes.com/games/wordle/index.html")
+
+  const playButton = await page.evaluateHandle(PLAY_BUTTON_PATH)
+  //@ts-expect-error
+  await playButton.click()
   await page.waitForSelector("dialog")
 
   const closeIcon = await page.evaluateHandle(CLOSE_ICON_PATH)

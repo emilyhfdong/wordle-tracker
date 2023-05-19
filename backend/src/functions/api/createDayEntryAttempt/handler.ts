@@ -31,7 +31,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   const { attemptsDetails, word }: IEventBody = body
 
-  console.log("finding user with id", userId)
+  console.log("finding user with id", userId, body)
 
   const user = await database.getUser(userId)
   if (!user) {
@@ -61,6 +61,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     word: word,
     isPartiallyCompleted: !isFinalGuess,
   })
+
+  console.log("updated day entry for user", dayEntry)
 
   return createResponse({
     body: { dayEntry },
